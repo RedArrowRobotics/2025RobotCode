@@ -4,9 +4,17 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.auto.AutoAction;
+import frc.robot.auto.DoNothingAutoAction;
+import frc.robot.auto.MoveInlineAutoAction;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
