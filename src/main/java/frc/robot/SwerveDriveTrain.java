@@ -74,10 +74,11 @@ public class SwerveDriveTrain {
   }
 
   public void updatePosition() {
+    LimelightHelpers.SetRobotOrientation("limelight", swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     if (LimelightHelpers.getTV("limelight") == true) {
       // Add vision measurement
-      Pose3d pose3d = LimelightHelpers.getBotPose3d_wpiBlue("limelight"); 
-      swerveDrive.addVisionMeasurement(pose3d.toPose2d(), Timer.getFPGATimestamp());
+      LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight"); 
+      swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
     }
   }
 
