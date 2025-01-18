@@ -6,8 +6,10 @@ import java.io.File;
 import java.io.IOError;
 import java.io.IOException;
 import java.util.function.DoubleSupplier;
+import frc.robot.LimelightHelpers;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
@@ -18,6 +20,8 @@ import edu.wpi.first.math.util.Units;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class SwerveDriveTrain {
   SwerveDrive swerveDrive;
@@ -67,6 +71,14 @@ public class SwerveDriveTrain {
         angularRotationX * swerveDrive.getMaximumChassisAngularVelocity(),
         false,
         false);
+  }
+
+  public void updatePosition() {
+    if (LimelightHelpers.getTV("limelight") == true) {
+      // Add vision measurement
+      Pose3d pose3d = LimelightHelpers.getBotPose3d_wpiBlue("limelight"); 
+      swerveDrive.addVisionMeasurement(pose3d.toPose2d(), Timer.getFPGATimestamp());
+    }
   }
 
   public Pose2d getPose()
