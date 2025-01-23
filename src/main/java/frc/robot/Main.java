@@ -23,13 +23,7 @@ public final class Main {
    */
   public static void main(String... args) {
     RobotBase.startRobot(() -> {
-      try {
         return new Robot();
-      } catch (IOException e) {
-        System.out.println(e.getLocalizedMessage());
-        System.out.println(e);
-        return null;
-      }
     });
   }
 }

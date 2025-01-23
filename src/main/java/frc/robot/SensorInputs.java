@@ -1,19 +1,15 @@
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.wpilibj.AnalogEncoder;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Rotation2d;
+import com.studica.frc.AHRS;
 
 public class SensorInputs {
     //Sensor Definitions
     private DigitalInput intakeLimitSwitchHome = new DigitalInput(0);
-    private final AHRS navxAhrs = new AHRS(Port.kMXP);
+    private final AHRS navxAhrs = new AHRS(AHRS.NavXComType.kMXP_SPI);
     public final Encoder intakeEncoder = new Encoder(8, 9);
     
     //Variable Defintions
