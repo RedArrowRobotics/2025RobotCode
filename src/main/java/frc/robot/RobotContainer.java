@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.subsystems.SwerveDriveTrain;
+import swervelib.SwerveDrive;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -47,10 +48,11 @@ public class RobotContainer {
     controlInputs.readControls(componentsControl);
     sensorInputs.readSensors();
     componentsControl.runComponents(components, controlInputs, sensorInputs);
-    swerveDriveTrain.drive(-controlInputs.driveStickY, -controlInputs.driveStickX, -controlInputs.driveStickZrotation);
+    swerveDriveTrain.driveFC(-controlInputs.driveStickY, -controlInputs.driveStickX, -controlInputs.driveStickZrotation);
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
+  
 }
