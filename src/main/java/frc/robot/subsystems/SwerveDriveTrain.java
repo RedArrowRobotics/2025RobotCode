@@ -115,6 +115,11 @@ public class SwerveDriveTrain extends SubsystemBase {
         false);
   }
 
+  @Override
+  public void periodic() {
+    updatePosition();
+  }
+
   public void updatePosition() {
     LimelightHelpers.SetRobotOrientation("limelight", swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     if (LimelightHelpers.getTV("limelight") == true) {
