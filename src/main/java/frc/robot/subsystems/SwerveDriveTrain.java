@@ -11,9 +11,11 @@ import java.io.IOError;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.function.DoubleSupplier;
+import frc.robot.LimelightHelpers;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.parser.SwerveParser;
@@ -25,6 +27,8 @@ import edu.wpi.first.math.util.Units;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class SwerveDriveTrain extends SubsystemBase {
   SwerveDrive swerveDrive;
@@ -111,7 +115,22 @@ public class SwerveDriveTrain extends SubsystemBase {
         false);
   }
 
-  public Pose2d getPose() {
+  @Override
+  public void periodic() {
+    updatePosition();
+  }
+
+  public void updatePosition() {
+    LimelightHelpers.SetRobotOrientation("limelight", swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    if (LimelightHelpers.getTV("limelight") == true) {
+      // Add vision measurement
+      LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight"); 
+      swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
+    }
+  }
+
+  public Pose2d getPose()
+  {
     return swerveDrive.getPose();
   }
 
