@@ -9,8 +9,6 @@ public class ElevatorSubsystem extends SubsystemBase {
    * Moves the elevator to the home position which is the lowest position.
    */
   public Command elevatorHome() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
           /* one-time action goes here */
