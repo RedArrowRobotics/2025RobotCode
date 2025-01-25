@@ -22,10 +22,10 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 
-public class SwerveDriveTrain extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase {
   SwerveDrive swerveDrive;
 
-  public SwerveDriveTrain() throws IOException, ParseException {
+  public DriveSubsystem() throws IOException, ParseException {
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
     RobotConfig config;
@@ -112,7 +112,7 @@ public class SwerveDriveTrain extends SubsystemBase {
       swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
     }
   }
-
+  
   public Pose2d getPose()
   {
     return swerveDrive.getPose();
