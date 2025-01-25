@@ -29,8 +29,6 @@ public class ElevatorSubsystem extends SubsystemBase {
    * Moves the elevator to the L3 position.
    */
   public Command elevatorL3() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
           /* one-time action goes here */
