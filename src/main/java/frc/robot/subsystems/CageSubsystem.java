@@ -9,9 +9,6 @@ public class CageSubsystem extends SubsystemBase {
  *  Rotates a bar to hold the cage in place for climbing.
  */
 public Command holdCage() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-
     return runOnce(
         () -> {
           /* one-time action goes here */
