@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.robot.subsystems.SwerveDriveTrain;
+import frc.robot.subsystems.SwerveDriveTrainSubsystem;
 import swervelib.SwerveDrive;
 
 /**
@@ -25,7 +25,7 @@ import swervelib.SwerveDrive;
  * this project, you must also update the Main.java file in the project.
  */
 public class RobotContainer {
-  private final SwerveDriveTrain swerveDriveTrain;
+  private final SwerveDriveTrainSubsystem swerveDriveTrain;
   private final ControlInputs controlInputs = new ControlInputs();
   private final SensorInputs sensorInputs = new SensorInputs();
   private Components components = new Components();
@@ -39,7 +39,7 @@ public class RobotContainer {
    * initialization code.
    */
   public RobotContainer() throws IOException, Exception{
-    swerveDriveTrain = new SwerveDriveTrain();
+    swerveDriveTrain = new SwerveDriveTrainSubsystem();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }

@@ -30,10 +30,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public class SwerveDriveTrain extends SubsystemBase {
+public class SwerveDriveTrainSubsystem extends SubsystemBase {
   SwerveDrive swerveDrive;
 
-  public SwerveDriveTrain() throws IOException, Exception {
+  public SwerveDriveTrainSubsystem() throws IOException, Exception {
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
     RobotConfig config;
@@ -128,7 +128,7 @@ public class SwerveDriveTrain extends SubsystemBase {
       swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
     }
   }
-
+  
   public Pose2d getPose()
   {
     return swerveDrive.getPose();
