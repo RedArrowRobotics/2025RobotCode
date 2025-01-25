@@ -19,9 +19,6 @@ public Command holdCage() {
  *  Rotates the bar back to the starting position so the cage is free to move.
  */
 public Command releaseCage() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    
     return runOnce(
         () -> {
           /* one-time action goes here */
