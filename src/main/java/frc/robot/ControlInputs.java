@@ -30,7 +30,7 @@ public class ControlInputs {
     public double driveStickZrotation = 0.0;
 
     //Reading the controls
-    public final void readControls(ComponentsControl componentsControl) {
+    public final void readControls() {
         //Drivestick
         driveStickX = ( driveStick.getLeftX() * Math.abs(driveStick.getLeftX()) ) * driveStickMaxMovement;
         driveStickY = ( driveStick.getLeftY() * Math.abs(driveStick.getLeftY()) ) * driveStickMaxMovement;
