@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.io.IOException;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -32,9 +30,7 @@ public class Robot extends TimedRobot {
     try {
         robotContainer = new RobotContainer();
     } catch (Exception e) {
-        System.out.println(e.getLocalizedMessage());
-        System.out.println(e);
-        // TODO: handle exception
+      e.printStackTrace();
     }
     
   }
@@ -48,6 +44,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    robotContainer.robotPeriodic();
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
