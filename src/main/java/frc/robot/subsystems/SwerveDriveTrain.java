@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.function.Supplier;
 
+import org.json.simple.parser.ParseException;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,7 +25,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 public class SwerveDriveTrain extends SubsystemBase {
   SwerveDrive swerveDrive;
 
-  public SwerveDriveTrain() throws IOException, Exception {
+  public SwerveDriveTrain() throws IOException, ParseException {
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
     RobotConfig config;
@@ -32,14 +34,8 @@ public class SwerveDriveTrain extends SubsystemBase {
     double maximumSpeed = 4.35864;
     File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
     swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed);
-    try{
-      config = RobotConfig.fromGUISettings();
-    } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
-      throw e;
-    }
-
+    config = RobotConfig.fromGUISettings();
+    
     AutoBuilder.configure(
       this::getPose, // Robot pose supplier
       this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)

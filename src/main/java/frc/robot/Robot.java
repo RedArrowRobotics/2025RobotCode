@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.io.IOException;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -32,9 +30,7 @@ public class Robot extends TimedRobot {
     try {
         robotContainer = new RobotContainer();
     } catch (Exception e) {
-        System.out.println(e.getLocalizedMessage());
-        System.out.println(e);
-        // TODO: handle exception
+      e.printStackTrace();
     }
     
   }

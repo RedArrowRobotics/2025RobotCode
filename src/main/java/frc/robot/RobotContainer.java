@@ -5,21 +5,13 @@
 package frc.robot;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.subsystems.SwerveDriveTrain;
-import swervelib.SwerveDrive;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -30,11 +22,8 @@ public class RobotContainer {
   private final SwerveDriveTrain swerveDriveTrain;
   private final ControlInputs controlInputs = new ControlInputs();
   private final SensorInputs sensorInputs = new SensorInputs();
-  private Components components = new Components();
-  private final ComponentsControl componentsControl = new ComponentsControl();
   private final SendableChooser<Command> autoChooser;
   private Command autoSelected;
-
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -55,7 +44,7 @@ public class RobotContainer {
   }
 
   public void teleopPeriodic() {
-    componentsControl.runComponents(components, controlInputs, sensorInputs);
+    
   }
 
   public Command getAutonomousCommand() {
