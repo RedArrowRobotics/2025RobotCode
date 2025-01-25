@@ -29,8 +29,6 @@ public Command releaseCage() {
  *  Pushes down on the cage to raise the robot.
  */
   public Command ascend() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
           /* one-time action goes here */
