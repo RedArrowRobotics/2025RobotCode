@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDriveTrainSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -19,7 +19,7 @@ import frc.robot.subsystems.SwerveDriveTrainSubsystem;
  * this project, you must also update the Main.java file in the project.
  */
 public class RobotContainer {
-  private final SwerveDriveTrainSubsystem swerveDriveTrain;
+  private final DriveSubsystem swerveDriveTrain;
   private final ControlInputs controlInputs = new ControlInputs();
   private final SensorInputs sensorInputs = new SensorInputs();
   private final SendableChooser<Command> autoChooser;
@@ -30,7 +30,7 @@ public class RobotContainer {
    * initialization code.
    */
   public RobotContainer() throws IOException, Exception{
-    swerveDriveTrain = new SwerveDriveTrainSubsystem();
+    swerveDriveTrain = new DriveSubsystem();
     swerveDriveTrain.setDefaultCommand(swerveDriveTrain.driveFieldCentric(() -> {
       return new Transform2d(-controlInputs.driveStickY, -controlInputs.driveStickX, Rotation2d.fromRadians(-controlInputs.driveStickZrotation));
     }));
