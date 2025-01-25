@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.util.function.Supplier;
 
 import org.json.simple.parser.ParseException;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.parser.SwerveParser;
@@ -99,7 +99,22 @@ public class SwerveDriveTrain extends SubsystemBase {
     });
   }
 
-  public Pose2d getPose() {
+  @Override
+  public void periodic() {
+    updatePosition();
+  }
+
+  public void updatePosition() {
+    LimelightHelpers.SetRobotOrientation("limelight", swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    if (LimelightHelpers.getTV("limelight") == true) {
+      // Add vision measurement
+      LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight"); 
+      swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
+    }
+  }
+
+  public Pose2d getPose()
+  {
     return swerveDrive.getPose();
   }
 
