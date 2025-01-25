@@ -39,8 +39,6 @@ public Command releaseCage() {
  *  Retracts the climber to lower the robot.
  */
 public Command descend() {
-  // Inline construction of command goes here.
-  // Subsystem::RunOnce implicitly requires `this` subsystem.
   return runOnce(
       () -> {
         /* one-time action goes here */
