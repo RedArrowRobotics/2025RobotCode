@@ -79,8 +79,6 @@ public class ElevatorSubsystem extends SubsystemBase {
    * Deactivates the dealgaer.
    */
   public Command dealgaeStopSpin() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
           /* one-time action goes here */
