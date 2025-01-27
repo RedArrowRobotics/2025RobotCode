@@ -2,49 +2,52 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class ControlInputs {
-    //Joysticks IDs
-    private final int driveStickDeviceId = 0;
-    private final int componentsBoardLeftId = 1;
-    private final int componentsBoardRightId = 2;
+    // Singleton Instance
+    private static ControlInputs instance;
 
-    //Max Input
-    private final double driveStickMaxMovement = 0.8;
-    private final double driveStickMaxRotation = 0.5;
+    // Joysticks IDs
+    private final XboxController driveStick = new XboxController(0);
+    private final Joystick componentsBoardLeft = new Joystick(1);
+    private final Joystick componentsBoardRight = new Joystick(2);
 
-    //Buttons IDs
-        //Components Board Right
+    public DriveStickState getDriveStick() {
+        /**
+         * 
+         */
+        // Multipliers for the drive stick axes
+        final double driveStickLinearMultiplier = 0.8;
+        final double driveStickRotationMultiplier = 0.5;
 
-        //Components Board Left
-
-    //Joystick Definitions
-    private final XboxController driveStick = new XboxController(driveStickDeviceId);
-    private final Joystick componentsBoardLeft = new Joystick(componentsBoardLeftId);
-    private final Joystick componentsBoardRight = new Joystick(componentsBoardRightId);
-
-    //Variable Defintions
-    public double driveStickX = 0.0;
-    public double driveStickY = 0.0;
-    public double driveStickZrotation = 0.0;
-
-    //Reading the controls
-    public final void readControls() {
-        //Drivestick
-        driveStickX = ( driveStick.getLeftX() * Math.abs(driveStick.getLeftX()) ) * driveStickMaxMovement;
-        driveStickY = ( driveStick.getLeftY() * Math.abs(driveStick.getLeftY()) ) * driveStickMaxMovement;
-        driveStickZrotation = ( driveStick.getRightX() * Math.abs(driveStick.getRightX()) ) * driveStickMaxRotation;
-        //Components Board Right
-        
-        //Components Board Left
-       
-        //Drive Controller Climb
-       
+        // Get joystick values
+        var x = ( driveStick.getLeftX() * Math.abs(driveStick.getLeftX()) ) * driveStickLinearMultiplier;
+        var y = ( driveStick.getLeftY() * Math.abs(driveStick.getLeftY()) ) * driveStickLinearMultiplier;
+        var theta = ( driveStick.getRightX() * Math.abs(driveStick.getRightX()) ) * driveStickRotationMultiplier;
+        // Compose the seperate components into a state record
+        return new DriveStickState(x, y, theta);
     }
 
-    //For later
+    // For later
     public final void setRumble(double value) {
         driveStick.setRumble(RumbleType.kBothRumble, value);
     }
+
+    /**
+     * Returns the ControlInputs instance.
+     *
+     * @return the instance
+     */
+    public static synchronized ControlInputs getInstance() {
+        if (instance == null) {
+            instance = new ControlInputs();
+        }
+        return instance;
+    }
+
+    public static record DriveStickState(double x,double y,double theta) {}
 }

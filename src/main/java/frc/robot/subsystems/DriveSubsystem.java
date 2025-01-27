@@ -4,6 +4,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -14,9 +17,12 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.ControlInputs;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -31,9 +37,9 @@ public class DriveSubsystem extends SubsystemBase {
     RobotConfig config;
 
     //In Meters Per Second
-    double maximumSpeed = 4.35864;
+    LinearVelocity maximumSpeed = MetersPerSecond.of(4.35864);
     File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
-    swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed);
+    swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed.magnitude());
     config = RobotConfig.fromGUISettings();
     
     AutoBuilder.configure(
@@ -66,15 +72,13 @@ public class DriveSubsystem extends SubsystemBase {
    * @param transform_supplier  Function that returns a translation and rotation
    * @return Drive command.
    */
-  public Command driveFieldCentric(Supplier<Transform2d> transform_supplier) {
+  public Command driveFieldCentric() {
     return this.run(() -> {
-      var transform = transform_supplier.get();
-      var translation = transform.getTranslation();
-      var rotation = transform.getRotation();
+      var input = ControlInputs.getInstance().getDriveStick();
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-      chassisSpeeds.vxMetersPerSecond = translation.getX() * swerveDrive.getMaximumChassisVelocity();
-      chassisSpeeds.vyMetersPerSecond = translation.getY() * swerveDrive.getMaximumChassisVelocity();
-      chassisSpeeds.omegaRadiansPerSecond = rotation.getRadians() * swerveDrive.getMaximumChassisAngularVelocity();
+      chassisSpeeds.vxMetersPerSecond = -input.y() * swerveDrive.getMaximumChassisVelocity();
+      chassisSpeeds.vyMetersPerSecond = -input.x() * swerveDrive.getMaximumChassisVelocity();
+      chassisSpeeds.omegaRadiansPerSecond = -input.theta() * swerveDrive.getMaximumChassisAngularVelocity();
       swerveDrive.driveFieldOriented(chassisSpeeds);
     });
   }
@@ -86,15 +90,13 @@ public class DriveSubsystem extends SubsystemBase {
    * @param transform_supplier  Function that returns a translation and rotation
    * @return Drive command.
    */
-  public Command driveRobotCentric(Supplier<Transform2d> transform_supplier) {
+  public Command driveRobotCentric() {
     return this.run(() -> {
-      var transform = transform_supplier.get();
-      var translation = transform.getTranslation();
-      var rotation = transform.getRotation();
+      var input = ControlInputs.getInstance().getDriveStick();
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-      chassisSpeeds.vxMetersPerSecond = translation.getX() * swerveDrive.getMaximumChassisVelocity();
-      chassisSpeeds.vyMetersPerSecond = translation.getY() * swerveDrive.getMaximumChassisVelocity();
-      chassisSpeeds.omegaRadiansPerSecond = rotation.getRadians() * swerveDrive.getMaximumChassisAngularVelocity();
+      chassisSpeeds.vxMetersPerSecond = -input.y() * swerveDrive.getMaximumChassisVelocity();
+      chassisSpeeds.vyMetersPerSecond = -input.x() * swerveDrive.getMaximumChassisVelocity();
+      chassisSpeeds.omegaRadiansPerSecond = -input.theta() * swerveDrive.getMaximumChassisAngularVelocity();
       swerveDrive.drive(chassisSpeeds);
     });
   }
