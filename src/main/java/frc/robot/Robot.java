@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Optional<Command> autonomousCommand;
+  private Optional<Command> autonomousCommand = Optional.empty();
 
   private RobotContainer robotContainer;
 
