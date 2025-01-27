@@ -78,7 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
       chassisSpeeds.vxMetersPerSecond = -input.y() * swerveDrive.getMaximumChassisVelocity();
       chassisSpeeds.vyMetersPerSecond = -input.x() * swerveDrive.getMaximumChassisVelocity();
-      chassisSpeeds.omegaRadiansPerSecond = -input.theta() * swerveDrive.getMaximumChassisAngularVelocity();
+      chassisSpeeds.omegaRadiansPerSecond = -input.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
       swerveDrive.driveFieldOriented(chassisSpeeds);
     });
   }
@@ -96,7 +96,7 @@ public class DriveSubsystem extends SubsystemBase {
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
       chassisSpeeds.vxMetersPerSecond = -input.y() * swerveDrive.getMaximumChassisVelocity();
       chassisSpeeds.vyMetersPerSecond = -input.x() * swerveDrive.getMaximumChassisVelocity();
-      chassisSpeeds.omegaRadiansPerSecond = -input.theta() * swerveDrive.getMaximumChassisAngularVelocity();
+      chassisSpeeds.omegaRadiansPerSecond = -input.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
       swerveDrive.drive(chassisSpeeds);
     });
   }
