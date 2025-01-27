@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     // Get the selected autonomous, and schedule it
     autonomousCommand = robotContainer.getAutonomousCommand();
-    autonomousCommand.ifPresent((command) -> command.schedule());
+    autonomousCommand.ifPresent(Command::schedule);
   }
 
   /** This function is called periodically during autonomous. */
@@ -76,7 +76,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     // Cancel the autonomous command when teleop starts running.
-    autonomousCommand.ifPresent((command) -> command.cancel());
+    autonomousCommand.ifPresent(Command::cancel);
   }
 
   /** This function is called periodically during operator control. */
