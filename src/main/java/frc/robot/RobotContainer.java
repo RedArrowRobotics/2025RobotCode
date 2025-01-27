@@ -7,10 +7,6 @@ package frc.robot;
 import java.io.IOException;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;

@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.function.Supplier;
 
 import org.json.simple.parser.ParseException;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -21,12 +20,10 @@ import frc.robot.ControlInputs;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform2d;
 
 public class DriveSubsystem extends SubsystemBase {
   SwerveDrive swerveDrive;
