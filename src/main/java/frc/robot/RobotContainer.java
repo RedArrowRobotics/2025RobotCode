@@ -50,6 +50,7 @@ public class RobotContainer {
   }
 
   public Optional<Command> getAutonomousCommand() {
+    // Fetch the selected autonomous command from the dashoard and put it in an Optional
     return Optional.ofNullable(autoChooser.getSelected());
   }
   
