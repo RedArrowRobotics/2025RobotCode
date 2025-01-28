@@ -19,6 +19,7 @@ import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
  * this project, you must also update the Main.java file in the project.
  */
 public class RobotContainer {
+  private final ControlInputs controlInputs = new ControlInputs();
   private final DriveSubsystem swerveDriveTrain;
   private final SensorInputs sensorInputs = new SensorInputs();
   private final SendableChooser<Command> autoChooser;
@@ -30,7 +31,10 @@ public class RobotContainer {
    */
   public RobotContainer() throws IOException, Exception{
     swerveDriveTrain = new DriveSubsystem();
-    swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
+    swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
+      () -> controlInputs.getDriveStick(),
+      DriveOrientation.FIELD_CENTRIC
+    ));
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }

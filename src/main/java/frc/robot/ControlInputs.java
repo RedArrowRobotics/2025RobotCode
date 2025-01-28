@@ -5,9 +5,6 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class ControlInputs {
-    // Singleton Instance
-    private static ControlInputs instance;
-
     // Joysticks
     private final XboxController driveStick = new XboxController(0);
     private final Joystick componentsBoardLeft = new Joystick(1);
@@ -34,17 +31,5 @@ public class ControlInputs {
     // For later
     public final void setRumble(double value) {
         driveStick.setRumble(RumbleType.kBothRumble, value);
-    }
-
-    /**
-     * Returns the ControlInputs instance.
-     *
-     * @return the instance
-     */
-    public static synchronized ControlInputs getInstance() {
-        if (instance == null) {
-            instance = new ControlInputs();
-        }
-        return instance;
     }
 }

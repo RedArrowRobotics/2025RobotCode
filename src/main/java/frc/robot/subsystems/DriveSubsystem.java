@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.function.Supplier;
 
 import org.json.simple.parser.ParseException;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ControlInputs;
+import frc.robot.ControlInputs.DriveStickState;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -75,9 +77,9 @@ public class DriveSubsystem extends SubsystemBase {
    * @param orientation The type of orientation to use.
    * @return Drive command.
    */
-  public Command teleopDrive(DriveOrientation orientation) {
+  public Command teleopDrive(Supplier<DriveStickState> controls, DriveOrientation orientation) {
     return this.run(() -> {
-      var input = ControlInputs.getInstance().getDriveStick();
+      var input = controls.get();
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
       chassisSpeeds.vxMetersPerSecond = -input.y() * swerveDrive.getMaximumChassisVelocity();
       chassisSpeeds.vyMetersPerSecond = -input.x() * swerveDrive.getMaximumChassisVelocity();
