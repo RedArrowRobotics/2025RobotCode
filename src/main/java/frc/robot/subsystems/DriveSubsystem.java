@@ -61,39 +61,31 @@ public class DriveSubsystem extends SubsystemBase {
     );
   }
   
-  /**
-   * Command to drive the robot from joystick input using translative values
-   * and heading as angular velocity. Should be used as a default command.
-   *
-   * @param transform_supplier  Function that returns a translation and rotation
-   * @return Drive command.
-   */
-  public Command teleopDriveFieldCentric() {
-    return this.run(() -> {
-      var input = ControlInputs.getInstance().getDriveStick();
-      ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-      chassisSpeeds.vxMetersPerSecond = -input.y() * swerveDrive.getMaximumChassisVelocity();
-      chassisSpeeds.vyMetersPerSecond = -input.x() * swerveDrive.getMaximumChassisVelocity();
-      chassisSpeeds.omegaRadiansPerSecond = -input.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
-      swerveDrive.driveFieldOriented(chassisSpeeds);
-    });
+  public static enum DriveOrientation {
+    /** Forwards is a constant direction. */
+    FIELD_CENTRIC,
+    /** Forwards is based on the robot's direction. */
+    ROBOT_CENTRIC,
   }
 
   /**
    * Command to drive the robot from joystick input using translative values
    * and heading as angular velocity. Should be used as a default command.
    *
-   * @param transform_supplier  Function that returns a translation and rotation
+   * @param orientation The type of orientation to use.
    * @return Drive command.
    */
-  public Command teleopDriveRobotCentric() {
+  public Command teleopDrive(DriveOrientation orientation) {
     return this.run(() -> {
       var input = ControlInputs.getInstance().getDriveStick();
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
       chassisSpeeds.vxMetersPerSecond = -input.y() * swerveDrive.getMaximumChassisVelocity();
       chassisSpeeds.vyMetersPerSecond = -input.x() * swerveDrive.getMaximumChassisVelocity();
       chassisSpeeds.omegaRadiansPerSecond = -input.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
-      swerveDrive.drive(chassisSpeeds);
+      switch(orientation) {
+        case FIELD_CENTRIC: swerveDrive.driveFieldOriented(chassisSpeeds);
+        case ROBOT_CENTRIC: swerveDrive.drive(chassisSpeeds);
+      }
     });
   }
 

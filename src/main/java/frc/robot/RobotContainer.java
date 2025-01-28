@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -29,7 +30,7 @@ public class RobotContainer {
    */
   public RobotContainer() throws IOException, Exception{
     swerveDriveTrain = new DriveSubsystem();
-    swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDriveFieldCentric());
+    swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
