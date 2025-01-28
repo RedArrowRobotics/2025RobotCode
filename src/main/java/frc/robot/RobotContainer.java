@@ -29,7 +29,7 @@ public class RobotContainer {
    */
   public RobotContainer() throws IOException, Exception{
     swerveDriveTrain = new DriveSubsystem();
-    swerveDriveTrain.setDefaultCommand(swerveDriveTrain.driveFieldCentric());
+    swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDriveFieldCentric());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }

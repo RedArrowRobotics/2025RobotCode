@@ -69,7 +69,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param transform_supplier  Function that returns a translation and rotation
    * @return Drive command.
    */
-  public Command driveFieldCentric() {
+  public Command teleopDriveFieldCentric() {
     return this.run(() -> {
       var input = ControlInputs.getInstance().getDriveStick();
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
@@ -87,7 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param transform_supplier  Function that returns a translation and rotation
    * @return Drive command.
    */
-  public Command driveRobotCentric() {
+  public Command teleopDriveRobotCentric() {
     return this.run(() -> {
       var input = ControlInputs.getInstance().getDriveStick();
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
