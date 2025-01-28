@@ -63,8 +63,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
   
   /**
-   * Command to drive the robot using translative values and heading as angular
-   * velocity.
+   * Command to drive the robot from joystick input using translative values
+   * and heading as angular velocity. Should be used as a default command.
    *
    * @param transform_supplier  Function that returns a translation and rotation
    * @return Drive command.
@@ -81,8 +81,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Command to drive the robot using translative values and heading as angular
-   * velocity.
+   * Command to drive the robot from joystick input using translative values
+   * and heading as angular velocity. Should be used as a default command.
    *
    * @param transform_supplier  Function that returns a translation and rotation
    * @return Drive command.
