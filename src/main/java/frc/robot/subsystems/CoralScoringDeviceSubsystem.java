@@ -49,8 +49,6 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Moves the coral scorer to the correct angle to grab the coral that fell from the chute.
    */
   public Command loadCoralPosition() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
           /* one-time action goes here */
