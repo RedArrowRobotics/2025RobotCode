@@ -39,8 +39,6 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Moves the coral scorer to the correct angle to drop it on the reef.
    */
   public Command placeCoralPosition() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
           /* one-time action goes here */
