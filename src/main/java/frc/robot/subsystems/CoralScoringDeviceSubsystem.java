@@ -19,8 +19,6 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Drops the coral onto the reef.
    */
   public Command dropCoral() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
           /* one-time action goes here */
