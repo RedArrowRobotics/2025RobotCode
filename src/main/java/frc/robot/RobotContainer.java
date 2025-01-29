@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -21,8 +21,8 @@ import frc.robot.subsystems.DriveSubsystem;
  * this project, you must also update the Main.java file in the project.
  */
 public class RobotContainer {
-  private final DriveSubsystem swerveDriveTrain;
   private final ControlInputs controlInputs = new ControlInputs();
+  private final DriveSubsystem swerveDriveTrain;
   private final SensorInputs sensorInputs = new SensorInputs();
   private final SendableChooser<Command> autoChooser;
   private Command autoSelected;
@@ -33,15 +33,15 @@ public class RobotContainer {
    */
   public RobotContainer() throws IOException, Exception{
     swerveDriveTrain = new DriveSubsystem();
-    swerveDriveTrain.setDefaultCommand(swerveDriveTrain.driveFieldCentric(() -> {
-      return new Transform2d(-controlInputs.driveStickY, -controlInputs.driveStickX, Rotation2d.fromRadians(-controlInputs.driveStickZrotation));
-    }));
+    swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
+      () -> controlInputs.getDriveStick(),
+      DriveOrientation.FIELD_CENTRIC
+    ));
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   public void robotPeriodic() {
-    controlInputs.readControls();
     sensorInputs.readSensors();
   }
 
