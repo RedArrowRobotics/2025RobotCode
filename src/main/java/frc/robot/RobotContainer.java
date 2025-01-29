@@ -5,6 +5,8 @@
 package frc.robot;
 
 import java.io.IOException;
+import java.util.Optional;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -47,8 +49,9 @@ public class RobotContainer {
     
   }
 
-  public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+  public Optional<Command> getAutonomousCommand() {
+    // Fetch the selected autonomous command from the dashoard and put it in an Optional
+    return Optional.ofNullable(autoChooser.getSelected());
   }
   
 }
