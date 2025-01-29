@@ -9,8 +9,6 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * It securely grabs the coral that fell from the chute.
    */
   public Command grabCoral() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
           /* one-time action goes here */
