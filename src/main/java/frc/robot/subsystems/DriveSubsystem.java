@@ -36,7 +36,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     LinearVelocity maximumSpeed = MetersPerSecond.of(4.35864);
     File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
-    swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed.magnitude());
+    swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed.in(MetersPerSecond));
     config = RobotConfig.fromGUISettings();
     
     AutoBuilder.configure(
