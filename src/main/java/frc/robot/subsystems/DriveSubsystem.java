@@ -109,6 +109,12 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
+  public Command alignToReefLeft() {
+    return this.run(() -> {
+        
+    });
+  }
+
   @Override
   public void periodic() {
     updatePosition();
