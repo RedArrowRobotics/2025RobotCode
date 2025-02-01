@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.ControlInputs.DriveStickState;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -70,24 +69,41 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
+   * Holds unitless multipliers on linear and angular velocity.
+   */
+  public static record DrivePower(double x,double y,double rotation) {}
+  
+  /**
    * Command to drive the robot from joystick input using translative values
    * and heading as angular velocity. Should be used as a default command.
    *
+   * @param input_power A function that supplies multipliers on linear and angular velocity.
    * @param orientation The type of orientation to use.
    * @return Drive command.
    */
-  public Command teleopDrive(Supplier<DriveStickState> controls, DriveOrientation orientation) {
+  public Command teleopDrive(Supplier<DrivePower> input_power, DriveOrientation orientation) {
     return this.run(() -> {
-      var input = controls.get();
-      ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-      chassisSpeeds.vxMetersPerSecond = -input.y() * swerveDrive.getMaximumChassisVelocity();
-      chassisSpeeds.vyMetersPerSecond = -input.x() * swerveDrive.getMaximumChassisVelocity();
-      chassisSpeeds.omegaRadiansPerSecond = -input.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
-      switch(orientation) {
-        case FIELD_CENTRIC: swerveDrive.driveFieldOriented(chassisSpeeds);
-        case ROBOT_CENTRIC: swerveDrive.drive(chassisSpeeds);
-      }
+      var power = input_power.get();
+      manualDrive(power, orientation);
     });
+  }
+
+  /**
+   * Drive the robot using translative values
+   * and heading as angular velocity.
+   *
+   * @param power Multipliers on linear and angular velocity.
+   * @param orientation The type of orientation to use.
+   */
+  public void manualDrive(DrivePower power, DriveOrientation orientation) {
+    ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+    chassisSpeeds.vxMetersPerSecond = -power.y() * swerveDrive.getMaximumChassisVelocity();
+    chassisSpeeds.vyMetersPerSecond = -power.x() * swerveDrive.getMaximumChassisVelocity();
+    chassisSpeeds.omegaRadiansPerSecond = -power.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
+    switch(orientation) {
+      case FIELD_CENTRIC: swerveDrive.driveFieldOriented(chassisSpeeds);
+      case ROBOT_CENTRIC: swerveDrive.drive(chassisSpeeds);
+    }
   }
 
   @Override
