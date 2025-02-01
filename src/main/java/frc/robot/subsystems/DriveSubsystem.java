@@ -95,7 +95,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param power Multipliers on linear and angular velocity.
    * @param orientation The type of orientation to use.
    */
-  public void manualDrive(DrivePower power, DriveOrientation orientation) {
+  private void manualDrive(DrivePower power, DriveOrientation orientation) {
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
     chassisSpeeds.vxMetersPerSecond = -power.y() * swerveDrive.getMaximumChassisVelocity();
     chassisSpeeds.vyMetersPerSecond = -power.x() * swerveDrive.getMaximumChassisVelocity();
