@@ -1,14 +1,17 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class ControlInputs {
     // Joysticks
-    private final XboxController driveStick = new XboxController(0);
-    private final Joystick componentsBoardLeft = new Joystick(1);
-    private final Joystick componentsBoardRight = new Joystick(2);
+    private final CommandXboxController driveStick = new CommandXboxController(0);
+    private final CommandJoystick componentsBoardLeft = new CommandJoystick(1);
+    private final CommandJoystick componentsBoardRight = new CommandJoystick(2);
 
     /**
      * Holds unitless multipliers on linear and angular velocity derived from joystick input.
@@ -31,5 +34,9 @@ public class ControlInputs {
     // For later
     public final void setRumble(double value) {
         driveStick.setRumble(RumbleType.kBothRumble, value);
+    }
+
+    public class Triggers {
+        public final Trigger driveStickA = driveStick.a();
     }
 }

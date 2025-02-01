@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.AlignToReef;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 
@@ -22,6 +23,7 @@ import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
  */
 public class RobotContainer {
   private final ControlInputs controlInputs = new ControlInputs();
+  private final ControlInputs.Triggers controlTriggers = controlInputs.new Triggers();
   private final DriveSubsystem swerveDriveTrain;
   private final SensorInputs sensorInputs = new SensorInputs();
   private final SendableChooser<Command> autoChooser;
@@ -37,6 +39,8 @@ public class RobotContainer {
       () -> controlInputs.getDriveStick(),
       DriveOrientation.FIELD_CENTRIC
     ));
+    var commands = new AlignToReef(swerveDriveTrain);
+    controlTriggers.driveStickA.whileTrue(commands.alignToReef());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
