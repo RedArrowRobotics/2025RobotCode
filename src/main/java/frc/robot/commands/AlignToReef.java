@@ -22,18 +22,17 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.subsystems.LimelightHelpers.RawFiducial;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class AlignToReef {
     private final DriveSubsystem driveSubsystem;
-    private final Optional<Alliance> alliance;
     Pose2d startPose = Pose2d.kZero;
     protected Distance translation = Meters.of(0);
 
     public AlignToReef(DriveSubsystem subsystem) {
         driveSubsystem = subsystem;
-        alliance = DriverStation.getAlliance();
     }
 
     public Command alignToReef() {
@@ -45,8 +44,10 @@ public class AlignToReef {
           Optional<Pose2d> targetPose = Optional.empty();
           if(LimelightHelpers.getTV("limelight")) {
             var fiducials = LimelightHelpers.getRawFiducials("limelight");
-            var ids = Constants.redReefATags;            
-            if(alliance.orElse(Alliance.Red) == Alliance.Blue) {
+            List<Integer> ids;
+            if(DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red) {
+              ids = Constants.redReefATags;
+            } else {
               ids = Constants.blueReefATags;
             }
             Optional<RawFiducial> closestFiducial = Optional.empty();
