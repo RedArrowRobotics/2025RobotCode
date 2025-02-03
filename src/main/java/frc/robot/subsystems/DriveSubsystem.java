@@ -71,11 +71,15 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Holds unitless multipliers on linear and angular velocity.
    */
-  public static record DrivePower(double x,double y,double rotation) {}
+  public static record DrivePower(double x,double y,double rotation) {
+    public DrivePower toSwerve() {
+      return new DrivePower(-this.y(), -this.x(), -this.rotation());
+    }
+  }
   
   /**
-   * Command to drive the robot from joystick input using translative values
-   * and heading as angular velocity. Should be used as a default command.
+   * Command to drive the robot  using translative values and heading as angular velocity.
+   * Should be used as a default command.
    *
    * @param input_power A function that supplies multipliers on linear and angular velocity.
    * @param orientation The type of orientation to use.
@@ -89,17 +93,16 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Drive the robot using translative values
-   * and heading as angular velocity.
+   * Drive the robot using translative values and heading as angular velocity.
    *
    * @param power Multipliers on linear and angular velocity.
    * @param orientation The type of orientation to use.
    */
   private void manualDrive(DrivePower power, DriveOrientation orientation) {
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-    chassisSpeeds.vxMetersPerSecond = -power.y() * swerveDrive.getMaximumChassisVelocity();
-    chassisSpeeds.vyMetersPerSecond = -power.x() * swerveDrive.getMaximumChassisVelocity();
-    chassisSpeeds.omegaRadiansPerSecond = -power.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
+    chassisSpeeds.vxMetersPerSecond = power.x() * swerveDrive.getMaximumChassisVelocity();
+    chassisSpeeds.vyMetersPerSecond = power.y() * swerveDrive.getMaximumChassisVelocity();
+    chassisSpeeds.omegaRadiansPerSecond = power.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
     switch(orientation) {
       case FIELD_CENTRIC: swerveDrive.driveFieldOriented(chassisSpeeds);
       case ROBOT_CENTRIC: swerveDrive.drive(chassisSpeeds);
