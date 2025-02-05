@@ -1,7 +1,12 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -26,9 +31,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+
 public class AlignToReef {
     private final DriveSubsystem driveSubsystem;
-    Pose2d startPose = Pose2d.kZero;
     protected Distance translation = Meters.of(0);
 
     public AlignToReef(DriveSubsystem subsystem) {
@@ -65,7 +75,30 @@ public class AlignToReef {
               )));
             }
           }
-          inner = targetPose.map((pose) -> driveSubsystem.pidDrive(pose)).orElse(new InstantCommand());
+          if (targetPose.isEmpty()) {
+            inner = new InstantCommand();
+            return;
+          }
+          List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+            driveSubsystem.getPose(),
+            targetPose.get()
+          );
+          PathConstraints constraints = new PathConstraints(
+            driveSubsystem.getMaximumChassisVelocity(),
+            MetersPerSecondPerSecond.of(3),
+            driveSubsystem.getMaximumChassisAngularVelocity(),
+            DegreesPerSecondPerSecond.of(720),
+            Volts.of(12)
+          );
+          PathPlannerPath path = new PathPlannerPath(
+            waypoints,
+            constraints,
+            null,
+            new GoalEndState(MetersPerSecond.of(0), Rotation2d.fromDegrees(0))
+          );
+          path.preventFlipping = true;
+          inner = AutoBuilder.followPath(path);
+          //inner = targetPose.map((pose) -> driveSubsystem.pidDrive(pose)).orElse(new InstantCommand());
           inner.initialize();
         }
         @Override
