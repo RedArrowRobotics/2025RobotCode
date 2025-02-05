@@ -1,9 +1,14 @@
 package frc.robot.subsystems;
 
+
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
+  SparkMax intakeWheels = new SparkMax(13, MotorType.kBrushed);
 
   /**
    * It securely grabs the coral that fell from the chute.
@@ -11,7 +16,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public Command grabCoral() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          intakeWheels.set(1);
         });
   }
   
@@ -21,7 +26,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public Command dropCoral() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          intakeWheels.set(-1);
         });
   }
   
@@ -31,7 +36,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public Command stopScorerSpin() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          intakeWheels.set(0);
         });
   }
   
