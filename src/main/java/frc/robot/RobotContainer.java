@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.CoralScoringDeviceSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 
@@ -22,7 +23,9 @@ import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
  */
 public class RobotContainer {
   private final ControlInputs controlInputs = new ControlInputs();
+  private final ControlInputs.Triggers controlTriggers = controlInputs.new Triggers();
   private final DriveSubsystem swerveDriveTrain;
+  private final CoralScoringDeviceSubsystem coralScoringDevice;
   private final SensorInputs sensorInputs = new SensorInputs();
   private final SendableChooser<Command> autoChooser;
   private Command autoSelected;
@@ -37,8 +40,9 @@ public class RobotContainer {
       () -> controlInputs.getDriveStick().toSwerve(),
       DriveOrientation.FIELD_CENTRIC
     ));
-    controlTriggers.driveStickB.whileTrue(commands.grabCoral());
-    controlTriggers.driveStickX.whileTrue(commands.dropCoral());
+    coralScoringDevice = new CoralScoringDeviceSubsystem();
+    controlTriggers.driveStickB.whileTrue(coralScoringDevice.grabCoral());
+    controlTriggers.driveStickX.whileTrue(coralScoringDevice.dropCoral());
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
