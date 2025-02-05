@@ -9,25 +9,35 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
   SparkMax intakeWheels = new SparkMax(13, MotorType.kBrushed);
+  SparkMax tilter = new SparkMax(14, MotorType.kBrushed); //14 is a placeholder number
 
   /**
    * It securely grabs the coral that fell from the chute.
+   * Sucks the coral down with wheels to hold it in place.
    */
   public Command grabCoral() {
-    return runOnce(
-        () -> {
-          intakeWheels.set(1);
-        });
+    return Commands.startEnd(
+      () -> {
+        intakeWheels.set(1);
+      },
+      () -> {
+        intakeWheels.set(0);
+      }
+    );
   }
   
   /**
    * Drops the coral onto the reef.
    */
   public Command dropCoral() {
-    return runOnce(
-        () -> {
-          intakeWheels.set(-1);
-        });
+    return Commands.startEnd(
+      () -> {
+        intakeWheels.set(-1);
+      },
+      () -> {
+        intakeWheels.set(0);
+      }
+    );
   }
   
   /**

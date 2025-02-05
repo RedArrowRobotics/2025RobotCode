@@ -37,6 +37,9 @@ public class RobotContainer {
       () -> controlInputs.getDriveStick().toSwerve(),
       DriveOrientation.FIELD_CENTRIC
     ));
+    controlTriggers.driveStickB.whileTrue(commands.grabCoral());
+    controlTriggers.driveStickX.whileTrue(commands.dropCoral());
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
