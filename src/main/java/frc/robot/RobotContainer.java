@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,6 +41,10 @@ public class RobotContainer {
       DriveOrientation.FIELD_CENTRIC
     ));
     var commands = new AlignToReef(swerveDriveTrain);
+
+    //PathPlanner Commands
+     NamedCommands.registerCommand("Align to Reef", commands.alignToReef());
+    
     controlTriggers.driveStickA.whileTrue(commands.alignToReef());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
