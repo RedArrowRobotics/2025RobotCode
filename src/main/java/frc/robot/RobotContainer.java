@@ -34,7 +34,7 @@ public class RobotContainer {
   public RobotContainer() throws IOException, Exception{
     swerveDriveTrain = new DriveSubsystem();
     swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
-      () -> controlInputs.getDriveStick(),
+      () -> controlInputs.getDriveStick().toSwerve(),
       DriveOrientation.FIELD_CENTRIC
     ));
     autoChooser = AutoBuilder.buildAutoChooser();
