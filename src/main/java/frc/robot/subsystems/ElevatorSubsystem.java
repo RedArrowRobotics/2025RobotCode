@@ -1,9 +1,15 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
+SparkMax elevatorMotor = new SparkMax(13, MotorType.kBrushed);
+SparkMax dealgaeFlipper = new SparkMax(13, MotorType.kBrushed);
+SparkMax dealgaeWheels = new SparkMax(13, MotorType.kBrushed);
 
   /**
    * Moves the elevator to the home position which is the lowest position.
@@ -71,7 +77,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command dealgaeStartSpin() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          dealgaeWheels.set(1);
         });
   }
   
@@ -81,7 +87,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command dealgaeStopSpin() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          dealgaeWheels.set(0);
         });
   }
 }
