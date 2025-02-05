@@ -115,6 +115,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
+  public void brake() {
+    manualDrive(new DrivePower(0, 0, 0), DriveOrientation.ROBOT_CENTRIC);
+  }
+
   public Command pidDrive(Pose2d target) {
     var command = new Command() {    
       private ProfiledPIDController feedback_x;

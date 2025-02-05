@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
+import frc.robot.subsystems.DriveSubsystem.DrivePower;
 import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.subsystems.LimelightHelpers.RawFiducial;
 
@@ -104,6 +106,10 @@ public class AlignToReef {
         @Override
         public void execute() {
           inner.execute();
+        }
+        @Override
+        public void end(boolean interrupted) {
+          driveSubsystem.brake();
         }
         @Override
         public boolean isFinished() {
