@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -80,13 +81,17 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Checks to see if the coral is correctly loaded on the coral scorer.
    */
   public boolean isCoralLoaded() {
-    return coralSensor.get();
+    Boolean coralLoaded = coralSensor.get();
+    SmartDashboard.putBoolean("Coral Loaded", coralLoaded);
+    return coralLoaded;
   }
 
    /**
    * Checks to see if the coral scorer is aligned with the reef.
    */
   public boolean isCoralOverReef() {
-    return reefSensor.get();
+    Boolean overReef = coralSensor.get();
+    SmartDashboard.putBoolean("Over Reef", overReef);
+    return overReef;
   }
 }
