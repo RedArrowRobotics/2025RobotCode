@@ -63,8 +63,8 @@ public class AlignToReef {
             if (closestFiducial.isPresent()) {
               Optional<Pose3d> targetAprilTagPose = Constants.fieldLayout.getTagPose(closestFiducial.get().id);
               targetPose = targetAprilTagPose.map((target) -> target.toPose2d().transformBy(new Transform2d(
-                new Translation2d(translation, Inches.of(-35.0/2)),
-                new Rotation2d(Degrees.of(180))
+                new Translation2d(Inches.of(-35.0/2), translation),
+                new Rotation2d(Degrees.of(0))
               )));
             }
           }
