@@ -7,10 +7,12 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
-  SparkMax intakeWheels = new SparkMax(13, MotorType.kBrushed);
-  SparkMax scorerTilter = new SparkMax(14, MotorType.kBrushed); //14 is a placeholder number
+  SparkMax intakeWheels = new SparkMax(Constants.intakeWheelsID, MotorType.kBrushed);
+  SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterID, MotorType.kBrushed);
+
 
   /**
    * It securely grabs the coral that fell from the chute.
