@@ -133,8 +133,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
   
-  public Pose2d getPose()
-  {
+  public Pose2d getPose() {
     return swerveDrive.getPose();
   }
 

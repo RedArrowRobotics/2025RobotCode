@@ -14,6 +14,7 @@ import java.util.Optional;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.hal.MatchInfoData;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -61,8 +62,11 @@ public class RobotContainer {
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
-    public void disabledPeriodic() {
-        // Reset the pose while disabled. Blue alliance starts reversed.
+    /**
+     * Resets the robot's pose to the alliance default.
+     * Blue alliance robots start facing at 180° (towards the blue alliance wall).
+     */
+    public void resetPoseToDefault() {
         swerveDriveTrain.resetPose(switch (DriverStation.getAlliance().orElse(Alliance.Red)) {
             case Blue -> new Pose2d(0.0,0.0,Rotation2d.k180deg);
             case Red -> new Pose2d(0.0,0.0,Rotation2d.kZero);
