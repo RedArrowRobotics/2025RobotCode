@@ -9,15 +9,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
-import frc.robot.SensorInputs;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
   SparkMax intakeWheels = new SparkMax(Constants.intakeWheelsID, MotorType.kBrushed);
   SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterID, MotorType.kBrushed);
   private DigitalInput coralSensor = new DigitalInput(Constants.coralSensorChannel);
   private DigitalInput reefSensor = new DigitalInput(Constants.reefSensorChannel);
-
+  public final Trigger reefTrigger = new Trigger(reefSensor::get);
   /**
    * It securely grabs the coral that fell from the chute.
    * Sucks the coral down with wheels to hold it in place.
@@ -44,7 +44,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
       () -> {
         intakeWheels.set(0);
       }
-    );
+    ).withTimeout(3);
   }
   
   /**
