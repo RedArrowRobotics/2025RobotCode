@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -54,13 +55,15 @@ public class AlignToReef {
                 .flatMap((fiducial) -> Constants.fieldLayout.getTagPose(fiducial.id))
                 .map((target) -> target.toPose2d().transformBy(new Transform2d(
                     new Translation2d(Inches.of(-35.0 / 2), translation),
-                    new Rotation2d(Degrees.of(0))
+                    new Rotation2d(Degrees.of(180))
                 )))
                 // Create a PathPlanner command from the target pose
                 .map((targetPose) -> {
+                    var currentPose = driveSubsystem.getPose();
+                    var targetRotation = targetPose.getRotation();
                     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-                        driveSubsystem.getPose(),
-                        targetPose
+                        new Pose2d(currentPose.getTranslation(),Rotation2d.kZero),
+                        new Pose2d(targetPose.getTranslation(),targetPose.minus(currentPose).getTranslation().getAngle())
                     );
                     PathConstraints constraints = new PathConstraints(
                         driveSubsystem.getMaximumChassisVelocity(),
@@ -72,7 +75,7 @@ public class AlignToReef {
                         waypoints,
                         constraints,
                         null,
-                        new GoalEndState(MetersPerSecond.of(0), targetPose.getRotation()));
+                        new GoalEndState(MetersPerSecond.of(0), targetRotation));
                     path.preventFlipping = true;
                     return AutoBuilder.followPath(path);
                 })
