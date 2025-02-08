@@ -61,6 +61,8 @@ public class AlignToReef {
                 .map((targetPose) -> {
                     var currentPose = driveSubsystem.getPose();
                     var targetRotation = targetPose.getRotation();
+                    // Create waypoints. As per PathPlanner documentation, pose rotation is
+                    // the direction of travel, not the rotation of the robot
                     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
                         new Pose2d(currentPose.getTranslation(),Rotation2d.kZero),
                         new Pose2d(targetPose.getTranslation(),targetPose.minus(currentPose).getTranslation().getAngle())
