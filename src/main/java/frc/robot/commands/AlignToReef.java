@@ -76,6 +76,8 @@ public class AlignToReef {
             driveSubsystem.getPose(),
             targetPose.get()
           );
+          var endRotation = targetPose.get().getRotation();
+          System.out.println(waypoints);
           PathConstraints constraints = new PathConstraints(
             driveSubsystem.getMaximumChassisVelocity(),
             MetersPerSecondPerSecond.of(3),
@@ -87,7 +89,7 @@ public class AlignToReef {
             waypoints,
             constraints,
             null,
-            new GoalEndState(MetersPerSecond.of(0), Rotation2d.fromDegrees(0))
+            new GoalEndState(MetersPerSecond.of(0), endRotation)
           );
           path.preventFlipping = true;
           inner = AutoBuilder.followPath(path);
