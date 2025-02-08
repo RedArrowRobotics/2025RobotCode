@@ -18,4 +18,6 @@ public class Constants {
 
     public static int coralSensorChannel = 1;
     public static int reefSensorChannel = 2;
+
+    public static double coralDropTimeoutInSeconds = 3;
 }
