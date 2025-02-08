@@ -90,7 +90,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Checks to see if the coral scorer is aligned with the reef.
    */
   public boolean isCoralOverReef() {
-    Boolean overReef = coralSensor.get();
+    Boolean overReef = reefSensor.get();
     SmartDashboard.putBoolean("Over Reef", overReef);
     return overReef;
   }
