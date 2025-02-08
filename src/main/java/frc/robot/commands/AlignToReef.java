@@ -49,7 +49,7 @@ public class AlignToReef {
                 // Only track relevant fiducials
                 .filter((fiducial) -> ids.contains(fiducial.id))
                 // Sort fiducials by distance, then get the closest one
-                .sorted((fiducialA,fiducialB) -> Double.compare(fiducialA.distToRobot, fiducialB.distToCamera))
+                .sorted((fiducialA,fiducialB) -> Double.compare(fiducialA.distToRobot, fiducialB.distToRobot))
                 .findFirst()
                 // Get the pose corresponding to the target fiducial
                 .flatMap((fiducial) -> Constants.fieldLayout.getTagPose(fiducial.id))
