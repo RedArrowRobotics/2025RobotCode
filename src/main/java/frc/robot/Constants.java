@@ -15,4 +15,7 @@ public class Constants {
 
     public static int intakeWheelsID = 13;
     public static int coralScorerTilterID = 14;
+
+    public static int coralSensorChannel = 1;
+    public static int reefSensorChannel = 2;
 }

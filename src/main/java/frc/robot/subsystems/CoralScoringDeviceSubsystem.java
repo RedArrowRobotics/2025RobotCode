@@ -4,15 +4,18 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.SensorInputs;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
   SparkMax intakeWheels = new SparkMax(Constants.intakeWheelsID, MotorType.kBrushed);
   SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterID, MotorType.kBrushed);
-
+  private DigitalInput coralSensor = new DigitalInput(Constants.coralSensorChannel);
+  private DigitalInput reefSensor = new DigitalInput(Constants.reefSensorChannel);
 
   /**
    * It securely grabs the coral that fell from the chute.
@@ -26,7 +29,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
       () -> {
         intakeWheels.set(0);
       }
-    );
+    ).until(() -> isCoralLoaded());
   }
   
   /**
@@ -77,15 +80,13 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Checks to see if the coral is correctly loaded on the coral scorer.
    */
   public boolean isCoralLoaded() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+    return coralSensor.get();
   }
 
    /**
    * Checks to see if the coral scorer is aligned with the reef.
    */
   public boolean isCoralOverReef() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+    return reefSensor.get();
   }
 }
