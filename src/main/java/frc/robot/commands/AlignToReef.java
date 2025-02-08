@@ -24,6 +24,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.subsystems.LimelightHelpers.RawFiducial;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -44,51 +45,45 @@ public class AlignToReef {
 
     public Command alignToReef() {
         return Commands.defer(() -> {
-            if (LimelightHelpers.getTV("limelight")) {
-                var fiducials = LimelightHelpers.getRawFiducials("limelight");
-                List<Integer> ids = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
-                    case Blue -> Constants.blueReefATags;
-                    case Red -> Constants.redReefATags;
-                    default -> List.of();
-                };
-                Optional<RawFiducial> closestFiducial = Optional.empty();
-                for (var fiducial : fiducials) {
-                    if (ids.contains(fiducial.id) && (closestFiducial
-                            .map((closest -> fiducial.distToRobot < closest.distToRobot)).orElse(true))) {
-                        closestFiducial = Optional.of(fiducial);
-                    }
-                }
-                return closestFiducial.flatMap((fiducial) -> Constants.fieldLayout.getTagPose(fiducial.id))
-                    // Transform the AprilTag pose into the target pose
-                    .map((target) -> target.toPose2d().transformBy(new Transform2d(
-                        new Translation2d(Inches.of(-35.0 / 2), translation),
-                        new Rotation2d(Degrees.of(0))
-                    )))
-                    // Create a PathPlanner Command from the target pose
-                    .map((targetPose) -> {
-                        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-                            driveSubsystem.getPose(),
-                            targetPose
-                        );
-                        PathConstraints constraints = new PathConstraints(
-                            driveSubsystem.getMaximumChassisVelocity(),
-                            MetersPerSecondPerSecond.of(3),
-                            driveSubsystem.getMaximumChassisAngularVelocity(),
-                            DegreesPerSecondPerSecond.of(720),
-                            Volts.of(12));
-                        PathPlannerPath path = new PathPlannerPath(
-                            waypoints,
-                            constraints,
-                            null,
-                            new GoalEndState(MetersPerSecond.of(0), targetPose.getRotation()));
-                        path.preventFlipping = true;
-                        return AutoBuilder.followPath(path);
-                    })
-                    // If we don't have a target, return a no-op Command
-                    .orElse(new InstantCommand());
-            } else {
-                return new InstantCommand();
-            }
+            List<Integer> ids = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+                case Blue -> Constants.blueReefATags;
+                case Red -> Constants.redReefATags;
+                default -> List.of();
+            };
+            return Arrays.stream(LimelightHelpers.getRawFiducials("limelight"))
+                // Only track relevant fiducials
+                .filter((fiducial) -> ids.contains(fiducial.id))
+                // Sort fiducials by distance, then get the closest one
+                .sorted((fiducialA,fiducialB) -> Double.compare(fiducialA.distToRobot, fiducialB.distToCamera))
+                .findFirst()
+                // Get the pose corresponding to the target fiducial
+                .flatMap((fiducial) -> Constants.fieldLayout.getTagPose(fiducial.id))
+                .map((target) -> target.toPose2d().transformBy(new Transform2d(
+                    new Translation2d(Inches.of(-35.0 / 2), translation),
+                    new Rotation2d(Degrees.of(0))
+                )))
+                // Create a PathPlanner Command from the target pose
+                .map((targetPose) -> {
+                    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+                        driveSubsystem.getPose(),
+                        targetPose
+                    );
+                    PathConstraints constraints = new PathConstraints(
+                        driveSubsystem.getMaximumChassisVelocity(),
+                        MetersPerSecondPerSecond.of(3),
+                        driveSubsystem.getMaximumChassisAngularVelocity(),
+                        DegreesPerSecondPerSecond.of(720),
+                        Volts.of(12));
+                    PathPlannerPath path = new PathPlannerPath(
+                        waypoints,
+                        constraints,
+                        null,
+                        new GoalEndState(MetersPerSecond.of(0), targetPose.getRotation()));
+                    path.preventFlipping = true;
+                    return AutoBuilder.followPath(path);
+                })
+                // If we don't have a target, return a no-op Command
+                .orElse(new InstantCommand());
         }, Set.of(driveSubsystem));
     }
 }
