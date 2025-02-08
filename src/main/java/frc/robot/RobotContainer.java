@@ -22,6 +22,7 @@ import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
  */
 public class RobotContainer {
   private final ControlInputs controlInputs = new ControlInputs();
+  private final ControlInputs.Triggers controlTriggers = controlInputs.new Triggers();
   private final DriveSubsystem swerveDriveTrain;
   private final SensorInputs sensorInputs = new SensorInputs();
   private final SendableChooser<Command> autoChooser;
