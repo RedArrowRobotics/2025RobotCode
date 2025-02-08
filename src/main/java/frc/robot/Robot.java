@@ -6,7 +6,9 @@ package frc.robot;
 
 import java.util.Optional;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -77,6 +79,9 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     // If we were running an autonomous command, cancel it when teleop starts.
     autonomousCommand.ifPresent(Command::cancel);
+    if (DriverStation.getMatchType() == MatchType.None) {
+      robotContainer.resetPoseToDefault();
+    }
   }
 
   /** This function is called periodically during operator control. */
