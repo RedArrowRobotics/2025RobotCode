@@ -23,7 +23,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Sucks the coral down with wheels to hold it in place.
    */
   public Command grabCoral() {
-    return Commands.startEnd(
+    return startEnd(
       () -> {
         intakeWheels.set(1);
       },
@@ -37,7 +37,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Drops the coral onto the reef.
    */
   public Command dropCoral() {
-    return Commands.startEnd(
+    return startEnd(
       () -> {
         intakeWheels.set(-1);
       },
