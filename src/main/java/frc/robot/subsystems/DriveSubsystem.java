@@ -98,6 +98,12 @@ public class DriveSubsystem extends SubsystemBase {
     });
   }
 
+  public Command brake() {
+    return this.runOnce(() -> {
+      manualDrive(new DrivePower(0, 0, 0), DriveOrientation.ROBOT_CENTRIC);
+    });
+  }
+
   /**
    * Drive the robot using translative values and heading as angular velocity.
    *
@@ -113,43 +119,6 @@ public class DriveSubsystem extends SubsystemBase {
       case FIELD_CENTRIC: swerveDrive.driveFieldOriented(chassisSpeeds);
       case ROBOT_CENTRIC: swerveDrive.drive(chassisSpeeds);
     }
-  }
-
-  public void brake() {
-    manualDrive(new DrivePower(0, 0, 0), DriveOrientation.ROBOT_CENTRIC);
-  }
-
-  public Command pidDrive(Pose2d target) {
-    var command = new Command() {    
-      private ProfiledPIDController feedback_x;
-      private ProfiledPIDController feedback_y;
-      private ProfiledPIDController feedback_theta;
-
-      @Override
-      public void initialize() {
-        feedback_x = new ProfiledPIDController(0.1, 0, 0, new Constraints(1.0,0.1));
-        feedback_y = new ProfiledPIDController(0.1, 0, 0, new Constraints(1.0,0.1));
-        feedback_theta = new ProfiledPIDController(0.1, 0, 0, new Constraints(1.0,0.1));
-      }
-      @Override
-      public void execute() {        
-        // Get velocity multipliers from PID controller
-        var vx = feedback_x.calculate(getPose().getX(),target.getX());
-        var vy = feedback_y.calculate(getPose().getY(),target.getY());
-        var vtheta = feedback_theta.calculate(getPose().getRotation().getRadians(),target.getRotation().getRadians());
-        // Drive using calculated velocity
-        manualDrive(new DrivePower(vx, vy, vtheta), DriveOrientation.ROBOT_CENTRIC);
-      }
-      @Override
-      public boolean isFinished() {
-        var current = getPose();
-        return current.getMeasureX().isNear(target.getMeasureX(), Inches.of(0.5))
-          && current.getMeasureY().isNear(target.getMeasureY(), Inches.of(0.5))
-          && current.getRotation().getMeasure().isNear(target.getRotation().getMeasure(), Degrees.of(5));
-      }
-    };
-    command.addRequirements(this);
-    return command;
   }
 
   @Override
