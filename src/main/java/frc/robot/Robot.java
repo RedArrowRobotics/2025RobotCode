@@ -79,6 +79,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     // If we were running an autonomous command, cancel it when teleop starts.
     autonomousCommand.ifPresent(Command::cancel);
+    // If we're not running a real match, reset the robot's pose.
     if (DriverStation.getMatchType() == MatchType.None) {
       robotContainer.resetPoseToDefault();
     }
