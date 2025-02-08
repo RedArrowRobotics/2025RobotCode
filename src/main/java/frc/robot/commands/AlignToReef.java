@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
@@ -8,8 +7,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,11 +19,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightHelpers;
-import frc.robot.subsystems.LimelightHelpers.RawFiducial;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -37,13 +32,12 @@ import com.pathplanner.lib.path.Waypoint;
 
 public class AlignToReef {
     private final DriveSubsystem driveSubsystem;
-    private final Distance translation = Meters.of(0);
 
     public AlignToReef(DriveSubsystem subsystem) {
         driveSubsystem = subsystem;
     }
 
-    public Command alignToReef() {
+    public Command alignToReef(Distance translation) {
         return Commands.defer(() -> {
             List<Integer> ids = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
                 case Blue -> Constants.blueReefATags;
@@ -62,7 +56,7 @@ public class AlignToReef {
                     new Translation2d(Inches.of(-35.0 / 2), translation),
                     new Rotation2d(Degrees.of(0))
                 )))
-                // Create a PathPlanner Command from the target pose
+                // Create a PathPlanner command from the target pose
                 .map((targetPose) -> {
                     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
                         driveSubsystem.getPose(),
@@ -82,7 +76,7 @@ public class AlignToReef {
                     path.preventFlipping = true;
                     return AutoBuilder.followPath(path);
                 })
-                // If we don't have a target, return a no-op Command
+                // If we don't have a target, return a no-op command
                 .orElse(new InstantCommand());
         }, Set.of(driveSubsystem));
     }

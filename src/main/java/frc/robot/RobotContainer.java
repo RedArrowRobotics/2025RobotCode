@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -43,9 +45,9 @@ public class RobotContainer {
     var commands = new AlignToReef(swerveDriveTrain);
 
     //PathPlanner Commands
-     NamedCommands.registerCommand("Align to Reef", commands.alignToReef());
+     NamedCommands.registerCommand("Align to Reef", commands.alignToReef(Meters.of(0)));
     
-    controlTriggers.driveStickA.whileTrue(commands.alignToReef());
+    controlTriggers.driveStickA.whileTrue(commands.alignToReef(Meters.of(0)));
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
