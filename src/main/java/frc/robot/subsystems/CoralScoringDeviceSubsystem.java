@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
   SparkMax intakeWheels = new SparkMax(13, MotorType.kBrushed);
-  SparkMax tilter = new SparkMax(14, MotorType.kBrushed); //14 is a placeholder number
+  SparkMax scorerTilter = new SparkMax(14, MotorType.kBrushed); //14 is a placeholder number
 
   /**
    * It securely grabs the coral that fell from the chute.
