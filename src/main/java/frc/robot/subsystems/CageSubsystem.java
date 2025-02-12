@@ -7,15 +7,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CageSubsystem extends SubsystemBase {
-SparkMax cageGrabber = new SparkMax(13, MotorType.kBrushed);
-SparkMax cageClimber = new SparkMax(13, MotorType.kBrushed);
+SparkMax cageGrabber = new SparkMax(Constants.cageGrabberMotorId, MotorType.kBrushed);
+SparkMax cageClimber = new SparkMax(Constants.cageClimberMotorId, MotorType.kBrushed);
 /**
  *  Rotates a bar to hold the cage in place for climbing.
  */
 public Command holdCage() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          cageGrabber.setPosition(1);
         });
   }
 
@@ -25,7 +25,7 @@ public Command holdCage() {
 public Command releaseCage() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          cageGrabber.setPosition(0);
         });
   }
 
@@ -33,21 +33,29 @@ public Command releaseCage() {
  *  Pushes down on the cage to raise the robot.
  */
   public Command ascend() {
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+    return startEnd(
+      () -> {
+        cageClimber.set(1);
+      },
+      () -> {
+        cageClimber.set(0);
+      }
+    )
   }
 
   /**
  *  Retracts the climber to lower the robot.
  */
 public Command descend() {
-  return runOnce(
+  return startEnd(
       () -> {
-        /* one-time action goes here */
-      });
-}
+        cageClimber.set(-1);
+      },
+      () -> {
+        cageClimber.set(0);
+      }
+    )
+  }
 
     /**
      *  Checks if the cage is in the holding position.

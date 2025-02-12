@@ -38,6 +38,14 @@ public class RobotContainer {
       () -> controlInputs.getDriveStick().toSwerve(),
       DriveOrientation.FIELD_CENTRIC
     ));
+
+    coralScoringDevice = new CoralScoringDeviceSubsystem();
+    cage = new CageSubsystem();
+    controlTriggers.driveStickB.toggleOnTrue(coralScoringDevice.grabCoral());
+    coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
+    controlTriggers.driveStickY.toggleOnTrue(cage.ascend());
+    controlTriggers.driveStickX.toggleOnTrue(cage.descend());
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
