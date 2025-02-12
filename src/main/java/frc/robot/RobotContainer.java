@@ -50,6 +50,7 @@ public class RobotContainer {
 
   public void robotPeriodic() {
     sensorInputs.readSensors();
+    SmartDashboard.putData(coralScoringDevice);
   }
 
   public void teleopPeriodic() {

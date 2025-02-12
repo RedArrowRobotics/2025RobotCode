@@ -94,9 +94,8 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    Boolean coralLoaded = coralSensor.get();
-    builder.addBooleanProperty("Coral Loaded", () -> coralLoaded, null);
-    Boolean overReef = reefSensor.get();
-    builder.addBooleanProperty("Over Reef", () -> overReef, null);
+    builder.setSmartDashboardType(getName());
+    builder.addBooleanProperty("Coral Loaded", () -> isCoralLoaded(), null);
+    builder.addBooleanProperty("Over Reef", () -> isCoralOverReef(), null);
   }
 }
