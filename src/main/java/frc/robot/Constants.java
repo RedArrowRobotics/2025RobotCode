@@ -13,4 +13,11 @@ public class Constants {
     public static List<Integer> blueReefATags = List.of(17,18,19,20,21,22);
     public static List<Integer> redReefATags = List.of(6,7,8,9,10,11);
 
+    public static int intakeWheelsMotorID = 13;
+    public static int coralScorerTilterMotorID = 14;
+
+    public static int coralSensorChannel = 1;
+    public static int reefSensorChannel = 2;
+
+    public static double coralDropTimeoutInSeconds = 3;
 }

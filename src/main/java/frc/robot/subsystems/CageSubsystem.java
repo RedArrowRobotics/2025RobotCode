@@ -1,10 +1,14 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CageSubsystem extends SubsystemBase {
-
+SparkMax cageGrabber = new SparkMax(13, MotorType.kBrushed);
+SparkMax cageClimber = new SparkMax(14, MotorType.kBrushed);
 /**
  *  Rotates a bar to hold the cage in place for climbing.
  */
