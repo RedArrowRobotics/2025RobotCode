@@ -31,11 +31,15 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
-public class AlignToReef {
+public class AlignToAprilTag {
     private final DriveSubsystem driveSubsystem;
 
-    public AlignToReef(DriveSubsystem subsystem) {
+    public AlignToAprilTag(DriveSubsystem subsystem) {
         driveSubsystem = subsystem;
+    }
+
+    public alignToSource() {
+        
     }
 
     public Command alignToReef(Distance translation) {
