@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
-  SparkMax intakeWheels = new SparkMax(Constants.intakeWheelsID, MotorType.kBrushed);
-  SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterID, MotorType.kBrushed);
+  SparkMax intakeWheels = new SparkMax(Constants.intakeWheelsMotorID, MotorType.kBrushed);
+  SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterMotorID, MotorType.kBrushed);
   private DigitalInput coralSensor = new DigitalInput(Constants.coralSensorChannel);
   private DigitalInput reefSensor = new DigitalInput(Constants.reefSensorChannel);
   public final Trigger reefTrigger = new Trigger(reefSensor::get);
