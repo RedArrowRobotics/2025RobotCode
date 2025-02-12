@@ -32,5 +32,6 @@ public class ControlInputs {
 
     public class Triggers {
         public final Trigger driveStickA = driveStick.a();
+        public final Trigger driveStickB = driveStick.b();
     }
 }

@@ -4,6 +4,7 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -81,17 +82,21 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Checks to see if the coral is correctly loaded on the coral scorer.
    */
   public boolean isCoralLoaded() {
-    Boolean coralLoaded = coralSensor.get();
-    SmartDashboard.putBoolean("Coral Loaded", coralLoaded);
-    return coralLoaded;
+    return coralSensor.get();
   }
 
    /**
    * Checks to see if the coral scorer is aligned with the reef.
    */
   public boolean isCoralOverReef() {
+    return reefSensor.get();
+  }
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    Boolean coralLoaded = coralSensor.get();
+    builder.addBooleanProperty("Coral Loaded", () -> coralLoaded, null);
     Boolean overReef = reefSensor.get();
-    SmartDashboard.putBoolean("Over Reef", overReef);
-    return overReef;
+    builder.addBooleanProperty("Over Reef", () -> overReef, null);
   }
 }
