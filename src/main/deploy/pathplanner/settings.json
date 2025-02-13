@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.762,
-  "robotLength": 0.762794,
+  "robotWidth": 0.9,
+  "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [],
   "autoFolders": [],
@@ -18,17 +18,15 @@
   "driveMotorType": "NEO",
   "driveCurrentLimit": 40.0,
   "wheelCOF": 1.19,
-  "flModuleX": 0.3,
-  "flModuleY": 0.3,
-  "frModuleX": 0.3,
-  "frModuleY": -0.3,
-  "blModuleX": -0.3,
-  "blModuleY": 0.3,
-  "brModuleX": -0.3,
-  "brModuleY": -0.3,
+  "flModuleX": 0.414,
+  "flModuleY": 0.338,
+  "frModuleX": 0.414,
+  "frModuleY": -0.338,
+  "blModuleX": -0.414,
+  "blModuleY": 0.338,
+  "brModuleX": -0.414,
+  "brModuleY": -0.338,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
-  "robotFeatures": [
-    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":0.0},\"size\":{\"width\":0.914,\"length\":0.914},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
-  ]
+  "robotFeatures": []
 }
