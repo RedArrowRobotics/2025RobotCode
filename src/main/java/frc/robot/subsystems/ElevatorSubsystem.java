@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -11,6 +12,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 SparkMax elevatorMotor = new SparkMax(Constants.elevatorMotorId, MotorType.kBrushed);
 SparkMax dealgaeFlipper = new SparkMax(Constants.dealgaeFlipperId, MotorType.kBrushed);
 SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrushed);
+PIDController elevatorPID = new PIDController(0.1, 0, 0);
 
   /**
    * Moves the elevator to the home position which is the lowest position.
@@ -18,7 +20,7 @@ SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrus
   public Command elevatorHome() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          elevatorMotor.set(1);
         });
   }
 
@@ -28,7 +30,7 @@ SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrus
   public Command elevatorL2() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          elevatorMotor.set(1);
         });
   }
   
@@ -38,7 +40,7 @@ SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrus
   public Command elevatorL3() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          elevatorMotor.set(1);
         });
   }
   
@@ -48,7 +50,7 @@ SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrus
   public Command elevatorL4() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          elevatorMotor.set(1);
         });
   }
   
@@ -58,7 +60,7 @@ SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrus
   public Command dealgaeExtend() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          dealgaeFlipper.set(1);
         });
   }
   
@@ -68,7 +70,7 @@ SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrus
   public Command dealgaeRetract() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          dealgaeFlipper.set(1);
         });
   }
   
