@@ -14,10 +14,15 @@ SparkMax cageClimber = new SparkMax(Constants.cageClimberMotorId, MotorType.kBru
  *  Rotates a bar to hold the cage in place for climbing.
  */
 public Command holdCage() {
-    return runOnce(
+    return startEnd(
         () -> {
-          //cageGrabber.setPosition(1);
-        });
+          cageGrabber.set(.5);
+        },
+        () -> {
+          cageGrabber.set(0);
+        }
+        ).until(() -> cageGrabber.getEncoder().equals(Constants.cageGrabberHoldPosition));
+        //getEncoder or getPosition?
   }
 
 /**
@@ -26,12 +31,17 @@ public Command holdCage() {
 public Command releaseCage() {
     return runOnce(
         () -> {
-          //cageGrabber.setPosition(0);
-        });
+          cageGrabber.set(-.5);
+        },
+        () -> {
+          cageGrabber.set(0);
+        }
+        ).until(() -> cageGrabber.getEncoder().equals(Constants.cageGrabberReleasePosition));
+        //getEncoder or getPosition?
   }
 
   /**
- *  Pushes down on the cage to raise the robot.
+   *  Pushes down on the cage to raise the robot.
  */
   public Command ascend() {
     return startEnd(

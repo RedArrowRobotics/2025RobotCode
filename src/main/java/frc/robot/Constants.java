@@ -16,6 +16,9 @@ public class Constants {
     public static int cageGrabberMotorId = 15;
     public static int cageClimberMotorId = 16;
 
+    public static double cageGrabberReleasePosition = 0.0;
+    public static double cageGrabberHoldPosition = 0.5;
+
     public static int intakeWheelsMotorID = 13;
     public static int coralScorerTilterMotorID = 14;
 
