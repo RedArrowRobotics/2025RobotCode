@@ -5,7 +5,10 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
@@ -92,6 +96,12 @@ public class DriveSubsystem extends SubsystemBase {
     });
   }
 
+  public Command brake() {
+    return this.runOnce(() -> {
+      manualDrive(new DrivePower(0, 0, 0), DriveOrientation.ROBOT_CENTRIC);
+    });
+  }
+
   /**
    * Drive the robot using translative values and heading as angular velocity.
    *
@@ -123,8 +133,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
   
-  public Pose2d getPose()
-  {
+  public Pose2d getPose() {
     return swerveDrive.getPose();
   }
 
@@ -138,5 +147,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     swerveDrive.drive(chassisSpeeds);
+  }
+
+  public LinearVelocity getMaximumChassisVelocity() {
+    return MetersPerSecond.of(swerveDrive.getMaximumChassisVelocity());
+  }
+
+  public AngularVelocity getMaximumChassisAngularVelocity() {
+    return RadiansPerSecond.of(swerveDrive.getMaximumChassisAngularVelocity());
   }
 }

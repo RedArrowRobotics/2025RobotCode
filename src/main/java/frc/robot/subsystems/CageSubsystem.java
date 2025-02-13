@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class CageSubsystem extends SubsystemBase {
 SparkMax cageGrabber = new SparkMax(Constants.cageGrabberMotorId, MotorType.kBrushed);
@@ -15,7 +16,7 @@ SparkMax cageClimber = new SparkMax(Constants.cageClimberMotorId, MotorType.kBru
 public Command holdCage() {
     return runOnce(
         () -> {
-          cageGrabber.setPosition(1);
+          //cageGrabber.setPosition(1);
         });
   }
 
@@ -25,7 +26,7 @@ public Command holdCage() {
 public Command releaseCage() {
     return runOnce(
         () -> {
-          cageGrabber.setPosition(0);
+          //cageGrabber.setPosition(0);
         });
   }
 
@@ -40,7 +41,7 @@ public Command releaseCage() {
       () -> {
         cageClimber.set(0);
       }
-    )
+    );
   }
 
   /**
@@ -54,7 +55,7 @@ public Command descend() {
       () -> {
         cageClimber.set(0);
       }
-    )
+    );
   }
 
     /**

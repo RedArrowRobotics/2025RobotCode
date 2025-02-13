@@ -16,4 +16,11 @@ public class Constants {
     public static int cageGrabberMotorId = 15;
     public static int cageClimberMotorId = 16;
 
+    public static int intakeWheelsMotorID = 13;
+    public static int coralScorerTilterMotorID = 14;
+
+    public static int coralSensorChannel = 1;
+    public static int reefSensorChannel = 2;
+
+    public static double coralDropTimeoutInSeconds = 3;
 }
