@@ -1,28 +1,51 @@
 package frc.robot.subsystems;
 
+
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
-
+  SparkMax intakeWheels = new SparkMax(Constants.intakeWheelsMotorID, MotorType.kBrushed);
+  SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterMotorID, MotorType.kBrushed);
+  private DigitalInput coralSensor = new DigitalInput(Constants.coralSensorChannel);
+  private DigitalInput reefSensor = new DigitalInput(Constants.reefSensorChannel);
+  public final Trigger reefTrigger = new Trigger(reefSensor::get);
   /**
    * It securely grabs the coral that fell from the chute.
+   * Sucks the coral down with wheels to hold it in place.
    */
   public Command grabCoral() {
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+    return startEnd(
+      () -> {
+        intakeWheels.set(1);
+      },
+      () -> {
+        intakeWheels.set(0);
+      }
+    ).until(() -> isCoralLoaded());
   }
   
   /**
    * Drops the coral onto the reef.
    */
   public Command dropCoral() {
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+    return startEnd(
+      () -> {
+        intakeWheels.set(-1);
+      },
+      () -> {
+        intakeWheels.set(0);
+      }
+    ).withTimeout(Constants.coralDropTimeoutInSeconds);
   }
   
   /**
@@ -31,7 +54,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public Command stopScorerSpin() {
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          intakeWheels.set(0);
         });
   }
   
@@ -59,15 +82,20 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Checks to see if the coral is correctly loaded on the coral scorer.
    */
   public boolean isCoralLoaded() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+    return coralSensor.get();
   }
 
    /**
    * Checks to see if the coral scorer is aligned with the reef.
    */
   public boolean isCoralOverReef() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+    return reefSensor.get();
+  }
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    builder.setSmartDashboardType(getName());
+    builder.addBooleanProperty("Coral Loaded", () -> isCoralLoaded(), null);
+    builder.addBooleanProperty("Over Reef", () -> isCoralOverReef(), null);
   }
 }
