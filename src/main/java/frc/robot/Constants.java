@@ -19,5 +19,7 @@ public class Constants {
     public static int coralSensorChannel = 1;
     public static int reefSensorChannel = 2;
 
-    public static double coralDropTimeoutInSeconds = 3;
+    public static double coralDropTimeoutInSeconds = 3.0;
+    public static double scorerTilterScoringPosition = 0.0;
+    public static double scorerTilterLoadingPosition = 0.0;
 }

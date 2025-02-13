@@ -62,20 +62,35 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Moves the coral scorer to the correct angle to drop it on the reef.
    */
   public Command placeCoralPosition() {
-    return runOnce(
+    return startEnd(
         () -> {
+          scorerTilter.set(.5);
           /* one-time action goes here */
-        });
+        },
+        () -> {
+          scorerTilter.set(0);
+        }
+        ).until(() -> scorerTilter.getEncoder().equals(Constants.scorerTilterScoringPosition));
+        //getEncoder or getPosition?
   }
   
  /**
    * Moves the coral scorer to the correct angle to grab the coral that fell from the chute.
    */
   public Command loadCoralPosition() {
-    return runOnce(
+    return startEnd(
         () -> {
+          if(scorerTilter.getEncoder().getPosition() > Constants.scorerTilterLoadingPosition) {
+            scorerTilter.set(-.5);
+          } else if(scorerTilter.getEncoder().getPosition() < Constants.scorerTilterLoadingPosition) {
+            scorerTilter.set(.5);
+          }
           /* one-time action goes here */
-        });
+        },
+        () -> {
+          scorerTilter.set(0);
+        }
+        ).until(() -> scorerTilter.getEncoder().equals(Constants.scorerTilterLoadingPosition));
   }
 
    /**
