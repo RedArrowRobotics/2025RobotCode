@@ -73,6 +73,8 @@ public class RobotContainer {
         coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
         controlTriggers.driveStickY.toggleOnTrue(cage.ascend());
         controlTriggers.driveStickX.toggleOnTrue(cage.descend());
+        controlTriggers.driveStickDown.onTrue(cage.holdCage());
+        controlTriggers.driveStickUp.onTrue(cage.releaseCage());
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
