@@ -35,5 +35,7 @@ public class ControlInputs {
         public final Trigger driveStickB = driveStick.b();
         public final Trigger driveStickY = driveStick.y();
         public final Trigger driveStickX = driveStick.x();
+        public final Trigger driveStickDown = driveStick.povDown();
+        public final Trigger driveStickUp = driveStick.povUp();
     }
 }

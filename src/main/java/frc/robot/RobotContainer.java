@@ -47,6 +47,15 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
     private Command autoSelected;
 
+    coralScoringDevice = new CoralScoringDeviceSubsystem();
+    cage = new CageSubsystem();
+    controlTriggers.driveStickB.toggleOnTrue(coralScoringDevice.grabCoral());
+    coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
+    controlTriggers.driveStickY.toggleOnTrue(cage.ascend());
+    controlTriggers.driveStickX.toggleOnTrue(cage.descend());
+    controlTriggers.driveStickDown.onTrue(cage.holdCage());
+    controlTriggers.driveStickUp.onTrue(cage.releaseCage());
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any
