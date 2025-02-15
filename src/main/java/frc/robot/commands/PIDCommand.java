@@ -36,14 +36,12 @@ public abstract class PIDCommand extends Command {
         } else {
             power = pidController.calculate(motor.getEncoder().getPosition(), target);
         }
-        SmartDashboard.putNumber("Calculated PID Power", power);
         motor.set(power);
     }
 
     @Override
     public boolean isFinished() {
         boolean finished = Math.abs(motor.getEncoder().getPosition() - target) < tolerance;
-        SmartDashboard.putBoolean("PID is finished", finished);
         return finished;
     }
 
