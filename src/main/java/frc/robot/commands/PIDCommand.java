@@ -11,12 +11,14 @@ public abstract class PIDCommand extends Command {
     private SparkMax motor;
     private double target;
     private double tolerance;
+    private boolean invertMotor;
 
-    public PIDCommand(double kp, double ki, double kd, SparkMax motorController, double targetPosition, double encoderTolerance) {
+    public PIDCommand(double kp, double ki, double kd, SparkMax motorController, double targetPosition, double encoderTolerance, boolean invertMotor) {
         pidController = new PIDController(kp, ki, kd);
         motor = motorController;
         target = targetPosition;
         tolerance = encoderTolerance;
+        this.invertMotor = invertMotor;
     }
 
     @Override
@@ -27,9 +29,13 @@ public abstract class PIDCommand extends Command {
     @Override
     public void execute() {
         //Get current position, adjust motor speed, and set speed
-        motor.set(pidController.calculate(motor.getEncoder().getPosition(), target));
+        if(invertMotor == true) {
+            motor.set(pidController.calculate(motor.getEncoder().getPosition(), target) * -1.0);
+        } else {
+            motor.set(pidController.calculate(motor.getEncoder().getPosition(), target));
+        }
     }
-
+    
     @Override
     public boolean isFinished() {
         return Math.abs(motor.getEncoder().getPosition() - target) < tolerance;
@@ -41,3 +47,4 @@ public abstract class PIDCommand extends Command {
         motor.set(0.0);
     }
 }
+

@@ -59,6 +59,10 @@ public class RobotContainer {
         coralScoringDevice = new CoralScoringDeviceSubsystem();
         controlTriggers.driveStickB.toggleOnTrue(coralScoringDevice.grabCoral());
         coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
+
+        controlTriggers.driveStickA.onTrue(coralScoringDevice.loadCoralPosition());
+        controlTriggers.driveStickX.onTrue(coralScoringDevice.placeCoralPositionL2L3());
+        controlTriggers.driveStickY.onTrue(coralScoringDevice.placeCoralPositionL4());
         
         var commands = new AlignToReef(swerveDriveTrain);
 

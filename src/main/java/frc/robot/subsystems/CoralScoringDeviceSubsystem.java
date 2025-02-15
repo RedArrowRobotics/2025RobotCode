@@ -20,6 +20,10 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public final Trigger reefTrigger = new Trigger(() -> {return armIsInPosition() && isCoralOverReef();});
   public CoralArmPosition coralArmPosition = CoralArmPosition.HOME;
 
+  public CoralScoringDeviceSubsystem() {
+    scorerTilter.getEncoder().setPosition(0);
+  }
+
   public enum CoralArmPosition {
     HOME,
     L2L3,
@@ -107,5 +111,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
     builder.setSmartDashboardType(getName());
     builder.addBooleanProperty("Coral Loaded", () -> isCoralLoaded(), null);
     builder.addBooleanProperty("Over Reef", () -> isCoralOverReef(), null);
+    builder.addStringProperty("Arm Position", () -> coralArmPosition.toString(), null);
+    builder.addDoubleProperty("Encoder Value", () -> scorerTilter.getEncoder().getPosition(), null);
   }
 }
