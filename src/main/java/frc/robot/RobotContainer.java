@@ -27,6 +27,7 @@ import frc.robot.subsystems.CoralScoringDeviceSubsystem;
 import frc.robot.commands.AlignToReef;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -41,6 +42,7 @@ public class RobotContainer {
     private final ControlInputs.Triggers controlTriggers = controlInputs.new Triggers();
     private final DriveSubsystem swerveDriveTrain;
     private final CoralScoringDeviceSubsystem coralScoringDevice;
+    private final ElevatorSubsystem elevator;
     private final SensorInputs sensorInputs = new SensorInputs();
     private final SendableChooser<Command> autoChooser;
     private Command autoSelected;
@@ -57,8 +59,18 @@ public class RobotContainer {
                 DriveOrientation.FIELD_CENTRIC));
         
         coralScoringDevice = new CoralScoringDeviceSubsystem();
-        controlTriggers.driveStickB.toggleOnTrue(coralScoringDevice.grabCoral());
+        controlTriggers.buttonB.toggleOnTrue(coralScoringDevice.grabCoral());
         coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
+
+        elevator = new ElevatorSubsystem();
+        controlTriggers.upButton.onTrue(elevator.elevatorHome());
+        controlTriggers.downButton.onTrue(elevator.elevatorL2());
+        controlTriggers.leftButton.onTrue(elevator.elevatorL3());
+        controlTriggers.rightButton.onTrue(elevator.elevatorL4());
+        controlTriggers.leftTrigger.onTrue(elevator.dealgaeExtend());
+        controlTriggers.rightTrigger.onTrue(elevator.dealgaeRetract());
+        controlTriggers.leftBumper.onTrue(elevator.dealgaeStartSpin());
+        controlTriggers.rightBumper.onTrue(elevator.dealgaeStopSpin());
         
         var commands = new AlignToReef(swerveDriveTrain);
 
