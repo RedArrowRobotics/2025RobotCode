@@ -21,6 +21,12 @@ public class Constants {
 
     public static double cageGrabberReleasePosition = 0.0;
     public static double cageGrabberHoldPosition = 0.5;
+    public static double elevatorMotorHomePosition = 0;
+    public static double elevatorMotorL2Position = 2;
+    public static double elevatorMotorL3Position = 3;
+    public static double elevatorMotorL4Position = 4;
+    public static double dealgaeFlipperExtendedPosition = 1;
+    public static double dealgaeFlipperRetractedPosition = 0;
 
     public static int intakeWheelsMotorID = 13;
     public static int coralScorerTilterMotorID = 14;

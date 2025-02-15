@@ -18,60 +18,90 @@ PIDController elevatorPID = new PIDController(0.1, 0, 0);
    * Moves the elevator to the home position which is the lowest position.
    */
   public Command elevatorHome() {
-    return runOnce(
+    return startEnd(
         () -> {
-          elevatorMotor.set(1);
-        });
+          elevatorMotor.set(.5);
+        },
+        () -> {
+          elevatorMotor.set(0);
+        }
+        ).until(() -> elevatorMotor.getEncoder().equals(Constants.elevatorMotorHomePosition));
+        //getEncoder or getPosition?
   }
 
   /**
    * Moves the elevator to the L2 position.
    */
   public Command elevatorL2() {
-    return runOnce(
+      return startEnd(
         () -> {
-          elevatorMotor.set(1);
-        });
+          elevatorMotor.set(.5);
+        },
+        () -> {
+          elevatorMotor.set(0);
+        }
+        ).until(() -> elevatorMotor.getEncoder().equals(Constants.elevatorMotorL2Position));
+        //getEncoder or getPosition?
   }
   
   /**
    * Moves the elevator to the L3 position.
    */
   public Command elevatorL3() {
-    return runOnce(
+    return startEnd(
         () -> {
-          elevatorMotor.set(1);
-        });
+          elevatorMotor.set(.5);
+        },
+        () -> {
+          elevatorMotor.set(0);
+        }
+        ).until(() -> elevatorMotor.getEncoder().equals(Constants.elevatorMotorL3Position));
+        //getEncoder or getPosition?
   }
   
   /**
    * Moves the elevator to the L4 position.
    */
   public Command elevatorL4() {
-    return runOnce(
+    return startEnd(
         () -> {
-          elevatorMotor.set(1);
-        });
+          elevatorMotor.set(.5);
+        },
+        () -> {
+          elevatorMotor.set(0);
+        }
+        ).until(() -> elevatorMotor.getEncoder().equals(Constants.elevatorMotorL4Position));
+        //getEncoder or getPosition?
   }
   
   /**
    * Moves the dealgaer into the dealgae position.
    */
   public Command dealgaeExtend() {
-    return runOnce(
+    return startEnd(
         () -> {
-          dealgaeFlipper.set(1);
-        });
+          elevatorMotor.set(.5);
+        },
+        () -> {
+          elevatorMotor.set(0);
+        }
+        ).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperExtendedPosition));
+        //getEncoder or getPosition?
   }
   
   /**
    * Moves the dealgaer into the stored position.
    */
   public Command dealgaeRetract() {
-    return runOnce(
+    return startEnd(
         () -> {
-          dealgaeFlipper.set(1);
-        });
+          elevatorMotor.set(.5);
+        },
+        () -> {
+          elevatorMotor.set(0);
+        }
+        ).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperRetractedPosition));
+        //getEncoder or getPosition?
   }
   
   /**
