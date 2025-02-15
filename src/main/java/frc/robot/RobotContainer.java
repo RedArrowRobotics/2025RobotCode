@@ -55,24 +55,18 @@ public class RobotContainer {
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
                 () -> controlInputs.getDriveStick().toSwerve(),
                 DriveOrientation.FIELD_CENTRIC));
-        var commands = new AlignToReef(swerveDriveTrain);
+        
         coralScoringDevice = new CoralScoringDeviceSubsystem();
         controlTriggers.driveStickB.toggleOnTrue(coralScoringDevice.grabCoral());
         coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
+        
+        var commands = new AlignToReef(swerveDriveTrain);
+
         // PathPlanner Commands
         NamedCommands.registerCommand("Align to Reef", commands.alignToReef(Meters.of(0)));
-
-        controlTriggers.driveStickA.whileTrue(commands.alignToReef(Meters.of(0)));
+        
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
-    }
-    public void robotPeriodic() {
-        sensorInputs.readSensors();
-        SmartDashboard.putData(coralScoringDevice);
-    }
-
-    public void teleopPeriodic() {
-    
     }
 
     /**
@@ -85,6 +79,15 @@ public class RobotContainer {
             case Red -> new Pose2d(0.0,0.0,Rotation2d.kZero);
             default -> new Pose2d(0.0,0.0,Rotation2d.kZero);
         });
+    }
+
+    public void robotPeriodic() {
+        sensorInputs.readSensors();
+        SmartDashboard.putData(coralScoringDevice);
+    }
+
+    public void teleopPeriodic() {
+    
     }
 
     public Optional<Command> getAutonomousCommand() {
