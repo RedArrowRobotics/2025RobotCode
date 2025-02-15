@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
 import java.io.IOException;
@@ -23,7 +24,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.AlignToReef;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.AlignToAprilTag;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 
@@ -52,10 +54,17 @@ public class RobotContainer {
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
                 () -> controlInputs.getDriveStick().toSwerve(),
                 DriveOrientation.FIELD_CENTRIC));
-        var commands = new AlignToReef(swerveDriveTrain);
+        var commands = new AlignToAprilTag(swerveDriveTrain);
 
         // PathPlanner Commands
-        NamedCommands.registerCommand("Align to Reef", commands.alignToReef(Meters.of(0)));
+        NamedCommands.registerCommand("Align to Reef Left", commands.alignToReef(Inches.of(0)));
+        NamedCommands.registerCommand("Align to Reef Right", commands.alignToReef(Inches.of(13.625)));
+        NamedCommands.registerCommand("Score L1", new WaitCommand(5));
+        NamedCommands.registerCommand("Score L2", new WaitCommand(5));
+        NamedCommands.registerCommand("Score L3", new WaitCommand(5));
+        NamedCommands.registerCommand("Score L4", new WaitCommand(5));
+        NamedCommands.registerCommand("Align to Source", commands.alignToSource());
+        NamedCommands.registerCommand("Intake Coral", null);
 
         controlTriggers.driveStickA.whileTrue(commands.alignToReef(Meters.of(0)));
         autoChooser = AutoBuilder.buildAutoChooser();
