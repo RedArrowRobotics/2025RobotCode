@@ -11,23 +11,23 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Dimensionless;
 
-public class UnitRelativeEncoder implements AngleEncoder {
+public class AngleRelativeEncoder implements AngleEncoder {
     RelativeEncoder encoder;
     Dimensionless gearRatio;
 
-    public UnitRelativeEncoder(SparkMax controller) {
-        this(controller,Value.one());
+    public AngleRelativeEncoder(RelativeEncoder encoder) {
+        this(encoder,Value.one());
     }
-    public UnitRelativeEncoder(SparkMax controller, Dimensionless gearRatio) {
-        encoder = controller.getEncoder();
+    public AngleRelativeEncoder(RelativeEncoder encoder, Dimensionless gearRatio) {
+        this.encoder = encoder;
         this.gearRatio = gearRatio;
     }
 
-    public Angle getPosition() {
-        return Revolutions.of(encoder.getPosition()).div(gearRatio);
+    public Angle getAngle() {
+        return Revolutions.of(encoder.getPosition()).times(gearRatio);
     }
 
-    public AngularVelocity getVelocity() {
-        return Revolutions.per(Minute).of(encoder.getVelocity()).div(gearRatio);
+    public AngularVelocity getAngularVelocity() {
+        return Revolutions.per(Minute).of(encoder.getVelocity()).times(gearRatio);
     }
 }
