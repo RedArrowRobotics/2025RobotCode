@@ -45,7 +45,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
       () -> {
         intakeWheels.set(0);
       }
-    ).withTimeout(Constants.coralDropTimeoutInSeconds);
+    ).withTimeout(Constants.coralDropTimeout);
   }
   
   /**

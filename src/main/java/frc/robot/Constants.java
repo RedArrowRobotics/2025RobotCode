@@ -1,10 +1,13 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.units.measure.Time;
 
 public class Constants {
 
@@ -19,7 +22,7 @@ public class Constants {
     public static int coralSensorChannel = 1;
     public static int reefSensorChannel = 2;
 
-    public static double coralDropTimeoutInSeconds = 3.0;
+    public static Time coralDropTimeout = Seconds.of(3.0);
     public static double scorerTilterScoringPosition = 0.0;
     public static double scorerTilterLoadingPosition = 0.0;
 }
