@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 public class ControlInputs {
     // Joysticks
     private final CommandXboxController driveStick = new CommandXboxController(0);
+    private final CommandXboxController controller2 = new CommandXboxController(3);
     private final CommandJoystick componentsBoardLeft = new CommandJoystick(1);
     private final CommandJoystick componentsBoardRight = new CommandJoystick(2);
 
@@ -31,11 +32,11 @@ public class ControlInputs {
     }
 
     public class Triggers {
-        public final Trigger buttonA = driveStick.a();
-        public final Trigger buttonB = driveStick.b();
-        public final Trigger driveStickY = driveStick.y();
-        public final Trigger driveStickX = driveStick.x();
-        public final Trigger leftStickButton = driveStick.leftStick();
-        public final Trigger rightStickButton = driveStick.rightStick();
+        public final Trigger controllerButtonA = driveStick.a();
+        public final Trigger controllerButtonB = driveStick.b();
+        public final Trigger controllerButtonY = driveStick.y();
+        public final Trigger controllerButtonX = driveStick.x();
+        public final Trigger controllerDpadUp = driveStick.povUp();
+        public final Trigger controllerDpadDown = driveStick.povDown();
     }
 }
