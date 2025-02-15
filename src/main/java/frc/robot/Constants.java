@@ -23,6 +23,7 @@ public class Constants {
     public static int reefSensorChannel = 2;
 
     public static Time coralDropTimeout = Seconds.of(3.0);
-    public static double scorerTilterScoringPosition = 0.0;
+    public static double scorerTilterScoringPositionL2L3 = 0.0;
+    public static double scorerTilterScoringPositionL4 = 0.0;
     public static double scorerTilterLoadingPosition = 0.0;
 }

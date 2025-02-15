@@ -12,10 +12,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
+import frc.robot.commands.CoralScoringArm;
+import frc.robot.commands.PIDCommand;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
   SparkMax intakeWheels = new SparkMax(Constants.intakeWheelsMotorID, MotorType.kBrushed);
-  SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterMotorID, MotorType.kBrushed);
+  public SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterMotorID, MotorType.kBrushed);
   private DigitalInput coralSensor = new DigitalInput(Constants.coralSensorChannel);
   private DigitalInput reefSensor = new DigitalInput(Constants.reefSensorChannel);
   public final Trigger reefTrigger = new Trigger(reefSensor::get);
@@ -61,36 +63,19 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
  /**
    * Moves the coral scorer to the correct angle to drop it on the reef.
    */
-  public Command placeCoralPosition() {
-    return startEnd(
-        () -> {
-          scorerTilter.set(.5);
-          /* one-time action goes here */
-        },
-        () -> {
-          scorerTilter.set(0);
-        }
-        ).until(() -> scorerTilter.getEncoder().equals(Constants.scorerTilterScoringPosition));
-        //getEncoder or getPosition?
+  public Command placeCoralPositionL2L3() {
+      return new CoralScoringArm(this, Constants.scorerTilterScoringPositionL2L3);
+  }
+
+  public Command placeCoralPositionL4() {
+    return new CoralScoringArm(this, Constants.scorerTilterScoringPositionL4);
   }
   
  /**
    * Moves the coral scorer to the correct angle to grab the coral that fell from the chute.
    */
   public Command loadCoralPosition() {
-    return startEnd(
-        () -> {
-          if(scorerTilter.getEncoder().getPosition() > Constants.scorerTilterLoadingPosition) {
-            scorerTilter.set(-.5);
-          } else if(scorerTilter.getEncoder().getPosition() < Constants.scorerTilterLoadingPosition) {
-            scorerTilter.set(.5);
-          }
-          /* one-time action goes here */
-        },
-        () -> {
-          scorerTilter.set(0);
-        }
-        ).until(() -> scorerTilter.getEncoder().equals(Constants.scorerTilterLoadingPosition));
+      return new CoralScoringArm(this, Constants.scorerTilterLoadingPosition);
   }
 
    /**
