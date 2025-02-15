@@ -18,7 +18,7 @@ public class CoralScoringArm extends PIDCommand {
             case L4 -> Constants.scorerTilterScoringPositionL4;
             case NONE -> Constants.scorerTilterLoadingPosition;
          }, 
-         1.0,
+         0.1,
          true);
         this.target = target;
         this.subsystem = subsystem;
@@ -32,8 +32,8 @@ public class CoralScoringArm extends PIDCommand {
     }
 
     @Override
-    public void finalize() {
-        super.finalize();
+    public void end(boolean interrupted) {
+        super.end(interrupted);
         subsystem.coralArmPosition = target;
     }
 

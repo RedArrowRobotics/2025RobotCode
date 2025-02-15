@@ -4,6 +4,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public abstract class PIDCommand extends Command {
@@ -29,21 +30,25 @@ public abstract class PIDCommand extends Command {
     @Override
     public void execute() {
         //Get current position, adjust motor speed, and set speed
+        double power;
         if(invertMotor == true) {
-            motor.set(pidController.calculate(motor.getEncoder().getPosition(), target) * -1.0);
+            power = pidController.calculate(motor.getEncoder().getPosition(), target) * -1.0;
         } else {
-            motor.set(pidController.calculate(motor.getEncoder().getPosition(), target));
+            power = pidController.calculate(motor.getEncoder().getPosition(), target);
         }
-    }
-    
-    @Override
-    public boolean isFinished() {
-        return Math.abs(motor.getEncoder().getPosition() - target) < tolerance;
+        SmartDashboard.putNumber("Calculated PID Power", power);
+        motor.set(power);
     }
 
     @Override
-    public void finalize() {
-        //Set speed to zero
+    public boolean isFinished() {
+        boolean finished = Math.abs(motor.getEncoder().getPosition() - target) < tolerance;
+        SmartDashboard.putBoolean("PID is finished", finished);
+        return finished;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
         motor.set(0.0);
     }
 }
