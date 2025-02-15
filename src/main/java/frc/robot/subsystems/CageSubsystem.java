@@ -13,7 +13,7 @@ SparkMax cageClimber = new SparkMax(Constants.cageClimberMotorId, MotorType.kBru
 /**
  *  Rotates a bar to hold the cage in place for climbing.
  */
-public Command holdCage() {
+  public Command holdCage() {
     return startEnd(
         () -> {
           cageGrabber.set(.5);
@@ -28,8 +28,8 @@ public Command holdCage() {
 /**
  *  Rotates the bar back to the starting position so the cage is free to move.
  */
-public Command releaseCage() {
-    return runOnce(
+  public Command releaseCage() {
+    return startEnd(
         () -> {
           cageGrabber.set(-.5);
         },
@@ -57,8 +57,8 @@ public Command releaseCage() {
   /**
  *  Retracts the climber to lower the robot.
  */
-public Command descend() {
-  return startEnd(
+  public Command descend() {
+    return startEnd(
       () -> {
         cageClimber.set(-1);
       },

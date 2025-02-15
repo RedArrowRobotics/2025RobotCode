@@ -31,11 +31,11 @@ public class ControlInputs {
     }
 
     public class Triggers {
-        public final Trigger driveStickA = driveStick.a();
-        public final Trigger driveStickB = driveStick.b();
+        public final Trigger buttonA = driveStick.a();
+        public final Trigger buttonB = driveStick.b();
         public final Trigger driveStickY = driveStick.y();
         public final Trigger driveStickX = driveStick.x();
-        public final Trigger driveStickDown = driveStick.povDown();
-        public final Trigger driveStickUp = driveStick.povUp();
+        public final Trigger leftStickButton = driveStick.leftStick();
+        public final Trigger rightStickButton = driveStick.rightStick();
     }
 }
