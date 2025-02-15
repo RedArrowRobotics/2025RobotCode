@@ -58,26 +58,26 @@ public class RobotContainer {
         public RobotContainer() throws IOException, Exception {
             swerveDriveTrain = new DriveSubsystem();
             swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
-                    () -> controlInputs.getDriveStick().toSwerve(),
+                    () -> controlInputs.getdriveController().toSwerve(),
                     DriveOrientation.FIELD_CENTRIC));
             
             coralScoringDevice = new CoralScoringDeviceSubsystem();
-            controlTriggers.controller1ButtonB.toggleOnTrue(coralScoringDevice.grabCoral());
+            controlTriggers.driveControllerButtonB.toggleOnTrue(coralScoringDevice.grabCoral());
             coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
             elevator = new ElevatorSubsystem();
-            controlTriggers.controller2DpadUp.onTrue(elevator.elevatorHome());
-            controlTriggers.controller2DpadDown.onTrue(elevator.elevatorL2());
-            controlTriggers.controller2DpadLeft.onTrue(elevator.elevatorL3());
-            controlTriggers.controller2DpadRight.onTrue(elevator.elevatorL4());
-            controlTriggers.controller2LeftTrigger.onTrue(elevator.dealgaeExtend());
-            controlTriggers.controller2RightTrigger.onTrue(elevator.dealgaeRetract());
-            controlTriggers.controller2LeftBumper.onTrue(elevator.dealgaeStartSpin());
-            controlTriggers.controller2RightBumper.onTrue(elevator.dealgaeStopSpin());
+            controlTriggers.sysOpControllerDpadUp.onTrue(elevator.elevatorHome());
+            controlTriggers.sysOpControllerDpadDown.onTrue(elevator.elevatorL2());
+            controlTriggers.sysOpControllerDpadLeft.onTrue(elevator.elevatorL3());
+            controlTriggers.sysOpControllerDpadRight.onTrue(elevator.elevatorL4());
+            controlTriggers.sysOpControllerLeftTrigger.onTrue(elevator.dealgaeExtend());
+            controlTriggers.sysOpControllerRightTrigger.onTrue(elevator.dealgaeRetract());
+            controlTriggers.sysOpControllerLeftBumper.onTrue(elevator.dealgaeStartSpin());
+            controlTriggers.sysOpControllerRightBumper.onTrue(elevator.dealgaeStopSpin());
             cage = new CageSubsystem();
-            controlTriggers.controller1ButtonY.toggleOnTrue(cage.ascend());
-            controlTriggers.controller1ButtonX.toggleOnTrue(cage.descend());
-            controlTriggers.controller1DpadDown.onTrue(cage.holdCage());
-            controlTriggers.controller1DpadUp.onTrue(cage.releaseCage());
+            controlTriggers.driveControllerButtonY.toggleOnTrue(cage.ascend());
+            controlTriggers.driveControllerButtonX.toggleOnTrue(cage.descend());
+            controlTriggers.driveControllerDpadDown.onTrue(cage.holdCage());
+            controlTriggers.driveControllerDpadUp.onTrue(cage.releaseCage());
             var commands = new AlignToReef(swerveDriveTrain);
 
         autoChooser = AutoBuilder.buildAutoChooser();

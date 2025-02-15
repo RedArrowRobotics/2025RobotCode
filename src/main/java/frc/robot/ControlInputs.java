@@ -8,43 +8,44 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class ControlInputs {
     // Joysticks
-    private final CommandXboxController driveStick = new CommandXboxController(0);
-    private final CommandXboxController controller2 = new CommandXboxController(3);
+    private final CommandXboxController driveController = new CommandXboxController(0);
+    private final CommandXboxController sysOpController = new CommandXboxController(3);
     private final CommandJoystick componentsBoardLeft = new CommandJoystick(1);
     private final CommandJoystick componentsBoardRight = new CommandJoystick(2);
 
-    public DrivePower getDriveStick() {
+    public DrivePower getdriveController() {
         // Multipliers for the drive stick axes
-        final double driveStickLinearMultiplier = 0.8;
-        final double driveStickRotationMultiplier = 0.5;
+        final double driveControllerLinearMultiplier = 0.8;
+        final double driveControllerRotationMultiplier = 0.5;
 
         // Derive joystick values. Inputs are squared to make precice control at low speeds easier
-        var x = ( driveStick.getLeftX() * Math.abs( driveStick.getLeftX()) ) * driveStickLinearMultiplier;
-        var y = ( driveStick.getLeftY() * Math.abs( driveStick.getLeftY()) ) * driveStickLinearMultiplier;
-        var rotation = ( driveStick.getRightX() * Math.abs( driveStick.getRightX()) ) * driveStickRotationMultiplier;
+        var x = ( driveController.getLeftX() * Math.abs( driveController.getLeftX()) ) * driveControllerLinearMultiplier;
+        var y = ( driveController.getLeftY() * Math.abs( driveController.getLeftY()) ) * driveControllerLinearMultiplier;
+        var rotation = ( driveController.getRightX() * Math.abs( driveController.getRightX()) ) * driveControllerRotationMultiplier;
         // Compose the seperate components into a state record
         return new DrivePower(x, y, rotation);
     }
 
     // For later
     public final void setRumble(double value) {
-        driveStick.setRumble(RumbleType.kBothRumble, value);
+        driveController.setRumble(RumbleType.kBothRumble, value);
     }
-
+    
     public class Triggers {
-        public final Trigger controller1ButtonA = driveStick.a();
-        public final Trigger controller1ButtonB = driveStick.b();
-        public final Trigger controller2DpadUp = controller2.povUp();
-        public final Trigger controller2DpadDown = controller2.povDown();
-        public final Trigger controller2DpadLeft = controller2.povLeft();
-        public final Trigger controller2DpadRight = controller2.povRight();
-        public final Trigger controller2LeftTrigger = controller2.leftTrigger();
-        public final Trigger controller2RightTrigger = controller2.rightTrigger();
-        public final Trigger controller2LeftBumper = controller2.leftBumper();
-        public final Trigger controller2RightBumper = controller2.rightBumper();
-        public final Trigger controller1ButtonY = driveStick.y();
-        public final Trigger controller1ButtonX = driveStick.x();
-        public final Trigger controller1DpadUp = driveStick.povUp();
-        public final Trigger controller1DpadDown = driveStick.povDown();
+        public final Trigger driveControllerButtonA = driveController.a();
+        public final Trigger driveControllerButtonB = driveController.b();
+        public final Trigger driveControllerButtonX = driveController.x();
+        public final Trigger driveControllerButtonY = driveController.y();
+        public final Trigger driveControllerDpadUp = driveController.povUp();
+        public final Trigger driveControllerDpadDown = driveController.povDown();
+
+        public final Trigger sysOpControllerDpadUp = sysOpController.povUp();
+        public final Trigger sysOpControllerDpadDown = sysOpController.povDown();
+        public final Trigger sysOpControllerDpadLeft = sysOpController.povLeft();
+        public final Trigger sysOpControllerDpadRight = sysOpController.povRight();
+        public final Trigger sysOpControllerLeftBumper = sysOpController.leftBumper();
+        public final Trigger sysOpControllerRightBumper = sysOpController.rightBumper();
+        public final Trigger sysOpControllerLeftTrigger = sysOpController.leftTrigger();
+        public final Trigger sysOpControllerRightTrigger = sysOpController.rightTrigger();
     }
 }
