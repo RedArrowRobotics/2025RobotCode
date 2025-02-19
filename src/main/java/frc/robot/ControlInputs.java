@@ -32,20 +32,18 @@ public class ControlInputs {
     }
     
     public class Triggers {
-        public final Trigger driveControllerButtonA = driveController.a();
-        public final Trigger driveControllerButtonB = driveController.b();
-        public final Trigger driveControllerButtonX = driveController.x();
-        public final Trigger driveControllerButtonY = driveController.y();
-        public final Trigger driveControllerDpadUp = driveController.povUp();
-        public final Trigger driveControllerDpadDown = driveController.povDown();
+        public final Trigger driveButtonA = driveController.a();
+        public final Trigger driveButtonB = driveController.b();
+        public final Trigger driveButtonX = driveController.x();
+        public final Trigger driveButtonY = driveController.y();
 
-        public final Trigger sysOpControllerDpadUp = sysOpController.povUp();
-        public final Trigger sysOpControllerDpadDown = sysOpController.povDown();
-        public final Trigger sysOpControllerDpadLeft = sysOpController.povLeft();
-        public final Trigger sysOpControllerDpadRight = sysOpController.povRight();
-        public final Trigger sysOpControllerLeftBumper = sysOpController.leftBumper();
-        public final Trigger sysOpControllerRightBumper = sysOpController.rightBumper();
-        public final Trigger sysOpControllerLeftTrigger = sysOpController.leftTrigger();
-        public final Trigger sysOpControllerRightTrigger = sysOpController.rightTrigger();
+        public final Trigger sysOpDpadUp = sysOpController.povUp();
+        public final Trigger sysOpDpadDown = sysOpController.povDown();
+        public final Trigger sysOpDpadLeft = sysOpController.povLeft();
+        public final Trigger sysOpDpadRight = sysOpController.povRight();
+        public final Trigger sysOpLeftBumper = sysOpController.leftBumper();
+        public final Trigger sysOpRightBumper = sysOpController.rightBumper();
+        public final Trigger sysOpLeftTrigger = sysOpController.leftTrigger();
+        public final Trigger sysOpRightTrigger = sysOpController.rightTrigger();
     }
 }

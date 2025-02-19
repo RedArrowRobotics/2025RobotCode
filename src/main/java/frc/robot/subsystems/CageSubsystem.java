@@ -8,37 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class CageSubsystem extends SubsystemBase {
-SparkMax cageGrabber = new SparkMax(Constants.cageGrabberMotorId, MotorType.kBrushed);
-SparkMax cageClimber = new SparkMax(Constants.cageClimberMotorId, MotorType.kBrushed);
-/**
- *  Rotates a bar to hold the cage in place for climbing.
- */
-  public Command holdCage() {
-    return startEnd(
-        () -> {
-          cageGrabber.set(.5);
-        },
-        () -> {
-          cageGrabber.set(0);
-        }
-        ).until(() -> cageGrabber.getEncoder().equals(Constants.cageGrabberHoldPosition));
-        //getEncoder or getPosition?
-  }
-
-/**
- *  Rotates the bar back to the starting position so the cage is free to move.
- */
-  public Command releaseCage() {
-    return startEnd(
-        () -> {
-          cageGrabber.set(-.5);
-        },
-        () -> {
-          cageGrabber.set(0);
-        }
-        ).until(() -> cageGrabber.getEncoder().equals(Constants.cageGrabberReleasePosition));
-        //getEncoder or getPosition?
-  }
+SparkMax cageClimber = new SparkMax(Constants.cageClimberMotorId, MotorType.kBrushless);
 
   /**
    *  Pushes down on the cage to raise the robot.
