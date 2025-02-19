@@ -16,7 +16,6 @@ public class Constants {
     public static int elevatorMotorId = 16; //16 and 17 for elevator, need two motors
     public static int deAlgaeFlipperId = 19;
     public static int deAlgaeWheelsId = 20;
-    public static int cageGrabberMotorId = 18; //NOT USING
     public static int cageClimberMotorId = 15;
 
     public static double cageGrabberReleasePosition = 0.0;
