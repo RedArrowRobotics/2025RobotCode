@@ -62,20 +62,20 @@ public class RobotContainer {
                     DriveOrientation.FIELD_CENTRIC));
             
             coralScoringDevice = new CoralScoringDeviceSubsystem();
-            controlTriggers.driveControllerButtonB.toggleOnTrue(coralScoringDevice.grabCoral());
+            controlTriggers.driveButtonB.toggleOnTrue(coralScoringDevice.grabCoral());
             coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
             elevator = new ElevatorSubsystem();
-            controlTriggers.sysOpControllerDpadUp.onTrue(elevator.elevatorHome());
-            controlTriggers.sysOpControllerDpadDown.onTrue(elevator.elevatorL2());
-            controlTriggers.sysOpControllerDpadLeft.onTrue(elevator.elevatorL3());
-            controlTriggers.sysOpControllerDpadRight.onTrue(elevator.elevatorL4());
-            controlTriggers.sysOpControllerLeftTrigger.onTrue(elevator.dealgaeExtend());
-            controlTriggers.sysOpControllerRightTrigger.onTrue(elevator.dealgaeRetract());
-            controlTriggers.sysOpControllerLeftBumper.onTrue(elevator.dealgaeStartSpin());
-            controlTriggers.sysOpControllerRightBumper.onTrue(elevator.dealgaeStopSpin());
+            controlTriggers.sysOpDpadUp.onTrue(elevator.elevatorHome());
+            controlTriggers.sysOpDpadDown.onTrue(elevator.elevatorL2());
+            controlTriggers.sysOpDpadLeft.onTrue(elevator.elevatorL3());
+            controlTriggers.sysOpDpadRight.onTrue(elevator.elevatorL4());
+            controlTriggers.sysOpLeftTrigger.onTrue(elevator.dealgaeExtend());
+            controlTriggers.sysOpRightTrigger.onTrue(elevator.dealgaeRetract());
+            controlTriggers.sysOpLeftBumper.onTrue(elevator.dealgaeStartSpin());
+            controlTriggers.sysOpRightBumper.onTrue(elevator.dealgaeStopSpin());
             cage = new CageSubsystem();
-            controlTriggers.driveControllerButtonY.toggleOnTrue(cage.ascend());
-            controlTriggers.driveControllerButtonX.toggleOnTrue(cage.descend());
+            controlTriggers.driveButtonY.toggleOnTrue(cage.ascend());
+            controlTriggers.driveButtonX.toggleOnTrue(cage.descend());
             var commands = new AlignToReef(swerveDriveTrain);
 
         autoChooser = AutoBuilder.buildAutoChooser();
