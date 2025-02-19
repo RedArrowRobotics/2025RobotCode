@@ -10,8 +10,8 @@ import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 SparkMax elevatorMotor = new SparkMax(Constants.elevatorMotorId, MotorType.kBrushed);
-SparkMax dealgaeFlipper = new SparkMax(Constants.dealgaeFlipperId, MotorType.kBrushed);
-SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrushed);
+SparkMax dealgaeFlipper = new SparkMax(Constants.deAlgaeFlipperId, MotorType.kBrushed);
+SparkMax dealgaeWheels = new SparkMax(Constants.deAlgaeWheelsId, MotorType.kBrushed);
 PIDController elevatorPID = new PIDController(0.1, 0, 0);
 
   /**
