@@ -1,34 +1,71 @@
 package frc.robot.encoder;
 
-import static edu.wpi.first.units.Units.Minute;
 import static edu.wpi.first.units.Units.Revolutions;
 import static edu.wpi.first.units.Units.Value;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.DimensionlessUnit;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Dimensionless;
 
 public class AngleAbsoluteEncoder implements AngleEncoder {
     AbsoluteEncoder encoder;
-    Dimensionless gearRatio;
-
+    Measure<PerUnit<DimensionlessUnit,AngleUnit>> ppm;
+    double gearRatio;
+    
+    /**
+     * Creates a new angle-based encoder from an absolute encoder.
+     * @param encoder - the relative encoder to wrap.
+     */
     public AngleAbsoluteEncoder(AbsoluteEncoder encoder) {
-        this(encoder,Value.one());
+        this(encoder,Value.one().div(Revolutions.one()),1.0);
     }
-    public AngleAbsoluteEncoder(AbsoluteEncoder encoder, Dimensionless gearRatio) {
+    
+    /**
+     * Creates a new angle-based encoder from an absolute encoder.
+     * @param encoder - the relative encoder to wrap.
+     * @param gearRatio - an additional multiplier on the reported angle
+     */
+    public AngleAbsoluteEncoder(AbsoluteEncoder encoder, double gearRatio) {
+        this(encoder,Value.one().div(Revolutions.one()),gearRatio);
+    }
+    
+    /**
+     * Creates a new angle-based encoder from an absolute encoder.
+     * @param encoder - the relative encoder to wrap.
+     * @param ppm - the ratio of encoder pulses to motor revolutions
+     */
+    public AngleAbsoluteEncoder(AbsoluteEncoder encoder, Measure<PerUnit<DimensionlessUnit,AngleUnit>> ppm) {
+        this(encoder,ppm,1.0);
+    }
+    
+    /**
+     * Creates a new angle-based encoder from an absolute encoder.
+     * @param encoder - the relative encoder to wrap.
+     * @param ppm - the ratio of encoder pulses to motor revolutions
+     * @param gearRatio - an additional multiplier on the reported angle
+     */
+    public AngleAbsoluteEncoder(AbsoluteEncoder encoder, Measure<PerUnit<DimensionlessUnit,AngleUnit>> ppm, double gearRatio) {
         this.encoder = encoder;
+        this.ppm = ppm;
         this.gearRatio = gearRatio;
     }
 
     public Angle getAngle() {
-        return Revolutions.of(encoder.getPosition()).times(gearRatio);
+        var position = Value.of(encoder.getPosition());
+        var revolutions = (Angle) (position.div(ppm));
+        var geared = revolutions.times(gearRatio);
+        return geared;
     }
 
     public AngularVelocity getAngularVelocity() {
-        return Revolutions.per(Minute).of(encoder.getVelocity()).times(gearRatio);
+        var position = Value.of(encoder.getVelocity());
+        var revolutions = (AngularVelocity) (position.div(ppm));
+        var geared = revolutions.times(gearRatio);
+        return geared;
     }
 }
