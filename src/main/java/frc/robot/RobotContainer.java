@@ -23,10 +23,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.CageSubsystem;
 import frc.robot.subsystems.CoralScoringDeviceSubsystem;
 import frc.robot.commands.AlignToReef;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -41,34 +43,41 @@ public class RobotContainer {
     private final ControlInputs.Triggers controlTriggers = controlInputs.new Triggers();
     private final DriveSubsystem swerveDriveTrain;
     private final CoralScoringDeviceSubsystem coralScoringDevice;
+    private final ElevatorSubsystem elevator;
     private final SensorInputs sensorInputs = new SensorInputs();
-    private final SendableChooser<Command> autoChooser;
-    private Command autoSelected;
+    private final CageSubsystem cage;
+        private final SendableChooser<Command> autoChooser;
+        private Command autoSelected;
+    
+        /**
+         * This function is run when the robot is first started up and should be used
+         * for any
+         * initialization code.
+         */
+    
+        public RobotContainer() throws IOException, Exception {
+            swerveDriveTrain = new DriveSubsystem();
+            swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
+                    () -> controlInputs.getdriveController().toSwerve(),
+                    DriveOrientation.FIELD_CENTRIC));
+            
+            coralScoringDevice = new CoralScoringDeviceSubsystem();
+            controlTriggers.driveButtonB.toggleOnTrue(coralScoringDevice.grabCoral());
+            coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
+            elevator = new ElevatorSubsystem();
+            controlTriggers.sysOpDpadUp.onTrue(elevator.elevatorHome());
+            controlTriggers.sysOpDpadDown.onTrue(elevator.elevatorL2());
+            controlTriggers.sysOpDpadLeft.onTrue(elevator.elevatorL3());
+            controlTriggers.sysOpDpadRight.onTrue(elevator.elevatorL4());
+            controlTriggers.sysOpLeftTrigger.onTrue(elevator.dealgaeExtend());
+            controlTriggers.sysOpRightTrigger.onTrue(elevator.dealgaeRetract());
+            controlTriggers.sysOpLeftBumper.onTrue(elevator.dealgaeStartSpin());
+            controlTriggers.sysOpRightBumper.onTrue(elevator.dealgaeStopSpin());
+            cage = new CageSubsystem();
+            controlTriggers.driveButtonY.toggleOnTrue(cage.ascend());
+            controlTriggers.driveButtonX.toggleOnTrue(cage.descend());
+            var commands = new AlignToReef(swerveDriveTrain);
 
-    /**
-     * This function is run when the robot is first started up and should be used
-     * for any
-     * initialization code.
-     */
-    public RobotContainer() throws IOException, Exception {
-        swerveDriveTrain = new DriveSubsystem();
-        swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
-                () -> controlInputs.getDriveStick().toSwerve(),
-                DriveOrientation.FIELD_CENTRIC));
-        
-        coralScoringDevice = new CoralScoringDeviceSubsystem();
-        controlTriggers.driveStickB.toggleOnTrue(coralScoringDevice.grabCoral());
-        coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
-
-        controlTriggers.driveStickA.onTrue(coralScoringDevice.loadCoralPosition());
-        controlTriggers.driveStickX.onTrue(coralScoringDevice.placeCoralPositionL2L3());
-        controlTriggers.driveStickY.onTrue(coralScoringDevice.placeCoralPositionL4());
-        
-        var commands = new AlignToReef(swerveDriveTrain);
-
-        // PathPlanner Commands
-        NamedCommands.registerCommand("Align to Reef", commands.alignToReef(Meters.of(0)));
-        
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
