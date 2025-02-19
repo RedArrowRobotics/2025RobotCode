@@ -13,11 +13,12 @@ public class Constants {
     public static List<Integer> blueReefATags = List.of(17,18,19,20,21,22);
     public static List<Integer> redReefATags = List.of(6,7,8,9,10,11);
 
-    public static int elevatorMotorId = 19;
-    public static int dealgaeFlipperId = 17;
-    public static int dealgaeWheelsId = 18;
-    public static int cageGrabberMotorId = 15;
-    public static int cageClimberMotorId = 16;
+    public static int elevatorMotor1Id = 16;
+    public static int elevatorMotor2Id = 17;
+    public static int dealgaeFlipperId = 19;
+    public static int dealgaeWheelsId = 20;
+    public static int cageGrabberMotorId = 18;
+    public static int cageClimberMotorId = 15;
 
     public static double cageGrabberReleasePosition = 0.0;
     public static double cageGrabberHoldPosition = 0.5;

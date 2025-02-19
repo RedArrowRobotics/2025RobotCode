@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
-SparkMax elevatorMotor = new SparkMax(Constants.elevatorMotorId, MotorType.kBrushed);
+SparkMax elevatorMotor1 = new SparkMax(Constants.elevatorMotor1Id, MotorType.kBrushed);
+SparkMax elevatorMotor2 = new SparkMax(Constants.elevatorMotor2Id, MotorType.kBrushed);
 SparkMax dealgaeFlipper = new SparkMax(Constants.dealgaeFlipperId, MotorType.kBrushed);
 SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrushed);
 PIDController elevatorPID = new PIDController(0.1, 0, 0);
@@ -20,12 +21,12 @@ PIDController elevatorPID = new PIDController(0.1, 0, 0);
   public Command elevatorHome() {
     return startEnd(
         () -> {
-          elevatorMotor.set(.5);
+          elevatorMotor1.set(.5);
         },
         () -> {
-          elevatorMotor.set(0);
+          elevatorMotor1.set(0);
         }
-        ).until(() -> elevatorMotor.getEncoder().equals(Constants.elevatorMotorHomePosition));
+        ).until(() -> elevatorMotor1.getEncoder().equals(Constants.elevatorMotorHomePosition));
         //getEncoder or getPosition?
   }
 
@@ -35,12 +36,12 @@ PIDController elevatorPID = new PIDController(0.1, 0, 0);
   public Command elevatorL2() {
       return startEnd(
         () -> {
-          elevatorMotor.set(.5);
+          elevatorMotor1.set(.5);
         },
         () -> {
-          elevatorMotor.set(0);
+          elevatorMotor1.set(0);
         }
-        ).until(() -> elevatorMotor.getEncoder().equals(Constants.elevatorMotorL2Position));
+        ).until(() -> elevatorMotor1.getEncoder().equals(Constants.elevatorMotorL2Position));
         //getEncoder or getPosition?
   }
   
@@ -50,12 +51,12 @@ PIDController elevatorPID = new PIDController(0.1, 0, 0);
   public Command elevatorL3() {
     return startEnd(
         () -> {
-          elevatorMotor.set(.5);
+          elevatorMotor1.set(.5);
         },
         () -> {
-          elevatorMotor.set(0);
+          elevatorMotor1.set(0);
         }
-        ).until(() -> elevatorMotor.getEncoder().equals(Constants.elevatorMotorL3Position));
+        ).until(() -> elevatorMotor1.getEncoder().equals(Constants.elevatorMotorL3Position));
         //getEncoder or getPosition?
   }
   
@@ -65,12 +66,12 @@ PIDController elevatorPID = new PIDController(0.1, 0, 0);
   public Command elevatorL4() {
     return startEnd(
         () -> {
-          elevatorMotor.set(.5);
+          elevatorMotor1.set(.5);
         },
         () -> {
-          elevatorMotor.set(0);
+          elevatorMotor1.set(0);
         }
-        ).until(() -> elevatorMotor.getEncoder().equals(Constants.elevatorMotorL4Position));
+        ).until(() -> elevatorMotor1.getEncoder().equals(Constants.elevatorMotorL4Position));
         //getEncoder or getPosition?
   }
   
@@ -80,10 +81,10 @@ PIDController elevatorPID = new PIDController(0.1, 0, 0);
   public Command dealgaeExtend() {
     return startEnd(
         () -> {
-          elevatorMotor.set(.5);
+          elevatorMotor1.set(.5);
         },
         () -> {
-          elevatorMotor.set(0);
+          elevatorMotor1.set(0);
         }
         ).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperExtendedPosition));
         //getEncoder or getPosition?
@@ -95,10 +96,10 @@ PIDController elevatorPID = new PIDController(0.1, 0, 0);
   public Command dealgaeRetract() {
     return startEnd(
         () -> {
-          elevatorMotor.set(.5);
+          elevatorMotor1.set(.5);
         },
         () -> {
-          elevatorMotor.set(0);
+          elevatorMotor1.set(0);
         }
         ).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperRetractedPosition));
         //getEncoder or getPosition?
