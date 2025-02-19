@@ -36,8 +36,6 @@ public class ControlInputs {
         public final Trigger driveControllerButtonB = driveController.b();
         public final Trigger driveControllerButtonX = driveController.x();
         public final Trigger driveControllerButtonY = driveController.y();
-        public final Trigger driveControllerDpadUp = driveController.povUp();
-        public final Trigger driveControllerDpadDown = driveController.povDown();
 
         public final Trigger sysOpControllerDpadUp = sysOpController.povUp();
         public final Trigger sysOpControllerDpadDown = sysOpController.povDown();

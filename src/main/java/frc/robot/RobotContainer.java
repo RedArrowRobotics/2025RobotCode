@@ -76,8 +76,6 @@ public class RobotContainer {
             cage = new CageSubsystem();
             controlTriggers.driveControllerButtonY.toggleOnTrue(cage.ascend());
             controlTriggers.driveControllerButtonX.toggleOnTrue(cage.descend());
-            controlTriggers.driveControllerDpadDown.onTrue(cage.holdCage());
-            controlTriggers.driveControllerDpadUp.onTrue(cage.releaseCage());
             var commands = new AlignToReef(swerveDriveTrain);
 
         autoChooser = AutoBuilder.buildAutoChooser();
