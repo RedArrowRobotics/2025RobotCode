@@ -1,11 +1,13 @@
 package frc.robot.encoder;
 
+import static edu.wpi.first.units.Units.Minutes;
 import static edu.wpi.first.units.Units.Revolutions;
 import static edu.wpi.first.units.Units.Value;
 
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
@@ -57,14 +59,14 @@ public class AngleRelativeEncoder implements AngleEncoder {
 
     public Angle getAngle() {
         var position = Value.of(encoder.getPosition());
-        var revolutions = (Angle) (position.div(ppm));
+        var revolutions = BaseUnits.AngleUnit.of(position.div(ppm).baseUnitMagnitude());
         var geared = revolutions.times(gearRatio);
         return geared;
     }
 
     public AngularVelocity getAngularVelocity() {
-        var position = Value.of(encoder.getVelocity());
-        var revolutions = (AngularVelocity) (position.div(ppm));
+        var position = Value.of(encoder.getVelocity()).div(Minutes.one());
+        var revolutions = BaseUnits.AngleUnit.per(BaseUnits.TimeUnit).of(position.div(ppm).baseUnitMagnitude());
         var geared = revolutions.times(gearRatio);
         return geared;
     }
