@@ -41,7 +41,7 @@ public class AngleRelativeEncoder implements AngleEncoder {
      * @param encoder - the relative encoder to wrap.
      * @param ppm - the ratio of encoder pulses to motor revolutions
      */
-    public <T extends PerUnit<DimensionlessUnit,AngleUnit>> AngleRelativeEncoder(RelativeEncoder encoder, Measure<T> ppm) {
+    public AngleRelativeEncoder(RelativeEncoder encoder, Measure<? extends PerUnit<DimensionlessUnit,AngleUnit>> ppm) {
         this(encoder,ppm,1.0);
     }
 
@@ -52,7 +52,7 @@ public class AngleRelativeEncoder implements AngleEncoder {
      * @param gearRatio - an additional multiplier on the reported angle
      */
     @SuppressWarnings("unchecked")
-    public <T extends PerUnit<DimensionlessUnit,AngleUnit>> AngleRelativeEncoder(RelativeEncoder encoder, Measure<T> ppm, double gearRatio) {
+    public AngleRelativeEncoder(RelativeEncoder encoder, Measure<? extends PerUnit<DimensionlessUnit,AngleUnit>> ppm, double gearRatio) {
         this.encoder = encoder;
         this.ppm = (Measure<PerUnit<DimensionlessUnit,AngleUnit>>) ppm;
         this.gearRatio = gearRatio;
