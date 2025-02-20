@@ -1,0 +1,80 @@
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Value;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import frc.robot.encoder.AngleGenericEncoder;
+
+public class EncoderTests {
+    /**
+     * Test that an encoder that hasn't rotated returns an angle of 0°.
+     */
+    @Test
+    void passthrough_rotation_null() {
+        try(Encoder raw = new Encoder(0, 1)) {
+            var sim = new EncoderSim(raw);
+            sim.setDistance(0.0);
+            var encoder = new AngleGenericEncoder(raw);
+            assertEquals(Rotations.zero().baseUnitMagnitude(),encoder.getAngle().baseUnitMagnitude(), 0.01);
+        }
+    }
+
+    /**
+     * Test that an encoder that has rotated a full rotation returns an angle of 360°.
+     */
+    @Test
+    void passthrough_rotation() {
+        try(Encoder raw = new Encoder(0, 1)) {
+            var sim = new EncoderSim(raw);
+            sim.setDistance(1.0);
+            var encoder = new AngleGenericEncoder(raw);
+            assertEquals(Rotations.one().baseUnitMagnitude(),encoder.getAngle().baseUnitMagnitude(), 0.01);
+        }
+    }
+
+    /**
+     * Test that an encoder geared 1:2 rotates half the distance.
+     */
+    @Test
+    void geared_rotation() {
+        try(Encoder raw = new Encoder(0, 1)) {
+            var sim = new EncoderSim(raw);
+            sim.setDistance(1.0);
+            var encoder = new AngleGenericEncoder(raw, 0.5);
+            assertEquals(Degrees.of(180).baseUnitMagnitude(),encoder.getAngle().baseUnitMagnitude(), 0.01);
+        }
+    }
+
+    /**
+     * Test that an encoder with 2 PPM rotates at half speed.
+     */
+    @Test
+    void ppm_rotation() {
+        try(Encoder raw = new Encoder(0, 1)) {
+            var sim = new EncoderSim(raw);
+            sim.setDistance(1.0);
+            var encoder = new AngleGenericEncoder(raw, Value.per(Rotations).of(2));
+            assertEquals(Degrees.of(180).baseUnitMagnitude(),encoder.getAngle().baseUnitMagnitude(), 0.01);
+        }
+    }
+
+    /**
+     * Test that PPM and gear ratio have combined effect.
+     */
+    @Test
+    void ppm_geared_rotation() {
+        try(Encoder raw = new Encoder(0, 1)) {
+            var sim = new EncoderSim(raw);
+            sim.setDistance(1.0);
+            var encoder = new AngleGenericEncoder(raw, Value.per(Rotations).of(2), 0.5);
+            assertEquals(Degrees.of(90).baseUnitMagnitude(),encoder.getAngle().baseUnitMagnitude(), 0.01);
+        }
+    }
+}
