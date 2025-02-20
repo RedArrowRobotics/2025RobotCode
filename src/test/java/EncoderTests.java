@@ -1,6 +1,7 @@
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Value;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -93,6 +94,22 @@ public class EncoderTests {
                 Centimeters.per(Rotations).of(8)
             );
             assertEquals(Centimeters.of(2).baseUnitMagnitude(),encoder.getPosition().baseUnitMagnitude(), 0.01);
+        }
+    }
+
+    /**
+     * Test that an encoder reports the correct rate.
+     */
+    @Test
+    void rate() {
+        try(Encoder raw = new Encoder(0, 1)) {
+            var sim = new EncoderSim(raw);
+            sim.setRate(1.0);
+            var encoder = new DistanceEncoder(
+                new AngleGenericEncoder(raw, Value.per(Rotations).of(2), 0.5), 
+                Centimeters.per(Rotations).of(8)
+            );
+            assertEquals(Centimeters.per(Seconds).of(2).baseUnitMagnitude(),encoder.getPosition().baseUnitMagnitude(), 0.01);
         }
     }
 }
