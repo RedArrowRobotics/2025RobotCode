@@ -1,3 +1,4 @@
+import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Value;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import frc.robot.encoder.AngleGenericEncoder;
+import frc.robot.encoder.DistanceEncoder;
 
 public class EncoderTests {
     /**
@@ -75,6 +77,22 @@ public class EncoderTests {
             sim.setDistance(1.0);
             var encoder = new AngleGenericEncoder(raw, Value.per(Rotations).of(2), 0.5);
             assertEquals(Degrees.of(90).baseUnitMagnitude(),encoder.getAngle().baseUnitMagnitude(), 0.01);
+        }
+    }
+
+    /**
+     * Test that a linear encoder reports the correct distance.
+     */
+    @Test
+    void linear() {
+        try(Encoder raw = new Encoder(0, 1)) {
+            var sim = new EncoderSim(raw);
+            sim.setDistance(1.0);
+            var encoder = new DistanceEncoder(
+                new AngleGenericEncoder(raw, Value.per(Rotations).of(2), 0.5), 
+                Centimeters.per(Rotations).of(8)
+            );
+            assertEquals(Centimeters.of(2).baseUnitMagnitude(),encoder.getPosition().baseUnitMagnitude(), 0.01);
         }
     }
 }
