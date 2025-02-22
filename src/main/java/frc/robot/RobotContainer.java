@@ -68,18 +68,22 @@ public class RobotContainer {
                     DriveOrientation.FIELD_CENTRIC));
             
             coralArm = new CoralScoringDeviceSubsystem();
+            cage = new CageSubsystem();
+            elevator = new ElevatorSubsystem();
+
             controlTriggers.driveButtonB.toggleOnTrue(coralArm.grabCoral());
             coralArm.reefTrigger.toggleOnTrue(coralArm.dropCoral());
-            elevator = new ElevatorSubsystem();
             controlTriggers.elevatorHome.onTrue(coralArm.loadCoralPosition().andThen(elevator.elevatorHome()));
             controlTriggers.elevatorL2.onTrue(elevator.elevatorL2().andThen(coralArm.scoreCoralPosition));
             controlTriggers.elevatorL3.onTrue(elevator.elevatorL3());
             controlTriggers.elevatorL4.onTrue(elevator.elevatorL4());
+            
+            controlTriggers.coralWheels.toggleOnTrue(coralScoringDevice.grabCoral());
+            coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
             controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
             controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
-            cage = new CageSubsystem();
-            controlTriggers.driveButtonY.toggleOnTrue(cage.ascend());
-            controlTriggers.driveButtonX.toggleOnTrue(cage.descend());
+            controlTriggers.climberDescend.toggleOnTrue(cage.descend());
+            controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
             var commands = new AlignToReef(swerveDriveTrain);
 
         autoChooser = AutoBuilder.buildAutoChooser();
