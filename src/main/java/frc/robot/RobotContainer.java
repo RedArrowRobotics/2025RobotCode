@@ -78,8 +78,9 @@ public class RobotContainer {
             controlTriggers.elevatorL3.onTrue(elevator.elevatorL3());
             controlTriggers.elevatorL4.onTrue(elevator.elevatorL4());
             
-            controlTriggers.coralWheels.toggleOnTrue(coralScoringDevice.grabCoral());
-            coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
+            controlTriggers.coralWheels.toggleOnTrue(coralArm.grabCoral());
+            coralArm.reefTrigger.toggleOnTrue(coralArm.dropCoral());
+
             controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
             controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
             controlTriggers.climberDescend.toggleOnTrue(cage.descend());
