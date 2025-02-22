@@ -45,7 +45,7 @@ public enum ElevatorPositions {
 public void periodic() {
   double power;
   power = elevatorPID.calculate(elevatorMotor1.getEncoder().getPosition(), target.getEncoderPosition()) + feedForward;
-  elevatorMotor1.setVoltage(power);
+  elevatorMotor1.set(power);
 }
 
   /**
