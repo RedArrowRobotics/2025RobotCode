@@ -42,7 +42,7 @@ public class RobotContainer {
     private final ControlInputs controlInputs = new ControlInputs();
     private final ControlInputs.Triggers controlTriggers = controlInputs.new Triggers();
     private final DriveSubsystem swerveDriveTrain;
-    private final CoralScoringDeviceSubsystem coralScoringDevice;
+    private final CoralScoringDeviceSubsystem coralArm;
     private final ElevatorSubsystem elevator;
     private final SensorInputs sensorInputs = new SensorInputs();
     private final CageSubsystem cage;
@@ -67,20 +67,18 @@ public class RobotContainer {
                     },
                     DriveOrientation.FIELD_CENTRIC));
             
-            coralScoringDevice = new CoralScoringDeviceSubsystem();
-            controlTriggers.driveButtonA.toggleOnTrue(coralScoringDevice.loadCoralPosition());
-            controlTriggers.driveButtonY.toggleOnTrue(coralScoringDevice.scoreCoralPosition());
-           // coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
+            coralArm = new CoralScoringDeviceSubsystem();
             elevator = new ElevatorSubsystem();
-            controlTriggers.elevatorHome.onTrue(elevator.elevatorHome());
-            controlTriggers.elevatorL2.onTrue(elevator.elevatorL2());
-            controlTriggers.elevatorL3.onTrue(elevator.elevatorL3());
-            controlTriggers.elevatorL4.onTrue(elevator.elevatorL4());
+            cage = new CageSubsystem();
+
+            controlTriggers.elevatorHome.onTrue(coralArm.loadCoralPosition().andThen(elevator.elevatorHome()));
+            controlTriggers.elevatorL2.onTrue(elevator.elevatorL2().andThen(coralArm.scoreCoralPosition()));
+            controlTriggers.elevatorL3.onTrue(elevator.elevatorL3().andThen(coralArm.scoreCoralPosition()));
+            controlTriggers.elevatorL4.onTrue(elevator.elevatorL4().andThen(coralArm.scoreCoralPosition()));
+
             controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
             controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
-            cage = new CageSubsystem();
-            //controlTriggers.driveButtonY.toggleOnTrue(cage.ascend());
-           // controlTriggers.driveButtonX.toggleOnTrue(cage.descend());
+         
             var commands = new AlignToReef(swerveDriveTrain);
 
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -101,7 +99,7 @@ public class RobotContainer {
 
     public void robotPeriodic() {
         sensorInputs.readSensors();
-        SmartDashboard.putData(coralScoringDevice);
+        SmartDashboard.putData(coralArm);
     }
 
     public void teleopPeriodic() {
