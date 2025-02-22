@@ -34,13 +34,12 @@ public class ControlInputs {
         public final Trigger elevatorL2 = new Trigger(() -> componentsBoard.getRawButtonPressed(2));
         public final Trigger elevatorL3 = new Trigger(() -> componentsBoard.getRawButtonPressed(3));
         public final Trigger elevatorL4 = new Trigger(() -> componentsBoard.getRawButtonPressed(4));
-        public final Trigger coralWheels = new Trigger(() -> componentsBoard.getRawButtonPressed(5));
-        public final Trigger deAlgae = new Trigger(() -> componentsBoard.getRawButtonPressed(6));
-        public final Trigger climberDescend = new Trigger(() -> componentsBoard.getRawButton(7));
-        public final Trigger climberAscend = new Trigger(() -> componentsBoard.getRawButton(8));
-        public final Trigger alignReefLeft = new Trigger(() -> componentsBoard.getRawButton(9));
-        public final Trigger alignReefRight = new Trigger(() -> componentsBoard.getRawButton(10));
-        public final Trigger alignSource = new Trigger(() -> componentsBoard.getRawButton(11));
+        public final Trigger deAlgae = new Trigger(() -> componentsBoard.getRawButtonPressed(5));
+        public final Trigger climberDescend = new Trigger(() -> componentsBoard.getRawButton(6));
+        public final Trigger climberAscend = new Trigger(() -> componentsBoard.getRawButton(7));
+        public final Trigger alignReefLeft = new Trigger(() -> componentsBoard.getRawButton(10));
+        public final Trigger alignReefRight = new Trigger(() -> componentsBoard.getRawButton(11));
+        public final Trigger alignSource = new Trigger(() -> componentsBoard.getRawButton(12));
 
         public final Trigger driveButtonA = driveController.a();
         public final Trigger driveButtonB = driveController.b();
