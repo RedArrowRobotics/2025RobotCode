@@ -58,7 +58,13 @@ public class RobotContainer {
         public RobotContainer() throws IOException, Exception {
             swerveDriveTrain = new DriveSubsystem();
             swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
-                    () -> controlInputs.getdriveController().toSwerve(),
+                    () -> {
+                        var power = controlInputs.getdriveController().toSwerve();
+                        if (controlTriggers.driveButtonA.getAsBoolean()) {
+                            power = power.times(0.5);
+                        }
+                        return power;
+                    },
                     DriveOrientation.FIELD_CENTRIC));
             
             coralScoringDevice = new CoralScoringDeviceSubsystem();
