@@ -67,19 +67,23 @@ public class RobotContainer {
                     },
                     DriveOrientation.FIELD_CENTRIC));
             
-            coralArm = new CoralScoringDeviceSubsystem();
-            elevator = new ElevatorSubsystem();
-            cage = new CageSubsystem();
+        coralArm = new CoralScoringDeviceSubsystem();
+        elevator = new ElevatorSubsystem();
+        cage = new CageSubsystem();
 
-            controlTriggers.elevatorHome.onTrue(coralArm.loadCoralPosition().andThen(elevator.elevatorHome()));
-            controlTriggers.elevatorL2.onTrue(elevator.elevatorL2().andThen(coralArm.scoreCoralPosition()));
-            controlTriggers.elevatorL3.onTrue(elevator.elevatorL3().andThen(coralArm.scoreCoralPosition()));
-            controlTriggers.elevatorL4.onTrue(elevator.elevatorL4().andThen(coralArm.scoreCoralPosition()));
+        controlTriggers.elevatorHome.onTrue(coralArm.loadCoralPosition().andThen(elevator.elevatorHome()));
+        controlTriggers.elevatorL2.onTrue(elevator.elevatorL2().andThen(coralArm.scoreCoralPosition()));
+        controlTriggers.elevatorL3.onTrue(elevator.elevatorL3().andThen(coralArm.scoreCoralPosition()));
+        controlTriggers.elevatorL4.onTrue(elevator.elevatorL4().andThen(coralArm.scoreCoralPosition()));
 
-            controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
-            controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
-         
-            var commands = new AlignToReef(swerveDriveTrain);
+        controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
+        controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
+        controlTriggers.coralWheels.toggleOnTrue(coralArm.grabCoral());
+        coralArm.reefTrigger.toggleOnTrue(coralArm.dropCoral());
+
+        controlTriggers.climberDescend.toggleOnTrue(cage.descend());
+        controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
+        var commands = new AlignToReef(swerveDriveTrain);
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
