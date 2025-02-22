@@ -1,6 +1,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Degrees;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Angle;
 
 public class Constants {
 
@@ -40,7 +42,6 @@ public class Constants {
     public static int reefSensorChannel = 2;
 
     public static Time coralDropTimeout = Seconds.of(3.0);
-    public static double scorerTilterScoringPositionL2L3 = 10.0;
-    public static double scorerTilterScoringPositionL4 = 20.0;
-    public static double scorerTilterLoadingPosition = 0.0;
+    public static Angle scorerTilterScoringPosition = Degrees.of(135.0);
+    public static Angle scorerTilterLoadingPosition = Degrees.of(0.0);
 }
