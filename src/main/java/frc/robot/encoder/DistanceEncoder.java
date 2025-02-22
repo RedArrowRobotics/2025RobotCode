@@ -1,6 +1,7 @@
 package frc.robot.encoder;
 
 import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
@@ -18,9 +19,10 @@ public class DistanceEncoder implements AngleEncoder, LinearEncoder {
      * @param encoder - angle-based encoder to wrap
      * @param travel - distance the attached mechanism travels per unit of angle (for example, the circumerence of a wheel)
      */
-    public DistanceEncoder(AngleEncoder encoder, Measure<PerUnit<DistanceUnit,AngleUnit>> travel) {
+    @SuppressWarnings("unchecked")
+    public <T extends PerUnit<DistanceUnit,AngleUnit>> DistanceEncoder(AngleEncoder encoder, Measure<T> travel) {
         this.encoder = encoder;
-        this.travel = travel;
+        this.travel = (Measure<PerUnit<DistanceUnit,AngleUnit>>) travel;
     }
 
     public Angle getAngle() {
