@@ -1,16 +1,21 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
-import frc.robot.commands.CoralScoringArm;
+import frc.robot.encoder.AngleEncoder;
+import frc.robot.encoder.AngleRelativeEncoder;
+import edu.wpi.first.units.measure.Angle;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
   SparkMax intakeWheels = new SparkMax(Constants.intakeWheelsMotorID, MotorType.kBrushed);
@@ -18,17 +23,54 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   private DigitalInput coralSensor = new DigitalInput(Constants.coralSensorChannel);
   private DigitalInput reefSensor = new DigitalInput(Constants.reefSensorChannel);
   public final Trigger reefTrigger = new Trigger(() -> {return armIsInPosition() && isCoralOverReef();});
-  public CoralArmPosition coralArmPosition = CoralArmPosition.HOME;
+  public CoralArmPosition target = CoralArmPosition.HOME;
+  public CoralArmPosition current = CoralArmPosition.HOME;
+  PIDController coralArmPID = new PIDController(0.1, 0.0, 0.0);
+  public double feedForward = 0.0;
+  public AngleEncoder angleEncoder;
 
   public CoralScoringDeviceSubsystem() {
-    scorerTilter.getEncoder().setPosition(0);
+    RelativeEncoder encoder = scorerTilter.getEncoder();
+    coralArmPID.setTolerance(Degrees.of(1.0).in(Degrees));
+    encoder.setPosition(0.0);
+    angleEncoder = new AngleRelativeEncoder(encoder);
   }
 
   public enum CoralArmPosition {
-    HOME,
-    L2L3,
-    L4,
-    NONE
+    HOME(Constants.scorerTilterLoadingPosition),
+    SCORE(Constants.scorerTilterScoringPosition),
+    NONE(Degrees.of(0.0));
+
+    private Angle encoderPosition;
+
+    private CoralArmPosition(Angle encoderPosition) {
+      this.encoderPosition = encoderPosition;
+    }
+
+    public Angle getEncoderPosition() {
+      return encoderPosition;
+    }
+  }
+
+  @Override
+  public void periodic() {
+    double power;
+    power = coralArmPID.calculate(angleEncoder.getAngle().in(Degrees), target.getEncoderPosition().in(Degrees)) + feedForward;
+    scorerTilter.set(power * -1.0);
+  }
+
+  private Command goToPosition(CoralArmPosition targetPosition) {
+    return startEnd(
+      () -> {
+        target = targetPosition;
+        current = CoralArmPosition.NONE;
+      },
+      () -> {
+        if(coralArmPID.atSetpoint()) {
+          current = targetPosition;
+        }
+      }
+      ).until(() -> coralArmPID.atSetpoint());
   }
   /**
    * It securely grabs the coral that fell from the chute.
@@ -72,19 +114,15 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
  /**
    * Moves the coral scorer to the correct angle to drop it on the reef.
    */
-  public Command placeCoralPositionL2L3() {
-      return new CoralScoringArm(this, CoralArmPosition.L2L3);
-  }
-
-  public Command placeCoralPositionL4() {
-    return new CoralScoringArm(this, CoralArmPosition.L4);
+  public Command scoreCoralPosition() {
+      return goToPosition(CoralArmPosition.SCORE);
   }
   
  /**
    * Moves the coral scorer to the correct angle to grab the coral that fell from the chute.
    */
   public Command loadCoralPosition() {
-      return new CoralScoringArm(this, CoralArmPosition.HOME);
+      return goToPosition(CoralArmPosition.HOME);
   }
 
    /**
@@ -102,7 +140,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   }
 
   public boolean armIsInPosition() {
-    return coralArmPosition == CoralArmPosition.L2L3 || coralArmPosition == CoralArmPosition.L4;
+    return current == CoralArmPosition.SCORE;
   }
 
   @Override
@@ -111,7 +149,8 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
     builder.setSmartDashboardType(getName());
     builder.addBooleanProperty("Coral Loaded", () -> isCoralLoaded(), null);
     builder.addBooleanProperty("Over Reef", () -> isCoralOverReef(), null);
-    builder.addStringProperty("Arm Position", () -> coralArmPosition.toString(), null);
-    builder.addDoubleProperty("Encoder Value", () -> scorerTilter.getEncoder().getPosition(), null);
+    builder.addStringProperty("Arm Position", () -> current.toString(), null);
+    builder.addDoubleProperty("Encoder Value", () -> angleEncoder.getAngle().in(Degrees), null);
+    builder.addDoubleProperty("Encoder Target", () -> target.getEncoderPosition().in(Degrees), null);
   }
 }
