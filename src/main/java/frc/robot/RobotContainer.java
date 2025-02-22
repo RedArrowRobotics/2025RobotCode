@@ -68,18 +68,18 @@ public class RobotContainer {
                     DriveOrientation.FIELD_CENTRIC));
             
             coralScoringDevice = new CoralScoringDeviceSubsystem();
-            controlTriggers.driveButtonB.toggleOnTrue(coralScoringDevice.grabCoral());
-            coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
             elevator = new ElevatorSubsystem();
+            cage = new CageSubsystem();
             controlTriggers.elevatorHome.onTrue(elevator.elevatorHome());
             controlTriggers.elevatorL2.onTrue(elevator.elevatorL2());
             controlTriggers.elevatorL3.onTrue(elevator.elevatorL3());
             controlTriggers.elevatorL4.onTrue(elevator.elevatorL4());
+            controlTriggers.coralWheels.toggleOnTrue(coralScoringDevice.grabCoral());
+            coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
             controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
             controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
-            cage = new CageSubsystem();
-            controlTriggers.driveButtonY.toggleOnTrue(cage.ascend());
-            controlTriggers.driveButtonX.toggleOnTrue(cage.descend());
+            controlTriggers.climberDescend.toggleOnTrue(cage.descend());
+            controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
             var commands = new AlignToReef(swerveDriveTrain);
 
         autoChooser = AutoBuilder.buildAutoChooser();
