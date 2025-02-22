@@ -79,6 +79,9 @@ public class DriveSubsystem extends SubsystemBase {
     public DrivePower toSwerve() {
       return new DrivePower(-this.y(), -this.x(), -this.rotation());
     }
+    public DrivePower times(double multiplier) {
+      return new DrivePower(this.x() * multiplier, this.y() * multiplier, this.rotation() * multiplier);
+    }
   }
   
   /**

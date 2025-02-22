@@ -4,15 +4,13 @@ import frc.robot.subsystems.DriveSubsystem.DrivePower;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class ControlInputs {
     // Joysticks
     private final CommandXboxController driveController = new CommandXboxController(0);
-    private final CommandXboxController sysOpController = new CommandXboxController(3);
-    private final CommandJoystick componentsBoardLeft = new CommandJoystick(1);
-    private final CommandJoystick componentsBoardRight = new CommandJoystick(2);
-
+    private final GenericHID componentsBoard = new GenericHID(1);
     public DrivePower getdriveController() {
         // Multipliers for the drive stick axes
         final double driveControllerLinearMultiplier = 0.8;
@@ -32,18 +30,21 @@ public class ControlInputs {
     }
     
     public class Triggers {
+        public final Trigger elevatorHome = new Trigger(() -> componentsBoard.getRawButtonPressed(1));
+        public final Trigger elevatorL2 = new Trigger(() -> componentsBoard.getRawButtonPressed(2));
+        public final Trigger elevatorL3 = new Trigger(() -> componentsBoard.getRawButtonPressed(3));
+        public final Trigger elevatorL4 = new Trigger(() -> componentsBoard.getRawButtonPressed(4));
+        public final Trigger coralWheels = new Trigger(() -> componentsBoard.getRawButtonPressed(5));
+        public final Trigger deAlgae = new Trigger(() -> componentsBoard.getRawButtonPressed(6));
+        public final Trigger climberDescend = new Trigger(() -> componentsBoard.getRawButton(7));
+        public final Trigger climberAscend = new Trigger(() -> componentsBoard.getRawButton(8));
+        public final Trigger alignReefLeft = new Trigger(() -> componentsBoard.getRawButton(9));
+        public final Trigger alignReefRight = new Trigger(() -> componentsBoard.getRawButton(10));
+        public final Trigger alignSource = new Trigger(() -> componentsBoard.getRawButton(11));
+
         public final Trigger driveButtonA = driveController.a();
         public final Trigger driveButtonB = driveController.b();
         public final Trigger driveButtonX = driveController.x();
         public final Trigger driveButtonY = driveController.y();
-
-        public final Trigger sysOpDpadUp = sysOpController.povUp();
-        public final Trigger sysOpDpadDown = sysOpController.povDown();
-        public final Trigger sysOpDpadLeft = sysOpController.povLeft();
-        public final Trigger sysOpDpadRight = sysOpController.povRight();
-        public final Trigger sysOpLeftBumper = sysOpController.leftBumper();
-        public final Trigger sysOpRightBumper = sysOpController.rightBumper();
-        public final Trigger sysOpLeftTrigger = sysOpController.leftTrigger();
-        public final Trigger sysOpRightTrigger = sysOpController.rightTrigger();
     }
 }

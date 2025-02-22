@@ -58,21 +58,25 @@ public class RobotContainer {
         public RobotContainer() throws IOException, Exception {
             swerveDriveTrain = new DriveSubsystem();
             swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
-                    () -> controlInputs.getdriveController().toSwerve(),
+                    () -> {
+                        var power = controlInputs.getdriveController().toSwerve();
+                        if (controlTriggers.driveButtonA.getAsBoolean()) {
+                            power = power.times(0.5);
+                        }
+                        return power;
+                    },
                     DriveOrientation.FIELD_CENTRIC));
             
             coralScoringDevice = new CoralScoringDeviceSubsystem();
             controlTriggers.driveButtonB.toggleOnTrue(coralScoringDevice.grabCoral());
             coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
             elevator = new ElevatorSubsystem();
-            controlTriggers.sysOpDpadUp.onTrue(elevator.elevatorHome());
-            controlTriggers.sysOpDpadDown.onTrue(elevator.elevatorL2());
-            controlTriggers.sysOpDpadLeft.onTrue(elevator.elevatorL3());
-            controlTriggers.sysOpDpadRight.onTrue(elevator.elevatorL4());
-            controlTriggers.sysOpLeftTrigger.onTrue(elevator.dealgaeExtend());
-            controlTriggers.sysOpRightTrigger.onTrue(elevator.dealgaeRetract());
-            controlTriggers.sysOpLeftBumper.onTrue(elevator.dealgaeStartSpin());
-            controlTriggers.sysOpRightBumper.onTrue(elevator.dealgaeStopSpin());
+            controlTriggers.elevatorHome.onTrue(elevator.elevatorHome());
+            controlTriggers.elevatorL2.onTrue(elevator.elevatorL2());
+            controlTriggers.elevatorL3.onTrue(elevator.elevatorL3());
+            controlTriggers.elevatorL4.onTrue(elevator.elevatorL4());
+            controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
+            controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
             cage = new CageSubsystem();
             controlTriggers.driveButtonY.toggleOnTrue(cage.ascend());
             controlTriggers.driveButtonX.toggleOnTrue(cage.descend());
