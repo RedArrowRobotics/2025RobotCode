@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.CageSubsystem;
 import frc.robot.subsystems.CoralScoringDeviceSubsystem;
 import frc.robot.commands.AlignToReef;
@@ -42,48 +44,52 @@ public class RobotContainer {
     private final ControlInputs controlInputs = new ControlInputs();
     private final ControlInputs.Triggers controlTriggers = controlInputs.new Triggers();
     private final DriveSubsystem swerveDriveTrain;
-    private final CoralScoringDeviceSubsystem coralScoringDevice;
+    private final CoralScoringDeviceSubsystem coralArm;
     private final ElevatorSubsystem elevator;
     private final SensorInputs sensorInputs = new SensorInputs();
     private final CageSubsystem cage;
-        private final SendableChooser<Command> autoChooser;
-        private Command autoSelected;
-    
-        /**
-         * This function is run when the robot is first started up and should be used
-         * for any
-         * initialization code.
-         */
-    
-        public RobotContainer() throws IOException, Exception {
-            swerveDriveTrain = new DriveSubsystem();
-            swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
-                    () -> {
-                        var power = controlInputs.getdriveController().toSwerve();
-                        if (controlTriggers.driveButtonA.getAsBoolean()) {
-                            power = power.times(0.5);
-                        }
-                        return power;
-                    },
-                    DriveOrientation.FIELD_CENTRIC));
+    private final SendableChooser<Command> autoChooser;
+    private Command autoSelected;
+
+    public Trigger reefTrigger;
+
+
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any
+     * initialization code.
+     */
+
+    public RobotContainer() throws IOException, Exception {
+        swerveDriveTrain = new DriveSubsystem();
+        swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
+                () -> {
+                    var power = controlInputs.getdriveController().toSwerve();
+                    if (controlTriggers.driveButtonA.getAsBoolean()) {
+                        power = power.times(0.5);
+                    }
+                    return power;
+                },
+                DriveOrientation.FIELD_CENTRIC));
             
-            coralScoringDevice = new CoralScoringDeviceSubsystem();
-            controlTriggers.driveButtonA.toggleOnTrue(coralScoringDevice.loadCoralPosition());
-            controlTriggers.driveButtonY.toggleOnTrue(coralScoringDevice.scoreCoralPosition());
-           // coralScoringDevice.reefTrigger.toggleOnTrue(coralScoringDevice.dropCoral());
-            elevator = new ElevatorSubsystem();
-            controlTriggers.sysOpDpadUp.onTrue(elevator.elevatorHome());
-            controlTriggers.sysOpDpadDown.onTrue(elevator.elevatorL2());
-            controlTriggers.sysOpDpadLeft.onTrue(elevator.elevatorL3());
-            controlTriggers.sysOpDpadRight.onTrue(elevator.elevatorL4());
-            controlTriggers.sysOpLeftTrigger.onTrue(elevator.dealgaeExtend());
-            controlTriggers.sysOpRightTrigger.onTrue(elevator.dealgaeRetract());
-            controlTriggers.sysOpLeftBumper.onTrue(elevator.dealgaeStartSpin());
-            controlTriggers.sysOpRightBumper.onTrue(elevator.dealgaeStopSpin());
-            cage = new CageSubsystem();
-            //controlTriggers.driveButtonY.toggleOnTrue(cage.ascend());
-           // controlTriggers.driveButtonX.toggleOnTrue(cage.descend());
-            var commands = new AlignToReef(swerveDriveTrain);
+        coralArm = new CoralScoringDeviceSubsystem();
+        elevator = new ElevatorSubsystem();
+        cage = new CageSubsystem();
+
+        reefTrigger = new Trigger(() -> {return coralArm.armIsInPosition() && coralArm.isCoralOverReef() && elevator.elevatorIsInPosition();});
+
+        controlTriggers.elevatorHome.onTrue(Commands.deadline(coralArm.loadCoralPosition(), elevator.elevatorL2()).andThen(elevator.elevatorHome()));
+        controlTriggers.elevatorL2.onTrue(elevator.elevatorL2().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
+        controlTriggers.elevatorL3.onTrue(elevator.elevatorL3().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
+        controlTriggers.elevatorL4.onTrue(elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
+
+        controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
+        controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
+        reefTrigger.toggleOnTrue(coralArm.dropCoral());
+
+        controlTriggers.climberDescend.toggleOnTrue(cage.descend());
+        controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
+        var commands = new AlignToReef(swerveDriveTrain);
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -103,7 +109,8 @@ public class RobotContainer {
 
     public void robotPeriodic() {
         sensorInputs.readSensors();
-        SmartDashboard.putData(coralScoringDevice);
+        SmartDashboard.putData(coralArm);
+        SmartDashboard.putData(elevator);
     }
 
     public void teleopPeriodic() {

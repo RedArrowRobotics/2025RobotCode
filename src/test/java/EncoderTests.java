@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import frc.robot.encoder.AngleGenericEncoder;
+import frc.robot.encoder.AngleGenericRelativeEncoder;
 import frc.robot.encoder.DistanceEncoder;
 
 public class EncoderTests {
@@ -24,7 +24,7 @@ public class EncoderTests {
         try(Encoder raw = new Encoder(0, 1)) {
             var sim = new EncoderSim(raw);
             sim.setDistance(0.0);
-            var encoder = new AngleGenericEncoder(raw);
+            var encoder = new AngleGenericRelativeEncoder(raw);
             assertEquals(Rotations.zero().baseUnitMagnitude(),encoder.getAngle().baseUnitMagnitude(), 0.01);
         }
     }
@@ -37,7 +37,7 @@ public class EncoderTests {
         try(Encoder raw = new Encoder(0, 1)) {
             var sim = new EncoderSim(raw);
             sim.setDistance(1.0);
-            var encoder = new AngleGenericEncoder(raw);
+            var encoder = new AngleGenericRelativeEncoder(raw);
             assertEquals(Rotations.one().baseUnitMagnitude(),encoder.getAngle().baseUnitMagnitude(), 0.01);
         }
     }
@@ -50,7 +50,7 @@ public class EncoderTests {
         try(Encoder raw = new Encoder(0, 1)) {
             var sim = new EncoderSim(raw);
             sim.setDistance(1.0);
-            var encoder = new AngleGenericEncoder(raw, 0.5);
+            var encoder = new AngleGenericRelativeEncoder(raw, 0.5);
             assertEquals(Degrees.of(180).baseUnitMagnitude(),encoder.getAngle().baseUnitMagnitude(), 0.01);
         }
     }
@@ -63,7 +63,7 @@ public class EncoderTests {
         try(Encoder raw = new Encoder(0, 1)) {
             var sim = new EncoderSim(raw);
             sim.setDistance(1.0);
-            var encoder = new AngleGenericEncoder(raw, Value.per(Rotations).of(2));
+            var encoder = new AngleGenericRelativeEncoder(raw, Value.per(Rotations).of(2));
             assertEquals(Degrees.of(180).baseUnitMagnitude(),encoder.getAngle().baseUnitMagnitude(), 0.01);
         }
     }
@@ -76,7 +76,7 @@ public class EncoderTests {
         try(Encoder raw = new Encoder(0, 1)) {
             var sim = new EncoderSim(raw);
             sim.setDistance(1.0);
-            var encoder = new AngleGenericEncoder(raw, Value.per(Rotations).of(2), 0.5);
+            var encoder = new AngleGenericRelativeEncoder(raw, Value.per(Rotations).of(2), 0.5);
             assertEquals(Degrees.of(90).baseUnitMagnitude(),encoder.getAngle().baseUnitMagnitude(), 0.01);
         }
     }
@@ -90,7 +90,7 @@ public class EncoderTests {
             var sim = new EncoderSim(raw);
             sim.setDistance(1.0);
             var encoder = new DistanceEncoder(
-                new AngleGenericEncoder(raw, Value.per(Rotations).of(2), 0.5), 
+                new AngleGenericRelativeEncoder(raw, Value.per(Rotations).of(2), 0.5), 
                 Centimeters.per(Rotations).of(8)
             );
             assertEquals(Centimeters.of(2).baseUnitMagnitude(),encoder.getPosition().baseUnitMagnitude(), 0.01);
@@ -106,7 +106,7 @@ public class EncoderTests {
             var sim = new EncoderSim(raw);
             sim.setRate(1.0);
             var encoder = new DistanceEncoder(
-                new AngleGenericEncoder(raw, Value.per(Rotations).of(2), 0.5), 
+                new AngleGenericRelativeEncoder(raw, Value.per(Rotations).of(2), 0.5), 
                 Centimeters.per(Rotations).of(8)
             );
             assertEquals(Centimeters.per(Seconds).of(2).baseUnitMagnitude(),encoder.getPosition().baseUnitMagnitude(), 0.01);
