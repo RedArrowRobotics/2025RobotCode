@@ -3,18 +3,17 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
-import frc.robot.encoder.AngleEncoder;
-import frc.robot.encoder.AngleRelativeEncoder;
+import frc.robot.encoder.AngleGenericAbsoluteEncoder;
 import edu.wpi.first.units.measure.Angle;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
@@ -25,15 +24,15 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public final Trigger reefTrigger = new Trigger(() -> {return armIsInPosition() && isCoralOverReef();});
   public CoralArmPosition target = CoralArmPosition.HOME;
   public CoralArmPosition current = CoralArmPosition.HOME;
-  PIDController coralArmPID = new PIDController(0.1, 0.0, 0.0);
+  PIDController coralArmPID = new PIDController(0.03, 0.0, 0.0);
   public double feedForward = 0.0;
-  public AngleEncoder angleEncoder;
+  public AngleGenericAbsoluteEncoder angleEncoder;
 
   public CoralScoringDeviceSubsystem() {
-    RelativeEncoder encoder = scorerTilter.getEncoder();
+    DutyCycleEncoder encoder = new DutyCycleEncoder(3);
     coralArmPID.setTolerance(Degrees.of(1.0).in(Degrees));
-    encoder.setPosition(0.0);
-    angleEncoder = new AngleRelativeEncoder(encoder);
+    angleEncoder = new AngleGenericAbsoluteEncoder(encoder);
+    coralArmPID.enableContinuousInput(0, 360);
   }
 
   public enum CoralArmPosition {

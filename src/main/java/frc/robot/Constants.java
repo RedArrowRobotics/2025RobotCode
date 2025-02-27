@@ -29,9 +29,9 @@ public class Constants {
     public static double cageGrabberReleasePosition = 0.0;
     public static double cageGrabberHoldPosition = 0.5;
     public static double elevatorMotorHomePosition = 0;
-    public static double elevatorMotorL2Position = 2;
-    public static double elevatorMotorL3Position = 3;
-    public static double elevatorMotorL4Position = 4;
+    public static double elevatorMotorL2Position = 100;
+    public static double elevatorMotorL3Position = 200;
+    public static double elevatorMotorL4Position = 300;
     public static double dealgaeFlipperExtendedPosition = 1;
     public static double dealgaeFlipperRetractedPosition = 0;
 
