@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.CageSubsystem;
 import frc.robot.subsystems.CoralScoringDeviceSubsystem;
 import frc.robot.commands.AlignToReef;
@@ -46,38 +48,44 @@ public class RobotContainer {
     private final ElevatorSubsystem elevator;
     private final SensorInputs sensorInputs = new SensorInputs();
     private final CageSubsystem cage;
-        private final SendableChooser<Command> autoChooser;
-        private Command autoSelected;
-    
-        /**
-         * This function is run when the robot is first started up and should be used
-         * for any
-         * initialization code.
-         */
-    
-        public RobotContainer() throws IOException, Exception {
-            swerveDriveTrain = new DriveSubsystem();
-            swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
-                    () -> {
-                        var power = controlInputs.getdriveController().toSwerve();
-                        if (controlTriggers.driveButtonA.getAsBoolean()) {
-                            power = power.times(0.5);
-                        }
-                        return power;
-                    },
-                    DriveOrientation.FIELD_CENTRIC));
+    private final SendableChooser<Command> autoChooser;
+    private Command autoSelected;
+
+    public Trigger reefTrigger;
+
+
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any
+     * initialization code.
+     */
+
+    public RobotContainer() throws IOException, Exception {
+        swerveDriveTrain = new DriveSubsystem();
+        swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
+                () -> {
+                    var power = controlInputs.getdriveController().toSwerve();
+                    if (controlTriggers.driveButtonA.getAsBoolean()) {
+                        power = power.times(0.5);
+                    }
+                    return power;
+                },
+                DriveOrientation.FIELD_CENTRIC));
             
         coralArm = new CoralScoringDeviceSubsystem();
         elevator = new ElevatorSubsystem();
         cage = new CageSubsystem();
 
-        controlTriggers.elevatorHome.onTrue(coralArm.loadCoralPosition().andThen(elevator.elevatorHome()));
-        controlTriggers.elevatorL2.onTrue(elevator.elevatorL2().andThen(coralArm.scoreCoralPosition()));
-        controlTriggers.elevatorL3.onTrue(elevator.elevatorL3().andThen(coralArm.scoreCoralPosition()));
-        controlTriggers.elevatorL4.onTrue(elevator.elevatorL4().andThen(coralArm.scoreCoralPosition()));
+        reefTrigger = new Trigger(() -> {return coralArm.armIsInPosition() && coralArm.isCoralOverReef() && elevator.elevatorIsInPosition();});
+
+        controlTriggers.elevatorHome.onTrue(Commands.deadline(coralArm.loadCoralPosition(), elevator.elevatorL2()).andThen(elevator.elevatorHome()));
+        controlTriggers.elevatorL2.onTrue(elevator.elevatorL2().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
+        controlTriggers.elevatorL3.onTrue(elevator.elevatorL3().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
+        controlTriggers.elevatorL4.onTrue(elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
 
         controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
         controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
+        reefTrigger.toggleOnTrue(coralArm.dropCoral());
 
         controlTriggers.climberDescend.toggleOnTrue(cage.descend());
         controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
@@ -102,6 +110,7 @@ public class RobotContainer {
     public void robotPeriodic() {
         sensorInputs.readSensors();
         SmartDashboard.putData(coralArm);
+        SmartDashboard.putData(elevator);
     }
 
     public void teleopPeriodic() {

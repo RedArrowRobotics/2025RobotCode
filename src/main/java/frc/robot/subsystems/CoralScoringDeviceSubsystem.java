@@ -21,7 +21,6 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterMotorID, MotorType.kBrushed);
   private DigitalInput coralSensor = new DigitalInput(Constants.coralSensorChannel);
   private DigitalInput reefSensor = new DigitalInput(Constants.reefSensorChannel);
-  public final Trigger reefTrigger = new Trigger(() -> {return armIsInPosition() && isCoralOverReef();});
   public CoralArmPosition target = CoralArmPosition.HOME;
   public CoralArmPosition current = CoralArmPosition.HOME;
   PIDController coralArmPID = new PIDController(0.03, 0.0, 0.0);
@@ -135,7 +134,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    * Checks to see if the coral scorer is aligned with the reef.
    */
   public boolean isCoralOverReef() {
-    return reefSensor.get();
+    return !reefSensor.get();
   }
 
   public boolean armIsInPosition() {
