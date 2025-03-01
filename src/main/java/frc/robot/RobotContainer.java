@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.CageSubsystem;
 import frc.robot.subsystems.CoralScoringDeviceSubsystem;
-import frc.robot.commands.AlignToReef;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -80,9 +79,9 @@ public class RobotContainer {
         // PathPlanner Commands
         NamedCommands.registerCommand("Align to Reef Left", commands.alignToReef(Inches.of(0)));
         NamedCommands.registerCommand("Align to Reef Right", commands.alignToReef(Inches.of(13.625)));
-      
         NamedCommands.registerCommand("Align to Source", commands.alignToSource());
-        NamedCommands.registerCommand("Intake Coral", null);
+        //
+        // NamedCommands.registerCommand("Intake Coral", null);
             
         coralArm = new CoralScoringDeviceSubsystem();
         elevator = new ElevatorSubsystem();
@@ -100,12 +99,15 @@ public class RobotContainer {
         controlTriggers.elevatorL3.onTrue(elevator.elevatorL3().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
         controlTriggers.elevatorL4.onTrue(elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
 
-        controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
         controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
         reefTrigger.toggleOnTrue(coralArm.dropCoral());
 
         controlTriggers.climberDescend.toggleOnTrue(cage.descend());
         controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
+
+        controlTriggers.alignReefLeft.whileTrue(commands.alignToReef(Inches.of(0)));
+        controlTriggers.alignReefRight.whileTrue(commands.alignToReef(Inches.of(-13.625)));
+        controlTriggers.alignSource.whileTrue(commands.alignToSource());
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);

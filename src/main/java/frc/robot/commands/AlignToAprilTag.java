@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -48,7 +49,7 @@ public class AlignToAprilTag {
                 // Get the pose corresponding to the target fiducial
                 .flatMap((fiducial) -> Constants.fieldLayout.getTagPose(fiducial.id))
                 .map((target) -> target.toPose2d().transformBy(new Transform2d(
-                    new Translation2d(Inches.of(-35.0 / 2), translation),
+                    new Translation2d(Inches.of(-20.0), translation).rotateBy(target.getRotation().toRotation2d()),
                     new Rotation2d(Degrees.of(180))
                 )))
                 // Create a PathPlanner command from the target pose
