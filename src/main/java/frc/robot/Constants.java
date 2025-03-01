@@ -18,6 +18,9 @@ public class Constants {
     public static List<Integer> blueReefATags = List.of(17,18,19,20,21,22);
     public static List<Integer> redReefATags = List.of(6,7,8,9,10,11);
 
+    public static List<Integer> blueSourceATags = List.of(12, 13);
+    public static List<Integer> redSourceATags = List.of(1, 2);
+  
     public static int elevatorMotor1Id = 16;
     public static int elevatorMotor2Id = 17;
     public static int dealgaeFlipperId = 19;

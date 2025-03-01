@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
 import java.io.IOException;
@@ -23,6 +24,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.AlignToAprilTag;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.CageSubsystem;
@@ -71,10 +74,24 @@ public class RobotContainer {
                     return power;
                 },
                 DriveOrientation.FIELD_CENTRIC));
+      
+        var commands = new AlignToAprilTag(swerveDriveTrain);
+
+        // PathPlanner Commands
+        NamedCommands.registerCommand("Align to Reef Left", commands.alignToReef(Inches.of(0)));
+        NamedCommands.registerCommand("Align to Reef Right", commands.alignToReef(Inches.of(13.625)));
+      
+        NamedCommands.registerCommand("Align to Source", commands.alignToSource());
+        NamedCommands.registerCommand("Intake Coral", null);
             
         coralArm = new CoralScoringDeviceSubsystem();
         elevator = new ElevatorSubsystem();
         cage = new CageSubsystem();
+      
+        NamedCommands.registerCommand("Score L1", new WaitCommand(5));
+        NamedCommands.registerCommand("Score L2", new WaitCommand(5));
+        NamedCommands.registerCommand("Score L3", new WaitCommand(5));
+        NamedCommands.registerCommand("Score L4", new WaitCommand(5));
 
         reefTrigger = new Trigger(() -> {return coralArm.armIsInPosition() && coralArm.isCoralOverReef() && elevator.elevatorIsInPosition();});
 
@@ -89,7 +106,6 @@ public class RobotContainer {
 
         controlTriggers.climberDescend.toggleOnTrue(cage.descend());
         controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
-        var commands = new AlignToReef(swerveDriveTrain);
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
