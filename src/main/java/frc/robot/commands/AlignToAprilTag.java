@@ -92,6 +92,7 @@ public class AlignToAprilTag {
 
         // Update the field object with the current path
         field.getObject("align").setPoses(path.getPathPoses());
+        field.getObject("align_endpoints").setPoses(start, end);
         return AutoBuilder.followPath(path);
     }
 
