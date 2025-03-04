@@ -108,18 +108,6 @@ public class RobotContainer {
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
-    /**
-     * Resets the robot's pose to the alliance default.
-     * Blue alliance robots start facing at 180° (towards the blue alliance wall).
-     */
-    public void resetPoseToDefault() {
-        swerveDriveTrain.resetPoseUntrusted(switch (DriverStation.getAlliance().orElse(Alliance.Red)) {
-            case Blue -> new Pose2d(0.0,0.0,Rotation2d.k180deg);
-            case Red -> new Pose2d(0.0,0.0,Rotation2d.kZero);
-            default -> new Pose2d(0.0,0.0,Rotation2d.kZero);
-        });
-    }
-
     public void robotPeriodic() {
         sensorInputs.readSensors();
         SmartDashboard.putData(coralArm);
