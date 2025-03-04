@@ -100,9 +100,9 @@ public class RobotContainer {
         controlTriggers.climberDescend.toggleOnTrue(cage.descend());
         controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
 
-        controlTriggers.alignReefLeft.whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_LEFT));
-        controlTriggers.alignReefRight.whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_RIGHT));
-        controlTriggers.alignSource.whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
+        controlTriggers.alignReefLeft.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_LEFT));
+        controlTriggers.alignReefRight.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_RIGHT));
+        controlTriggers.alignSource.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -113,7 +113,7 @@ public class RobotContainer {
      * Blue alliance robots start facing at 180° (towards the blue alliance wall).
      */
     public void resetPoseToDefault() {
-        swerveDriveTrain.resetPose(switch (DriverStation.getAlliance().orElse(Alliance.Red)) {
+        swerveDriveTrain.resetPoseUntrusted(switch (DriverStation.getAlliance().orElse(Alliance.Red)) {
             case Blue -> new Pose2d(0.0,0.0,Rotation2d.k180deg);
             case Red -> new Pose2d(0.0,0.0,Rotation2d.kZero);
             default -> new Pose2d(0.0,0.0,Rotation2d.kZero);
