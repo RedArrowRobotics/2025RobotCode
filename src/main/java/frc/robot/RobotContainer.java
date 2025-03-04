@@ -4,21 +4,16 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.hal.MatchInfoData;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -30,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.CageSubsystem;
 import frc.robot.subsystems.CoralScoringDeviceSubsystem;
-import frc.robot.commands.AlignToReef;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -52,7 +46,6 @@ public class RobotContainer {
     private final SensorInputs sensorInputs = new SensorInputs();
     private final CageSubsystem cage;
     private final SendableChooser<Command> autoChooser;
-    private Command autoSelected;
 
     public Trigger reefTrigger;
 
@@ -75,19 +68,19 @@ public class RobotContainer {
                 },
                 DriveOrientation.FIELD_CENTRIC));
       
-        var commands = new AlignToAprilTag(swerveDriveTrain);
 
-        // PathPlanner Commands
-        NamedCommands.registerCommand("Align to Reef Left", commands.alignToReef(Inches.of(0)));
-        NamedCommands.registerCommand("Align to Reef Right", commands.alignToReef(Inches.of(13.625)));
-      
-        NamedCommands.registerCommand("Align to Source", commands.alignToSource());
-        NamedCommands.registerCommand("Intake Coral", null);
             
+        var commands = new AlignToAprilTag(swerveDriveTrain);
         coralArm = new CoralScoringDeviceSubsystem();
         elevator = new ElevatorSubsystem();
         cage = new CageSubsystem();
       
+        // PathPlanner Commands
+        NamedCommands.registerCommand(Constants.ALIGN_REEF_LEFT, commands.alignToReef(Inches.of(-6.5)));
+        NamedCommands.registerCommand(Constants.ALIGN_REEF_RIGHT, commands.alignToReef(Inches.of(6.5)));
+        NamedCommands.registerCommand(Constants.ALIGN_SOURCE, commands.alignToSource());
+      
+        NamedCommands.registerCommand("Intake Coral", coralArm.grabCoral());
         NamedCommands.registerCommand("Score L1", new WaitCommand(5));
         NamedCommands.registerCommand("Score L2", new WaitCommand(5));
         NamedCommands.registerCommand("Score L3", new WaitCommand(5));
@@ -106,6 +99,10 @@ public class RobotContainer {
 
         controlTriggers.climberDescend.toggleOnTrue(cage.descend());
         controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
+
+        controlTriggers.alignReefLeft.whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_LEFT));
+        controlTriggers.alignReefRight.whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_RIGHT));
+        controlTriggers.alignSource.whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -127,6 +124,8 @@ public class RobotContainer {
         sensorInputs.readSensors();
         SmartDashboard.putData(coralArm);
         SmartDashboard.putData(elevator);
+        SmartDashboard.putData(cage);
+        SmartDashboard.putData(swerveDriveTrain);
     }
 
     public void teleopPeriodic() {

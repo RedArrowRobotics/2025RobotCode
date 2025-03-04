@@ -14,14 +14,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.LimelightHelpers;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -29,54 +28,71 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
 
 public class AlignToAprilTag {
     private final DriveSubsystem driveSubsystem;
+    private final Field2d field = new Field2d();
+    private final PathConstraints constraints;
 
     public AlignToAprilTag(DriveSubsystem subsystem) {
         driveSubsystem = subsystem;
+        constraints = new PathConstraints(
+                driveSubsystem.getMaximumChassisVelocity(),
+                MetersPerSecondPerSecond.of(3),
+                driveSubsystem.getMaximumChassisAngularVelocity(),
+                DegreesPerSecondPerSecond.of(720),
+                Volts.of(12));
+
+        // We only need to put this object in the smart dashboard once. The 
+        // dashboard will automatically update when the underlying object 
+        // (the field) updates.
+        SmartDashboard.putData(field);
     }
 
-    private Command align(List<Integer> ids, Distance translation) {
-        return Arrays.stream(LimelightHelpers.getRawFiducials("limelight"))
-                // Only track relevant fiducials
-                .filter((fiducial) -> ids.contains(fiducial.id))
-                // Sort fiducials by distance, then get the closest one
-                .sorted((fiducialA,fiducialB) -> Double.compare(fiducialA.distToRobot, fiducialB.distToRobot))
-                .findFirst()
-                // Get the pose corresponding to the target fiducial
-                .flatMap((fiducial) -> Constants.fieldLayout.getTagPose(fiducial.id))
-                .map((target) -> target.toPose2d().transformBy(new Transform2d(
-                    new Translation2d(Inches.of(-35.0 / 2), translation),
-                    new Rotation2d(Degrees.of(180))
-                )))
-                // Create a PathPlanner command from the target pose
-                .map((targetPose) -> {
-                    var currentPose = driveSubsystem.getPose();
-                    var targetRotation = targetPose.getRotation();
-                    // Create waypoints. As per PathPlanner documentation, pose rotation is
-                    // the direction of travel, not the rotation of the robot
-                    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-                        new Pose2d(currentPose.getTranslation(),Rotation2d.kZero),
-                        new Pose2d(targetPose.getTranslation(),targetPose.minus(currentPose).getTranslation().getAngle())
-                    );
-                    PathConstraints constraints = new PathConstraints(
-                        driveSubsystem.getMaximumChassisVelocity(),
-                        MetersPerSecondPerSecond.of(3),
-                        driveSubsystem.getMaximumChassisAngularVelocity(),
-                        DegreesPerSecondPerSecond.of(720),
-                        Volts.of(12));
-                    PathPlannerPath path = new PathPlannerPath(
-                        waypoints,
-                        constraints,
-                        null,
-                        new GoalEndState(MetersPerSecond.of(0), targetRotation));
-                    path.preventFlipping = true;
-                    return AutoBuilder.followPath(path);
-                })
-                // If we don't have a target, return a no-op command
-                .orElse(new InstantCommand());
+    private Command align(List<Integer> ids, Distance translation, Rotation2d rotation) {
+        // Using the current robot pose, determine which of the AprilTag IDs
+        // in the 'ids' list is closest. Then find the target pose by transforming  
+        // into a pose with the robot facing the AprilTag. Optionally translate
+        // and/or rotate the robot relative to this pose.
+        Pose2d targetPose = driveSubsystem.getPose()
+                .nearest(ids.stream().map((Integer id) -> Constants.fieldLayout.getTagPose(id).orElseThrow().toPose2d()).toList())
+                .transformBy(new Transform2d(
+                        new Translation2d(Inches.of(35.0 / 2), translation),
+                        new Rotation2d(Degrees.of(180)).plus(rotation)));
+
+        // Create a PathPlanner command from the target pose
+        var currentPose = driveSubsystem.getPose();
+        var targetRotation = targetPose.getRotation();
+
+        // Create waypoints. As per PathPlanner documentation, pose rotation is
+        // the direction of travel - relative to the current rotation of the 
+        // robot - not the rotation of the robot
+
+        // We want the rotation to be pointed towards the target. This could 
+        // result in a sudden change of direction but is faster than trying to 
+        // have PathPlanner create a 'smooth' transition, because it can create
+        // a significant deviation in a direction that does not advance us 
+        // toward the end pose, and this deviation is not proportional to the 
+        // current speed of the robot in that direction.
+        Pose2d start = new Pose2d(currentPose.getTranslation(), currentPose.getRotation().rotateBy(new Transform2d(currentPose, targetPose).getTranslation().getAngle()));
+
+        // If we set the end pose's rotation to the goal rotation, the path will
+        // always try to end with the robot driving directly forward into the 
+        // target state. This seems to have better behavior in most cases, because 
+        // rotations at the end of the path can intersect field elements.
+        Pose2d end = new Pose2d(targetPose.getTranslation(), targetRotation.minus(rotation));
+
+        // Create the path
+        PathPlannerPath path = new PathPlannerPath(
+                PathPlannerPath.waypointsFromPoses(start, end),
+                constraints,
+                null,
+                new GoalEndState(MetersPerSecond.of(0), targetRotation));
+        path.preventFlipping = true;
+
+        // Update the field object with the current path
+        field.getObject("align").setPoses(path.getPathPoses());
+        return AutoBuilder.followPath(path);
     }
 
     public Command alignToSource() {
@@ -86,10 +102,11 @@ public class AlignToAprilTag {
                 case Red -> Constants.redSourceATags;
                 default -> List.of();
             };
-            return align(ids, Inches.of(0));
+            // When aligning to the source, the robot needs to be rotated 90 deg
+            // counter-clockwise, relative to when aligning to the reef. 
+            return align(ids, Inches.of(0), Rotation2d.kCCW_90deg);
         }, Set.of(driveSubsystem));
     }
-
 
     public Command alignToReef(Distance translation) {
         return Commands.defer(() -> {
@@ -98,7 +115,7 @@ public class AlignToAprilTag {
                 case Red -> Constants.redReefATags;
                 default -> List.of();
             };
-            return align(ids, translation);
+            return align(ids, translation, Rotation2d.kZero);
         }, Set.of(driveSubsystem));
     }
 }
