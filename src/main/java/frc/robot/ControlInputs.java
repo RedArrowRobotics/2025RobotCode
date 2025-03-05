@@ -30,6 +30,9 @@ public class ControlInputs {
     }
     
     public class Triggers {
+        public Triggers() {
+            componentsBoard.setOutput(1, false);
+        }
         public final Trigger elevatorHome = new Trigger(() -> componentsBoard.getRawButtonPressed(1));
         public final Trigger elevatorL2 = new Trigger(() -> componentsBoard.getRawButtonPressed(2));
         public final Trigger elevatorL3 = new Trigger(() -> componentsBoard.getRawButtonPressed(3));

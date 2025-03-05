@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -8,11 +9,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class CageSubsystem extends SubsystemBase {
-SparkMax cageClimber = new SparkMax(Constants.cageClimberMotorId, MotorType.kBrushless);
+  SparkFlex cageClimber = new SparkFlex(Constants.cageClimberMotorId, MotorType.kBrushless);
 
   /**
    *  Pushes down on the cage to raise the robot.
- */
+  */
   public Command ascend() {
     return startEnd(
       () -> {
@@ -25,8 +26,8 @@ SparkMax cageClimber = new SparkMax(Constants.cageClimberMotorId, MotorType.kBru
   }
 
   /**
- *  Retracts the climber to lower the robot.
- */
+   *  Retracts the climber to lower the robot.
+   */
   public Command descend() {
     return startEnd(
       () -> {
@@ -38,9 +39,9 @@ SparkMax cageClimber = new SparkMax(Constants.cageClimberMotorId, MotorType.kBru
     );
   }
 
-    /**
-     *  Checks if the cage is in the holding position.
-     */
+  /**
+   *  Checks if the cage is in the holding position.
+   */
   public boolean isCageHeld() {
     // Query some boolean state, such as a digital sensor.
     return false;
