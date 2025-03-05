@@ -165,7 +165,7 @@ public void periodic() {
    /**
    * Checks to see if the coral scorer is aligned with the reef.
    */
-  public boolean isCoralOverReef() {
+  public boolean isElevatorAtMin() {
     return elevatorMinSensor.get();
   }
 
