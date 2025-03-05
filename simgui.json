@@ -1,0 +1,123 @@
+{
+  "HALProvider": {
+    "Encoders": {
+      "0": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Alerts": "Alerts",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/CageSubsystem": "Subsystem",
+      "/SmartDashboard/CoralScoringDeviceSubsystem": "Subsystem",
+      "/SmartDashboard/DriveSubsystem": "Subsystem",
+      "/SmartDashboard/ElevatorSubsystem": "Subsystem",
+      "/SmartDashboard/Encoders": "Alerts",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/IMU": "Alerts",
+      "/SmartDashboard/JSON": "Alerts",
+      "/SmartDashboard/Motors": "Alerts",
+      "/SmartDashboard/Swerve Drive": "Alerts"
+    },
+    "windows": {
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/CageSubsystem": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/CoralScoringDeviceSubsystem": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/DriveSubsystem": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Field": {
+        "OdometryPose": {
+          "selectable": false
+        },
+        "Robot": {
+          "arrows": false,
+          "style": "Hidden"
+        },
+        "XModules": {
+          "arrows": false,
+          "selectable": false,
+          "style": "Hidden"
+        },
+        "align": {
+          "arrows": false,
+          "color": [
+            255.0,
+            255.0,
+            0.0,
+            255.0
+          ],
+          "style": "Line",
+          "weight": 2.0
+        },
+        "align_endpoints": {
+          "arrowSize": 22,
+          "style": "Hidden"
+        },
+        "bottom": 1638,
+        "builtin": "2025 Reefscape",
+        "height": 8.051901817321777,
+        "left": 534,
+        "right": 3466,
+        "top": 291,
+        "width": 17.54825210571289,
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Field": {
+          "double[]##v_/SmartDashboard/Field/align": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      },
+      "limelight": {
+        "open": true
+      }
+    }
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 338
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    }
+  }
+}
