@@ -1,0 +1,67 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle to Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align to Reef Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right to Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align to Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source to Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align to Reef Left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score L2"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

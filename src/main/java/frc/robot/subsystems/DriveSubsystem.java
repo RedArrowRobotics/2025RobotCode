@@ -27,10 +27,12 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 
 public class DriveSubsystem extends SubsystemBase {
   SwerveDrive swerveDrive;
+  boolean trustPose = false;
 
   public DriveSubsystem() throws IOException, ParseException {
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -44,7 +46,7 @@ public class DriveSubsystem extends SubsystemBase {
     
     AutoBuilder.configure(
       this::getPose, // Robot pose supplier
-      this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::resetPoseTrusted, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
       new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
@@ -131,8 +133,10 @@ public class DriveSubsystem extends SubsystemBase {
     LimelightHelpers.SetRobotOrientation("limelight", swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     if (LimelightHelpers.getTV("limelight") == true) {
       // Add vision measurement
-      LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight"); 
+      LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+      swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999.0)); 
       swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
+      trustPose = true;
     }
   }
   
@@ -140,8 +144,14 @@ public class DriveSubsystem extends SubsystemBase {
     return swerveDrive.getPose();
   }
 
-  public void resetPose(Pose2d pose) {
+  private void resetPoseTrusted(Pose2d pose) {
     swerveDrive.resetOdometry(pose);
+    trustPose = true;
+  }
+
+  public void resetPoseUntrusted(Pose2d pose) {
+    swerveDrive.resetOdometry(pose);
+    trustPose = false;
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -158,5 +168,16 @@ public class DriveSubsystem extends SubsystemBase {
 
   public AngularVelocity getMaximumChassisAngularVelocity() {
     return RadiansPerSecond.of(swerveDrive.getMaximumChassisAngularVelocity());
+  }
+  
+  /**
+   * Whether the reported pose can be trusted to be reasonably accurate,
+   * e.g. we have seen an AprilTag or have run a PathPlanner command with
+   * a known pose.
+   * 
+   * @return whether the pose returned from {@link #getPose()} can be trusted
+   */
+  public boolean isPoseTrusted() {
+    return trustPose;
   }
 }

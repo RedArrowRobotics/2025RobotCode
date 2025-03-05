@@ -4,30 +4,27 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Inches;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.hal.MatchInfoData;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.AlignToAprilTag;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.CageSubsystem;
 import frc.robot.subsystems.CoralScoringDeviceSubsystem;
-import frc.robot.commands.AlignToReef;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -49,7 +46,6 @@ public class RobotContainer {
     private final SensorInputs sensorInputs = new SensorInputs();
     private final CageSubsystem cage;
     private final SendableChooser<Command> autoChooser;
-    private Command autoSelected;
 
     public Trigger reefTrigger;
 
@@ -71,10 +67,24 @@ public class RobotContainer {
                     return power;
                 },
                 DriveOrientation.FIELD_CENTRIC));
+      
+
             
+        var commands = new AlignToAprilTag(swerveDriveTrain);
         coralArm = new CoralScoringDeviceSubsystem();
         elevator = new ElevatorSubsystem();
         cage = new CageSubsystem();
+      
+        // PathPlanner Commands
+        NamedCommands.registerCommand(Constants.ALIGN_REEF_LEFT, commands.alignToReef(Inches.of(-6.5)));
+        NamedCommands.registerCommand(Constants.ALIGN_REEF_RIGHT, commands.alignToReef(Inches.of(6.5)));
+        NamedCommands.registerCommand(Constants.ALIGN_SOURCE, commands.alignToSource());
+      
+        NamedCommands.registerCommand("Intake Coral", coralArm.grabCoral());
+        NamedCommands.registerCommand("Score L1", new WaitCommand(5));
+        NamedCommands.registerCommand("Score L2", new WaitCommand(5));
+        NamedCommands.registerCommand("Score L3", new WaitCommand(5));
+        NamedCommands.registerCommand("Score L4", new WaitCommand(5));
 
         reefTrigger = new Trigger(() -> {return coralArm.armIsInPosition() && coralArm.isCoralOverReef() && elevator.elevatorIsInPosition();});
 
@@ -83,34 +93,26 @@ public class RobotContainer {
         controlTriggers.elevatorL3.onTrue(elevator.elevatorL3().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
         controlTriggers.elevatorL4.onTrue(elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
 
-        controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
         controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
         reefTrigger.toggleOnTrue(coralArm.dropCoral());
 
         controlTriggers.climberDescend.toggleOnTrue(cage.descend());
         controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
-        var commands = new AlignToReef(swerveDriveTrain);
+
+        controlTriggers.alignReefLeft.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_LEFT));
+        controlTriggers.alignReefRight.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_RIGHT));
+        controlTriggers.alignSource.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
-    }
-
-    /**
-     * Resets the robot's pose to the alliance default.
-     * Blue alliance robots start facing at 180° (towards the blue alliance wall).
-     */
-    public void resetPoseToDefault() {
-        swerveDriveTrain.resetPose(switch (DriverStation.getAlliance().orElse(Alliance.Red)) {
-            case Blue -> new Pose2d(0.0,0.0,Rotation2d.k180deg);
-            case Red -> new Pose2d(0.0,0.0,Rotation2d.kZero);
-            default -> new Pose2d(0.0,0.0,Rotation2d.kZero);
-        });
     }
 
     public void robotPeriodic() {
         sensorInputs.readSensors();
         SmartDashboard.putData(coralArm);
         SmartDashboard.putData(elevator);
+        SmartDashboard.putData(cage);
+        SmartDashboard.putData(swerveDriveTrain);
     }
 
     public void teleopPeriodic() {
