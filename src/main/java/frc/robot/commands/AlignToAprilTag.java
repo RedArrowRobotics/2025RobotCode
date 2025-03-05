@@ -31,21 +31,15 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
-public class AlignToReef {
+public class AlignToAprilTag {
     private final DriveSubsystem driveSubsystem;
 
-    public AlignToReef(DriveSubsystem subsystem) {
+    public AlignToAprilTag(DriveSubsystem subsystem) {
         driveSubsystem = subsystem;
     }
 
-    public Command alignToReef(Distance translation) {
-        return Commands.defer(() -> {
-            List<Integer> ids = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
-                case Blue -> Constants.blueReefATags;
-                case Red -> Constants.redReefATags;
-                default -> List.of();
-            };
-            return Arrays.stream(LimelightHelpers.getRawFiducials("limelight"))
+    private Command align(List<Integer> ids, Distance translation) {
+        return Arrays.stream(LimelightHelpers.getRawFiducials("limelight"))
                 // Only track relevant fiducials
                 .filter((fiducial) -> ids.contains(fiducial.id))
                 // Sort fiducials by distance, then get the closest one
@@ -83,6 +77,28 @@ public class AlignToReef {
                 })
                 // If we don't have a target, return a no-op command
                 .orElse(new InstantCommand());
+    }
+
+    public Command alignToSource() {
+        return Commands.defer(() -> {
+            List<Integer> ids = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+                case Blue -> Constants.blueSourceATags;
+                case Red -> Constants.redSourceATags;
+                default -> List.of();
+            };
+            return align(ids, Inches.of(0));
+        }, Set.of(driveSubsystem));
+    }
+
+
+    public Command alignToReef(Distance translation) {
+        return Commands.defer(() -> {
+            List<Integer> ids = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+                case Blue -> Constants.blueReefATags;
+                case Red -> Constants.redReefATags;
+                default -> List.of();
+            };
+            return align(ids, translation);
         }, Set.of(driveSubsystem));
     }
 }
