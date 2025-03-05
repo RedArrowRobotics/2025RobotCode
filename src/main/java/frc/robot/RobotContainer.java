@@ -79,12 +79,26 @@ public class RobotContainer {
         NamedCommands.registerCommand(Constants.ALIGN_REEF_LEFT, commands.alignToReef(Inches.of(-6.5)));
         NamedCommands.registerCommand(Constants.ALIGN_REEF_RIGHT, commands.alignToReef(Inches.of(6.5)));
         NamedCommands.registerCommand(Constants.ALIGN_SOURCE, commands.alignToSource());
-      
+
+        //Coral Scoring Device
         NamedCommands.registerCommand("Intake Coral", coralArm.grabCoral());
+        NamedCommands.registerCommand("Outtake Coral", coralArm.dropCoral());
+        NamedCommands.registerCommand("Stop Coral Wheels", coralArm.stopScorerSpin());
+        NamedCommands.registerCommand("Coral Loading Position", coralArm.loadCoralPosition());
+        NamedCommands.registerCommand("Coral Scoring Position", coralArm.scoreCoralPosition());
+        //Cage
+        NamedCommands.registerCommand("Ascend Cage", cage.ascend());
+        NamedCommands.registerCommand("Descend Cage", cage.descend());
+        //Elevator
         NamedCommands.registerCommand("Score L1", new WaitCommand(5));
         NamedCommands.registerCommand("Score L2", new WaitCommand(5));
         NamedCommands.registerCommand("Score L3", new WaitCommand(5));
         NamedCommands.registerCommand("Score L4", new WaitCommand(5));
+        NamedCommands.registerCommand("Extend Algae Remover", elevator.dealgaeExtend());
+        NamedCommands.registerCommand("Retract Algae Remover", elevator.dealgaeRetract());
+        NamedCommands.registerCommand("Turn on Dealgae Wheels", elevator.dealgaeStartSpin());
+        NamedCommands.registerCommand("Turn off Dealgae Wheels", elevator.dealgaeStopSpin());
+
 
         reefTrigger = new Trigger(() -> {return coralArm.armIsInPosition() && coralArm.isCoralOverReef() && elevator.elevatorIsInPosition();});
 
