@@ -95,17 +95,17 @@ public class RobotContainer {
 
         reefTrigger = new Trigger(() -> {return coralArm.armIsInPosition() && coralArm.isCoralOverReef() && elevator.elevatorIsInPosition();});
 
-        controlTriggers.elevatorHome.whileTrue(Commands.deadline(coralArm.loadCoralPosition(), elevator.elevatorL2()).andThen(elevator.elevatorHome()));
-        controlTriggers.elevatorL2.whileTrue(elevator.elevatorL2().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
-        controlTriggers.elevatorL3.whileTrue(elevator.elevatorL3().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
-        controlTriggers.elevatorL4.whileTrue(elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
+        controlTriggers.elevatorHome.onTrue(Commands.deadline(coralArm.loadCoralPosition(), elevator.elevatorL2()).andThen(elevator.elevatorHome()));
+        controlTriggers.elevatorL2.onTrue(elevator.elevatorL2().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
+        controlTriggers.elevatorL3.onTrue(elevator.elevatorL3().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
+        controlTriggers.elevatorL4.onTrue(elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
 
         controlTriggers.deAlgae.whileTrue(elevator.dealgaeExtend());
         controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
         reefTrigger.toggleOnTrue(coralArm.dropCoral());
 
-        controlTriggers.climberDescend.toggleOnTrue(cage.descend());
-        controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
+        controlTriggers.climberDescend.onTrue(cage.descend());
+        controlTriggers.climberAscend.onTrue(cage.ascend());
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
