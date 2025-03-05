@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,6 +18,8 @@ SparkMax elevatorMotor1 = new SparkMax(Constants.elevatorMotor1Id, MotorType.kBr
 SparkMax elevatorMotor2 = new SparkMax(Constants.elevatorMotor2Id, MotorType.kBrushless);
 SparkMax dealgaeFlipper = new SparkMax(Constants.dealgaeFlipperId, MotorType.kBrushed);
 SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrushed);
+private DigitalInput elevatorMaxSensor = new DigitalInput(Constants.elevatorMaxSensorChannel);
+private DigitalInput elevatorMinSensor = new DigitalInput(Constants.elevatorMinSensorChannel);
 public ElevatorPositions target = ElevatorPositions.HOME;
 public ElevatorPositions current = ElevatorPositions.HOME;
 PIDController elevatorPID = new PIDController(0.1, 0, 0);
@@ -150,6 +153,20 @@ public void periodic() {
         () -> {
           dealgaeWheels.set(0);
         });
+  }
+
+  /**
+   * Checks to see if the coral is correctly loaded on the coral scorer.
+   */
+  public boolean isElevatorAtMax() {
+    return elevatorMaxSensor.get();
+  }
+
+   /**
+   * Checks to see if the coral scorer is aligned with the reef.
+   */
+  public boolean isCoralOverReef() {
+    return elevatorMinSensor.get();
   }
 
   public boolean elevatorIsInPosition() {
