@@ -27,7 +27,6 @@ public double feedForward = 0.0;
 SparkMaxConfig config = new SparkMaxConfig();
 
 public ElevatorSubsystem() {
-  //todo: set motor 2 to follow 1
   elevatorPID.setTolerance(10.0);
   config.follow(elevatorMotor1);
   elevatorMotor2.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
@@ -62,7 +61,17 @@ public void periodic() {
    * Moves the elevator to the home position which is the lowest position.
    */
   public Command elevatorHome() {
-    return goToPosition(ElevatorPositions.HOME);
+    return goToPosition(ElevatorPositions.HOME).until(() -> isElevatorAtMin()).andThen(Commands.startEnd(
+      () -> {
+        if(!isElevatorAtMin()){
+          elevatorMotor1.set(-.2);
+        }
+      },
+      () -> {
+        elevatorMotor1.set(0);
+        elevatorMotor1.getEncoder().setPosition(0);
+      }
+    ).until(() -> isElevatorAtMin()));
   }
 
   /**
@@ -83,7 +92,12 @@ public void periodic() {
    * Moves the elevator to the L4 position.
    */
   public Command elevatorL4() {
-    return goToPosition(ElevatorPositions.L4);
+    return goToPosition(ElevatorPositions.L4).until(() -> isElevatorAtMax()).andThen(Commands.runOnce(
+      () -> {
+        elevatorMotor1.set(feedForward);
+        //elevatorMotor1.getEncoder().setPosition();  Set encoder to elevator max height position.
+      }
+    ));
   }
 
   private Command goToPosition(ElevatorPositions targetPosition) {
