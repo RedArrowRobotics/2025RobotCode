@@ -12,7 +12,7 @@ import edu.wpi.first.units.measure.Angle;
 
 public class Constants {
 
-    public static AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    public static AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
     // Named Commands
     public static String ALIGN_REEF_RIGHT = "Align to Reef Right";
