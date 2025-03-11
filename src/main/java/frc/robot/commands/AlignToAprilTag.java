@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -37,11 +38,11 @@ public class AlignToAprilTag {
     public AlignToAprilTag(DriveSubsystem subsystem) {
         driveSubsystem = subsystem;
         constraints = new PathConstraints(
-                driveSubsystem.getMaximumChassisVelocity(),
-                MetersPerSecondPerSecond.of(3),
-                driveSubsystem.getMaximumChassisAngularVelocity(),
-                DegreesPerSecondPerSecond.of(720),
-                Volts.of(12));
+            subsystem.getMaximumChassisVelocity().times(0.5),
+            MetersPerSecondPerSecond.of(10.6).times(0.5),
+            subsystem.getMaximumChassisAngularVelocity(),
+            DegreesPerSecondPerSecond.of(861),
+            Volts.of(12));
 
         // We only need to put this object in the smart dashboard once. The 
         // dashboard will automatically update when the underlying object 
@@ -57,7 +58,7 @@ public class AlignToAprilTag {
         Pose2d targetPose = driveSubsystem.getPose()
                 .nearest(ids.stream().map((Integer id) -> Constants.fieldLayout.getTagPose(id).orElseThrow().toPose2d()).toList())
                 .transformBy(new Transform2d(
-                        new Translation2d(Inches.of(35.0 / 2), translation),
+                        new Translation2d(Inches.of(17.5), translation),
                         new Rotation2d(Degrees.of(180)).plus(rotation)));
 
         // Create a PathPlanner command from the target pose
@@ -93,7 +94,8 @@ public class AlignToAprilTag {
         // Update the field object with the current path
         field.getObject("align").setPoses(path.getPathPoses());
         field.getObject("align_endpoints").setPoses(start, end);
-        return AutoBuilder.followPath(path);
+        driveSubsystem.setPathRunning(true);
+        return AutoBuilder.followPath(path).andThen( () -> {driveSubsystem.setPathRunning(false);});
     }
 
     public Command alignToSource() {
