@@ -4,16 +4,28 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -46,6 +58,7 @@ public class RobotContainer {
     private final SensorInputs sensorInputs = new SensorInputs();
     private final CageSubsystem cage;
     private final SendableChooser<Command> autoChooser;
+    private final PathConstraints constraints;
 
     public Trigger reefTrigger;
 
@@ -58,6 +71,13 @@ public class RobotContainer {
 
     public RobotContainer() throws IOException, Exception {
         swerveDriveTrain = new DriveSubsystem();
+
+        constraints = new PathConstraints(
+                swerveDriveTrain.getMaximumChassisVelocity(),
+                MetersPerSecondPerSecond.of(10.6),
+                swerveDriveTrain.getMaximumChassisAngularVelocity(),
+                DegreesPerSecondPerSecond.of(861),
+                Volts.of(12));
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
                 () -> {
                     var power = controlInputs.getdriveController().toSwerve();
@@ -104,7 +124,8 @@ public class RobotContainer {
 
         controlTriggers.alignReefLeft.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_LEFT));
         controlTriggers.alignReefRight.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_RIGHT));
-        controlTriggers.alignSource.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
+        //controlTriggers.alignSource.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
+        controlTriggers.alignSource.onTrue(oneMeterPath());
 
         controlTriggers.climberAscend.whileTrue(NamedCommands.getCommand(Constants.ASCEND_CAGE));
         controlTriggers.climberDescend.whileTrue(NamedCommands.getCommand(Constants.DESCEND_CAGE));
@@ -119,6 +140,23 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
+
+        PathfindingCommand.warmupCommand().schedule();
+    }
+
+    public Command oneMeterPath() {
+        return Commands.defer(() -> {
+            var currentPose = swerveDriveTrain.getPose();
+
+            PathPlannerPath path = new PathPlannerPath(
+                PathPlannerPath.waypointsFromPoses(currentPose, currentPose.plus(new Transform2d(Meters.of(1.0), Meters.of(0.0), new Rotation2d(0.0)))),
+                constraints,
+                null,
+                new GoalEndState(MetersPerSecond.of(0), currentPose.getRotation()));
+        path.preventFlipping = true;
+    
+        return AutoBuilder.followPath(path);
+        }, Set.of(swerveDriveTrain));
     }
 
     public void robotPeriodic() {

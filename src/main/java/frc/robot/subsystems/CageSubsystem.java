@@ -10,6 +10,7 @@ import frc.robot.Constants;
 
 public class CageSubsystem extends SubsystemBase {
   SparkFlex cageClimber = new SparkFlex(Constants.cageClimberMotorId, MotorType.kBrushless);
+  SparkMax cageGrabber = new SparkMax(Constants.cageGrabberMotorId, MotorType.kBrushless);
 
   /**
    *  Pushes down on the cage to raise the robot.
