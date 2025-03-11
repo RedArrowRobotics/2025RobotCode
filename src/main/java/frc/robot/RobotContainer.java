@@ -96,8 +96,6 @@ public class RobotContainer {
         NamedCommands.registerCommand(Constants.SCORE_L2, elevator.elevatorL2().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
         NamedCommands.registerCommand(Constants.SCORE_L3, elevator.elevatorL3().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
         NamedCommands.registerCommand(Constants.SCORE_L4, elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
-        NamedCommands.registerCommand(Constants.EXTEND_ALGAE_REMOVER, elevator.dealgaeExtend());
-        NamedCommands.registerCommand(Constants.RETRACT_ALGAE_REMOVER, elevator.dealgaeRetract());
         NamedCommands.registerCommand(Constants.DEALGAE_ON, elevator.dealgaeStartSpin());
         NamedCommands.registerCommand(Constants.DEALGAE_OFF, elevator.dealgaeStopSpin());
 
@@ -117,7 +115,7 @@ public class RobotContainer {
         controlTriggers.elevatorL4.onTrue(NamedCommands.getCommand(Constants.SCORE_L4));
 
         controlTriggers.deAlgae.whileTrue(NamedCommands.getCommand(Constants.DEALGAE_ON));
-        reefTrigger.toggleOnTrue(NamedCommands.getCommand(Constants.OUTTAKE_CORAL));
+        reefTrigger.onTrue(NamedCommands.getCommand(Constants.OUTTAKE_CORAL));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
