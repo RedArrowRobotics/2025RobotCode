@@ -33,14 +33,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 public class DriveSubsystem extends SubsystemBase {
   SwerveDrive swerveDrive;
   boolean trustPose = false;
+  boolean isPathRunning = false;
+  final LinearVelocity maximumSpeed = MetersPerSecond.of(3.31);
 
   public DriveSubsystem() throws IOException, ParseException {
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
     RobotConfig config;
 
-    LinearVelocity maximumSpeed = MetersPerSecond.of(4.35864);
-    File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
+    File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve-practice");
     swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed.in(MetersPerSecond));
     config = RobotConfig.fromGUISettings();
     
@@ -119,14 +120,20 @@ public class DriveSubsystem extends SubsystemBase {
     chassisSpeeds.vyMetersPerSecond = power.y() * swerveDrive.getMaximumChassisVelocity();
     chassisSpeeds.omegaRadiansPerSecond = power.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
     switch(orientation) {
-      case FIELD_CENTRIC: swerveDrive.driveFieldOriented(chassisSpeeds);
-      case ROBOT_CENTRIC: swerveDrive.drive(chassisSpeeds);
+      case FIELD_CENTRIC -> swerveDrive.driveFieldOriented(chassisSpeeds);
+      case ROBOT_CENTRIC -> swerveDrive.drive(chassisSpeeds);
     }
+  }
+
+  public void setPathRunning(boolean isPathRunning) {
+      this.isPathRunning = isPathRunning;
   }
 
   @Override
   public void periodic() {
-    updatePosition();
+    if (!isPathRunning) {
+      updatePosition();
+    }
   }
 
   public void updatePosition() {
@@ -163,7 +170,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public LinearVelocity getMaximumChassisVelocity() {
-    return MetersPerSecond.of(swerveDrive.getMaximumChassisVelocity());
+    return maximumSpeed;//MetersPerSecond.of(swerveDrive.getMaximumChassisVelocity());
   }
 
   public AngularVelocity getMaximumChassisAngularVelocity() {
