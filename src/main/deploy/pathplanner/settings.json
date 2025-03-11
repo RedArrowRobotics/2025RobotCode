@@ -4,8 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "Down-Left",
-    "Left",
     "Down-Right",
+    "Left",
+    "Start Forward",
     "Right",
     "Up-Left",
     "Up-Right"
