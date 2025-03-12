@@ -118,6 +118,8 @@ public class RobotContainer {
 
         controlTriggers.climberDescend.whileTrue(cage.descend());
         controlTriggers.climberAscend.whileTrue(cage.ascend());
+        controlTriggers.cageGrabber.onTrue(cage.cageGrabberClosedPosition());
+        controlTriggers.cageGrabber.onFalse(cage.cageGrabberOpenPosition());
 
         controlTriggers.alignReefLeft.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_LEFT));
         controlTriggers.alignReefRight.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_RIGHT));

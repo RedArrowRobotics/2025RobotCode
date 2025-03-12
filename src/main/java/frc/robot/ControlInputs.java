@@ -43,6 +43,7 @@ public class ControlInputs {
         public final Trigger alignReefLeft = new Trigger(() -> componentsBoard.getRawButton(10));
         public final Trigger alignReefRight = new Trigger(() -> componentsBoard.getRawButton(11));
         public final Trigger alignSource = new Trigger(() -> componentsBoard.getRawButton(12));
+        public final Trigger cageGrabber = new Trigger(() -> componentsBoard.getRawButton(12));
 
         public final Trigger driveButtonA = driveController.a();
         public final Trigger driveButtonB = driveController.b();
