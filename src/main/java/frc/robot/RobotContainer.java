@@ -81,7 +81,7 @@ public class RobotContainer {
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
                 () -> {
                     var power = controlInputs.getdriveController().toSwerve();
-                    if (controlTriggers.driveButtonA.getAsBoolean()) {
+                    if (controlTriggers.slowSpeed.getAsBoolean()) {
                         power = power.times(0.5);
                     }
                     return power;
@@ -119,6 +119,10 @@ public class RobotContainer {
         NamedCommands.registerCommand(Constants.DEALGAE_ON, elevator.dealgaeStartSpin());
         NamedCommands.registerCommand(Constants.DEALGAE_OFF, elevator.dealgaeStopSpin());
 
+        controlTriggers.climberDescend.whileTrue(cage.descend());
+        controlTriggers.climberAscend.whileTrue(cage.ascend());
+        controlTriggers.cageGrabber.onTrue(cage.cageGrabberClosedPosition());
+        controlTriggers.cageGrabber.onFalse(cage.cageGrabberOpenPosition());
 
         reefTrigger = new Trigger(() -> {return coralArm.armIsInPosition() && coralArm.isCoralOverReef() && elevator.elevatorIsInPosition();});
 
