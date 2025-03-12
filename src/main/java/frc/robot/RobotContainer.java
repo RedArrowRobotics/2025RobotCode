@@ -81,7 +81,7 @@ public class RobotContainer {
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
                 () -> {
                     var power = controlInputs.getdriveController().toSwerve();
-                    if (controlTriggers.driveButtonA.getAsBoolean()) {
+                    if (controlTriggers.slowSpeed.getAsBoolean()) {
                         power = power.times(0.5);
                     }
                     return power;
@@ -99,30 +99,44 @@ public class RobotContainer {
         NamedCommands.registerCommand(Constants.ALIGN_REEF_LEFT, commands.alignToReef(Inches.of(-6.5)));
         NamedCommands.registerCommand(Constants.ALIGN_REEF_RIGHT, commands.alignToReef(Inches.of(6.5)));
         NamedCommands.registerCommand(Constants.ALIGN_SOURCE, commands.alignToSource());
-      
-        NamedCommands.registerCommand("Intake Coral", coralArm.grabCoral());
-        NamedCommands.registerCommand("Score L1", new WaitCommand(5));
-        NamedCommands.registerCommand("Score L2", new WaitCommand(5));
-        NamedCommands.registerCommand("Score L3", new WaitCommand(5));
-        NamedCommands.registerCommand("Score L4", new WaitCommand(5));
+
+        //Coral Scoring Device Commands
+        NamedCommands.registerCommand(Constants.INTAKE_CORAL, coralArm.grabCoral());
+        NamedCommands.registerCommand(Constants.OUTTAKE_CORAL, coralArm.dropCoral());
+        NamedCommands.registerCommand(Constants.STOP_CORAL_WHEELS, coralArm.stopScorerSpin());
+        NamedCommands.registerCommand(Constants.CORAL_LOADING_POSITION, coralArm.loadCoralPosition());
+        NamedCommands.registerCommand(Constants.CORAL_SCORING_POSITION, coralArm.scoreCoralPosition());
+
+        //Cage Commands
+        NamedCommands.registerCommand(Constants.ASCEND_CAGE, cage.ascend());
+        NamedCommands.registerCommand(Constants.DESCEND_CAGE, cage.descend());
+
+        //Elevator Commands
+        NamedCommands.registerCommand(Constants.ELEVATOR_HOME, Commands.deadline(coralArm.loadCoralPosition(), elevator.elevatorL2()).andThen(elevator.elevatorHome()));
+        NamedCommands.registerCommand(Constants.SCORE_L2, elevator.elevatorL2().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
+        NamedCommands.registerCommand(Constants.SCORE_L3, elevator.elevatorL3().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
+        NamedCommands.registerCommand(Constants.SCORE_L4, elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
+        NamedCommands.registerCommand(Constants.DEALGAE_ON, elevator.dealgaeStartSpin());
+        NamedCommands.registerCommand(Constants.DEALGAE_OFF, elevator.dealgaeStopSpin());
+
 
         reefTrigger = new Trigger(() -> {return coralArm.armIsInPosition() && coralArm.isCoralOverReef() && elevator.elevatorIsInPosition();});
-
-        controlTriggers.elevatorHome.onTrue(Commands.deadline(coralArm.loadCoralPosition(), elevator.elevatorL2()).andThen(elevator.elevatorHome()));
-        controlTriggers.elevatorL2.onTrue(elevator.elevatorL2().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
-        controlTriggers.elevatorL3.onTrue(elevator.elevatorL3().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
-        controlTriggers.elevatorL4.onTrue(elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(coralArm.scoreCoralPosition())));
-
-        controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
-        reefTrigger.toggleOnTrue(coralArm.dropCoral());
-
-        controlTriggers.climberDescend.whileTrue(cage.descend());
-        controlTriggers.climberAscend.whileTrue(cage.ascend());
 
         controlTriggers.alignReefLeft.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_LEFT));
         controlTriggers.alignReefRight.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_RIGHT));
         //controlTriggers.alignSource.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
         controlTriggers.alignSource.onTrue(oneMeterPath());
+
+        controlTriggers.climberAscend.whileTrue(NamedCommands.getCommand(Constants.ASCEND_CAGE));
+        controlTriggers.climberDescend.whileTrue(NamedCommands.getCommand(Constants.DESCEND_CAGE));
+
+        controlTriggers.elevatorHome.onTrue(NamedCommands.getCommand(Constants.ELEVATOR_HOME));
+        controlTriggers.elevatorL2.onTrue(NamedCommands.getCommand(Constants.SCORE_L2));
+        controlTriggers.elevatorL3.onTrue(NamedCommands.getCommand(Constants.SCORE_L3));
+        controlTriggers.elevatorL4.onTrue(NamedCommands.getCommand(Constants.SCORE_L4));
+
+        controlTriggers.deAlgae.whileTrue(NamedCommands.getCommand(Constants.DEALGAE_ON));
+        reefTrigger.onTrue(NamedCommands.getCommand(Constants.OUTTAKE_CORAL));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
