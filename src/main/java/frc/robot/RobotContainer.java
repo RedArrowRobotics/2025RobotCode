@@ -81,7 +81,7 @@ public class RobotContainer {
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
                 () -> {
                     var power = controlInputs.getdriveController().toSwerve();
-                    if (controlTriggers.driveButtonA.getAsBoolean()) {
+                    if (controlTriggers.slowSpeed.getAsBoolean()) {
                         power = power.times(0.5);
                     }
                     return power;
