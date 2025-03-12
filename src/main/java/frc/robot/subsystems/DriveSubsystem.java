@@ -29,6 +29,7 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class DriveSubsystem extends SubsystemBase {
   SwerveDrive swerveDrive;
@@ -187,4 +188,13 @@ public class DriveSubsystem extends SubsystemBase {
   public boolean isPoseTrusted() {
     return trustPose;
   }
+
+  public void resetGyro() {
+    var alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+    switch (alliance) {
+      case Red -> resetPoseUntrusted(new Pose2d(0.0,0.0, new Rotation2d(Degrees.of(180))));
+      case Blue -> resetPoseUntrusted(new Pose2d(0.0,0.0, new Rotation2d(Degrees.zero())));
+    }
+  }
+
 }

@@ -176,4 +176,8 @@ public class RobotContainer {
         // Optional
         return Optional.ofNullable(autoChooser.getSelected());
     }
+    
+    public void resetGyro() {
+        swerveDriveTrain.resetGyro();
+    }
 }
