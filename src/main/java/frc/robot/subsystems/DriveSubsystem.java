@@ -41,7 +41,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     RobotConfig config;
 
-    File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve-practice");
+    File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
     swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed.in(MetersPerSecond));
     config = RobotConfig.fromGUISettings();
     
