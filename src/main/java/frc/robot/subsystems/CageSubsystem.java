@@ -60,7 +60,7 @@ public class CageSubsystem extends SubsystemBase {
   public Command ascend() {
     return startEnd(
         () -> {
-          cageClimber.set(1);
+          cageClimber.set(1.0);
         },
         () -> {
           cageClimber.set(0);
@@ -73,7 +73,7 @@ public class CageSubsystem extends SubsystemBase {
   public Command descend() {
     return startEnd(
         () -> {
-          cageClimber.set(-1);
+          cageClimber.set(-0.25);
         },
         () -> {
           cageClimber.set(0);
