@@ -96,8 +96,8 @@ public class RobotContainer {
         cage = new CageSubsystem();
       
         // PathPlanner Commands
-        NamedCommands.registerCommand(Constants.ALIGN_REEF_LEFT, commands.alignToReef(Inches.of(-6.5)));
-        NamedCommands.registerCommand(Constants.ALIGN_REEF_RIGHT, commands.alignToReef(Inches.of(6.5)));
+        NamedCommands.registerCommand(Constants.ALIGN_REEF_LEFT, commands.alignToReef(Inches.of(-15.5)));
+        NamedCommands.registerCommand(Constants.ALIGN_REEF_RIGHT, commands.alignToReef(Inches.of(-2.5)));
         NamedCommands.registerCommand(Constants.ALIGN_SOURCE, commands.alignToSource());
 
         //Coral Scoring Device Commands
