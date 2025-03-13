@@ -121,7 +121,13 @@ public class DriveSubsystem extends SubsystemBase {
     chassisSpeeds.vyMetersPerSecond = power.y() * swerveDrive.getMaximumChassisVelocity();
     chassisSpeeds.omegaRadiansPerSecond = power.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
     switch(orientation) {
-      case FIELD_CENTRIC -> swerveDrive.driveFieldOriented(chassisSpeeds);
+      case FIELD_CENTRIC -> {
+        if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+          chassisSpeeds.vxMetersPerSecond = -chassisSpeeds.vxMetersPerSecond;
+          chassisSpeeds.vyMetersPerSecond = -chassisSpeeds.vyMetersPerSecond;
+        }
+        swerveDrive.driveFieldOriented(chassisSpeeds);
+      }
       case ROBOT_CENTRIC -> swerveDrive.drive(chassisSpeeds);
     }
   }
