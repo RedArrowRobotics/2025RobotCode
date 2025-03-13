@@ -2,7 +2,6 @@ package frc.robot.encoder;
 
 import static edu.wpi.first.units.Units.Minutes;
 import static edu.wpi.first.units.Units.Revolutions;
-import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Value;
 
 import com.revrobotics.AbsoluteEncoder;

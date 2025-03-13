@@ -6,7 +6,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
@@ -18,6 +17,7 @@ import org.json.simple.parser.ParseException;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.parser.SwerveParser;
@@ -38,7 +38,11 @@ public class DriveSubsystem extends SubsystemBase {
   final LinearVelocity maximumSpeed = MetersPerSecond.of(3.31);
 
   public DriveSubsystem() throws IOException, ParseException {
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    if (DriverStation.getMatchType() == MatchType.None) {
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    } else {
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
+    }
 
     RobotConfig config;
 
@@ -202,5 +206,4 @@ public class DriveSubsystem extends SubsystemBase {
       case Blue -> resetPoseUntrusted(new Pose2d(0.0,0.0, new Rotation2d(Degrees.zero())));
     }
   }
-
 }
