@@ -58,7 +58,7 @@ public class AlignToAprilTag {
         Pose2d targetPose = driveSubsystem.getPose()
                 .nearest(ids.stream().map((Integer id) -> Constants.fieldLayout.getTagPose(id).orElseThrow().toPose2d()).toList())
                 .transformBy(new Transform2d(
-                        new Translation2d(Inches.of(17.5), translation),
+                        new Translation2d(Inches.of(18), translation),
                         new Rotation2d(Degrees.of(180)).plus(rotation)));
 
         // Create a PathPlanner command from the target pose

@@ -96,8 +96,8 @@ public class RobotContainer {
         cage = new CageSubsystem();
       
         // PathPlanner Commands
-        NamedCommands.registerCommand(Constants.ALIGN_REEF_LEFT, commands.alignToReef(Inches.of(-6.5)));
-        NamedCommands.registerCommand(Constants.ALIGN_REEF_RIGHT, commands.alignToReef(Inches.of(6.5)));
+        NamedCommands.registerCommand(Constants.ALIGN_REEF_LEFT, commands.alignToReef(Inches.of(-15.5)));
+        NamedCommands.registerCommand(Constants.ALIGN_REEF_RIGHT, commands.alignToReef(Inches.of(-2.5)));
         NamedCommands.registerCommand(Constants.ALIGN_SOURCE, commands.alignToSource());
 
         //Coral Scoring Device Commands
@@ -119,13 +119,17 @@ public class RobotContainer {
         NamedCommands.registerCommand(Constants.DEALGAE_ON, elevator.dealgaeStartSpin());
         NamedCommands.registerCommand(Constants.DEALGAE_OFF, elevator.dealgaeStopSpin());
 
+        controlTriggers.climberDescend.whileTrue(cage.descend());
+        controlTriggers.climberAscend.whileTrue(cage.ascend());
+        controlTriggers.cageGrabber.onTrue(cage.cageGrabberClosedPosition());
+        controlTriggers.cageGrabber.onFalse(cage.cageGrabberOpenPosition());
 
         reefTrigger = new Trigger(() -> {return coralArm.armIsInPosition() && coralArm.isCoralOverReef() && elevator.elevatorIsInPosition();});
 
         controlTriggers.alignReefLeft.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_LEFT));
         controlTriggers.alignReefRight.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_RIGHT));
-        //controlTriggers.alignSource.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
-        controlTriggers.alignSource.onTrue(oneMeterPath());
+        controlTriggers.alignSource.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
+        controlTriggers.alignSource.onTrue(NamedCommands.getCommand(Constants.INTAKE_CORAL));
 
         controlTriggers.climberAscend.whileTrue(NamedCommands.getCommand(Constants.ASCEND_CAGE));
         controlTriggers.climberDescend.whileTrue(NamedCommands.getCommand(Constants.DESCEND_CAGE));
