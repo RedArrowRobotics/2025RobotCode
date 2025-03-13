@@ -29,6 +29,7 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class DriveSubsystem extends SubsystemBase {
   SwerveDrive swerveDrive;
@@ -120,7 +121,13 @@ public class DriveSubsystem extends SubsystemBase {
     chassisSpeeds.vyMetersPerSecond = power.y() * swerveDrive.getMaximumChassisVelocity();
     chassisSpeeds.omegaRadiansPerSecond = power.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
     switch(orientation) {
-      case FIELD_CENTRIC -> swerveDrive.driveFieldOriented(chassisSpeeds);
+      case FIELD_CENTRIC -> {
+        if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+          chassisSpeeds.vxMetersPerSecond = -chassisSpeeds.vxMetersPerSecond;
+          chassisSpeeds.vyMetersPerSecond = -chassisSpeeds.vyMetersPerSecond;
+        }
+        swerveDrive.driveFieldOriented(chassisSpeeds);
+      }
       case ROBOT_CENTRIC -> swerveDrive.drive(chassisSpeeds);
     }
   }
@@ -187,4 +194,13 @@ public class DriveSubsystem extends SubsystemBase {
   public boolean isPoseTrusted() {
     return trustPose;
   }
+
+  public void resetGyro() {
+    var alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+    switch (alliance) {
+      case Red -> resetPoseUntrusted(new Pose2d(0.0,0.0, new Rotation2d(Degrees.of(180))));
+      case Blue -> resetPoseUntrusted(new Pose2d(0.0,0.0, new Rotation2d(Degrees.zero())));
+    }
+  }
+
 }
