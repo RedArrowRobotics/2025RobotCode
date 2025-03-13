@@ -24,6 +24,8 @@ public class Constants {
     public static String STOP_CORAL_WHEELS = "Stop Coral Wheels";
     public static String CORAL_LOADING_POSITION = "Coral Loading Position";
     public static String CORAL_SCORING_POSITION = "Coral Scoring Position";
+    public static String MANUAL_CORAL_LOAD = "Manual Coral Load";
+    public static String MANUAL_CORAL_SCORE = "Manual Coral Score";
 
     public static String ASCEND_CAGE = "Ascend Cage";
     public static String DESCEND_CAGE = "Descend Cage";
