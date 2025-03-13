@@ -62,6 +62,8 @@ public class Constants {
     //   Cage
     public static double cageGrabberReleasePosition = 0.0;
     public static double cageGrabberHoldPosition = 0.5;
+    public static Angle cageGrabberOpenPosition = Degrees.of(0.0);
+    public static Angle cageGrabberClosedPosition = Degrees.of(90.0);
     //   Elevator
     public static double elevatorMotorHomePosition = 0;
     public static double elevatorMotorL2Position = 100;
@@ -73,4 +75,5 @@ public class Constants {
     public static Time coralDropTimeout = Seconds.of(3.0);
     public static Angle scorerTilterScoringPosition = Degrees.of(135.0);
     public static Angle scorerTilterLoadingPosition = Degrees.of(0.0);
+    
 }
