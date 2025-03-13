@@ -59,6 +59,8 @@ public class Constants {
     // DIO Ports
     public static int coralSensorChannel = 1;
     public static int reefSensorChannel = 2;
+    public static int elevatorMaxSensorChannel = 3;
+    public static int elevatorMinSensorChannel = 4;
 
     // Subsystem Constants
     //   Cage
@@ -73,7 +75,8 @@ public class Constants {
     public static double elevatorMotorL4Position = 300;
     public static double dealgaeFlipperExtendedPosition = 1;
     public static double dealgaeFlipperRetractedPosition = 0;
-    //   Coral Scorer
+
+    
     public static Time coralDropTimeout = Seconds.of(3.0);
     public static Angle scorerTilterScoringPosition = Degrees.of(205.0);
     public static Angle scorerTilterLoadingPosition = Degrees.of(5.0);

@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,6 +18,8 @@ SparkMax elevatorMotor1 = new SparkMax(Constants.elevatorMotor1Id, MotorType.kBr
 SparkMax elevatorMotor2 = new SparkMax(Constants.elevatorMotor2Id, MotorType.kBrushless);
 SparkMax dealgaeFlipper = new SparkMax(Constants.dealgaeFlipperId, MotorType.kBrushed);
 SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrushed);
+private DigitalInput elevatorMaxSensor = new DigitalInput(Constants.elevatorMaxSensorChannel);
+private DigitalInput elevatorMinSensor = new DigitalInput(Constants.elevatorMinSensorChannel);
 public ElevatorPositions target = ElevatorPositions.HOME;
 public ElevatorPositions current = ElevatorPositions.HOME;
 PIDController elevatorPID = new PIDController(0.1, 0, 0);
@@ -24,7 +27,6 @@ public double feedForward = 0.0;
 SparkMaxConfig config = new SparkMaxConfig();
 
 public ElevatorSubsystem() {
-  //todo: set motor 2 to follow 1
   elevatorPID.setTolerance(10.0);
   config.follow(elevatorMotor1);
   elevatorMotor2.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
@@ -59,7 +61,17 @@ public void periodic() {
    * Moves the elevator to the home position which is the lowest position.
    */
   public Command elevatorHome() {
-    return goToPosition(ElevatorPositions.HOME);
+    return goToPosition(ElevatorPositions.HOME).until(() -> isElevatorAtMin()).andThen(Commands.startEnd(
+      () -> {
+        if(!isElevatorAtMin()){
+          elevatorMotor1.set(-.2);
+        }
+      },
+      () -> {
+        elevatorMotor1.set(0);
+        elevatorMotor1.getEncoder().setPosition(0);
+      }
+    ).until(() -> isElevatorAtMin()));
   }
 
   /**
@@ -80,7 +92,12 @@ public void periodic() {
    * Moves the elevator to the L4 position.
    */
   public Command elevatorL4() {
-    return goToPosition(ElevatorPositions.L4);
+    return goToPosition(ElevatorPositions.L4).until(() -> isElevatorAtMax()).andThen(Commands.runOnce(
+      () -> {
+        elevatorMotor1.set(feedForward);
+        //elevatorMotor1.getEncoder().setPosition();  Set encoder to elevator max height position.
+      }
+    ));
   }
 
   private Command goToPosition(ElevatorPositions targetPosition) {
@@ -150,6 +167,20 @@ public void periodic() {
         () -> {
           dealgaeWheels.set(0);
         });
+  }
+
+  /**
+   * Checks to see if the coral is correctly loaded on the coral scorer.
+   */
+  public boolean isElevatorAtMax() {
+    return elevatorMaxSensor.get();
+  }
+
+   /**
+   * Checks to see if the coral scorer is aligned with the reef.
+   */
+  public boolean isElevatorAtMin() {
+    return elevatorMinSensor.get();
   }
 
   public boolean elevatorIsInPosition() {
