@@ -96,8 +96,8 @@ public class RobotContainer {
         cage = new CageSubsystem();
       
         // PathPlanner Commands
-        NamedCommands.registerCommand(Constants.ALIGN_REEF_LEFT, commands.alignToReef(Inches.of(-6.5)));
-        NamedCommands.registerCommand(Constants.ALIGN_REEF_RIGHT, commands.alignToReef(Inches.of(6.5)));
+        NamedCommands.registerCommand(Constants.ALIGN_REEF_LEFT, commands.alignToReef(Inches.of(-15.5)));
+        NamedCommands.registerCommand(Constants.ALIGN_REEF_RIGHT, commands.alignToReef(Inches.of(-2.5)));
         NamedCommands.registerCommand(Constants.ALIGN_SOURCE, commands.alignToSource());
 
         //Coral Scoring Device Commands
@@ -130,8 +130,8 @@ public class RobotContainer {
 
         controlTriggers.alignReefLeft.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_LEFT));
         controlTriggers.alignReefRight.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_RIGHT));
-        //controlTriggers.alignSource.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
-        controlTriggers.alignSource.onTrue(oneMeterPath());
+        controlTriggers.alignSource.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
+        controlTriggers.alignSource.onTrue(NamedCommands.getCommand(Constants.INTAKE_CORAL));
 
         controlTriggers.manualCoralArmLoad.onTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_LOAD));
         controlTriggers.manualCoralArmScore.onTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_SCORE));
