@@ -6,7 +6,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
@@ -18,6 +17,7 @@ import org.json.simple.parser.ParseException;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.parser.SwerveParser;
@@ -29,17 +29,23 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class DriveSubsystem extends SubsystemBase {
   SwerveDrive swerveDrive;
   boolean trustPose = false;
+  boolean isPathRunning = false;
+  final LinearVelocity maximumSpeed = MetersPerSecond.of(3.31);
 
   public DriveSubsystem() throws IOException, ParseException {
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    if (DriverStation.getMatchType() == MatchType.None) {
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    } else {
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
+    }
 
     RobotConfig config;
 
-    LinearVelocity maximumSpeed = MetersPerSecond.of(4.35864);
     File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
     swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed.in(MetersPerSecond));
     config = RobotConfig.fromGUISettings();
@@ -119,14 +125,26 @@ public class DriveSubsystem extends SubsystemBase {
     chassisSpeeds.vyMetersPerSecond = power.y() * swerveDrive.getMaximumChassisVelocity();
     chassisSpeeds.omegaRadiansPerSecond = power.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
     switch(orientation) {
-      case FIELD_CENTRIC: swerveDrive.driveFieldOriented(chassisSpeeds);
-      case ROBOT_CENTRIC: swerveDrive.drive(chassisSpeeds);
+      case FIELD_CENTRIC -> {
+        if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+          chassisSpeeds.vxMetersPerSecond = -chassisSpeeds.vxMetersPerSecond;
+          chassisSpeeds.vyMetersPerSecond = -chassisSpeeds.vyMetersPerSecond;
+        }
+        swerveDrive.driveFieldOriented(chassisSpeeds);
+      }
+      case ROBOT_CENTRIC -> swerveDrive.drive(chassisSpeeds);
     }
+  }
+
+  public void setPathRunning(boolean isPathRunning) {
+      this.isPathRunning = isPathRunning;
   }
 
   @Override
   public void periodic() {
-    updatePosition();
+    if (!isPathRunning) {
+      updatePosition();
+    }
   }
 
   public void updatePosition() {
@@ -163,7 +181,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public LinearVelocity getMaximumChassisVelocity() {
-    return MetersPerSecond.of(swerveDrive.getMaximumChassisVelocity());
+    return maximumSpeed;//MetersPerSecond.of(swerveDrive.getMaximumChassisVelocity());
   }
 
   public AngularVelocity getMaximumChassisAngularVelocity() {
@@ -179,5 +197,13 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public boolean isPoseTrusted() {
     return trustPose;
+  }
+
+  public void resetGyro() {
+    var alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+    switch (alliance) {
+      case Red -> resetPoseUntrusted(new Pose2d(0.0,0.0, new Rotation2d(Degrees.of(180))));
+      case Blue -> resetPoseUntrusted(new Pose2d(0.0,0.0, new Rotation2d(Degrees.zero())));
+    }
   }
 }

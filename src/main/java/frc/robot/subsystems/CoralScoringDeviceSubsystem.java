@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.encoder.AngleGenericAbsoluteEncoder;
 import edu.wpi.first.units.measure.Angle;
@@ -23,15 +22,15 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   private DigitalInput reefSensor = new DigitalInput(Constants.reefSensorChannel);
   public CoralArmPosition target = CoralArmPosition.HOME;
   public CoralArmPosition current = CoralArmPosition.HOME;
-  PIDController coralArmPID = new PIDController(0.03, 0.0, 0.0);
+  PIDController coralArmPID = new PIDController(0.0039, 0.0, 0.0);
   public double feedForward = 0.0;
   public AngleGenericAbsoluteEncoder angleEncoder;
 
   public CoralScoringDeviceSubsystem() {
     DutyCycleEncoder encoder = new DutyCycleEncoder(3);
-    coralArmPID.setTolerance(Degrees.of(1.0).in(Degrees));
+    coralArmPID.setTolerance(Degrees.of(5.0).in(Degrees));
     angleEncoder = new AngleGenericAbsoluteEncoder(encoder);
-    coralArmPID.enableContinuousInput(0, 360);
+    // coralArmPID.enableContinuousInput(0, 360);
   }
 
   public enum CoralArmPosition {
@@ -54,7 +53,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public void periodic() {
     double power;
     power = coralArmPID.calculate(angleEncoder.getAngle().in(Degrees), target.getEncoderPosition().in(Degrees)) + feedForward;
-    scorerTilter.set(power * -1.0);
+    scorerTilter.set(power * 1.0);
   }
 
   private Command goToPosition(CoralArmPosition targetPosition) {

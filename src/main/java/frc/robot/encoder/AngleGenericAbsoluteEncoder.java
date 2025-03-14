@@ -1,7 +1,6 @@
 package frc.robot.encoder;
 
 import static edu.wpi.first.units.Units.Revolutions;
-import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Value;
 
 import edu.wpi.first.units.AngleUnit;
@@ -12,7 +11,6 @@ import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
 
 public class AngleGenericAbsoluteEncoder implements AngleEncoder {
     DutyCycleEncoder encoder;
