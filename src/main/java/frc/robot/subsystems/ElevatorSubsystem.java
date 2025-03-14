@@ -12,24 +12,26 @@ import frc.robot.Constants;
 import com.revrobotics.spark.SparkBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
-SparkMax elevatorMotor1 = new SparkMax(Constants.elevatorMotor1Id, MotorType.kBrushless);
-SparkMax elevatorMotor2 = new SparkMax(Constants.elevatorMotor2Id, MotorType.kBrushless);
-SparkMax dealgaeFlipper = new SparkMax(Constants.dealgaeFlipperId, MotorType.kBrushed);
-SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrushed);
-public ElevatorPositions target = ElevatorPositions.HOME;
-public ElevatorPositions current = ElevatorPositions.HOME;
-PIDController elevatorPID = new PIDController(0.1, 0, 0);
-public double feedForward = 0.0;
-SparkMaxConfig config = new SparkMaxConfig();
+  SparkMax elevatorMotor1 = new SparkMax(Constants.elevatorMotor1Id, MotorType.kBrushless);
+  SparkMax elevatorMotor2 = new SparkMax(Constants.elevatorMotor2Id, MotorType.kBrushless);
+  SparkMax dealgaeFlipper = new SparkMax(Constants.dealgaeFlipperId, MotorType.kBrushed);
+  SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrushed);
+  public ElevatorPositions target = ElevatorPositions.HOME;
+  public ElevatorPositions current = ElevatorPositions.HOME;
+  PIDController elevatorPID = new PIDController(0.1, 0, 0);
+  public double feedForward = 0.0;
+  SparkMaxConfig config = new SparkMaxConfig();
+  boolean manualControl = false;
 
-public ElevatorSubsystem() {
-  //todo: set motor 2 to follow 1
-  elevatorPID.setTolerance(10.0);
-  config.follow(elevatorMotor1);
-  elevatorMotor2.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-}
+  public ElevatorSubsystem() {
+    // todo: set motor 2 to follow 1
+    elevatorPID.setTolerance(10.0);
+    config.follow(elevatorMotor1);
+    elevatorMotor2.configure(config, SparkBase.ResetMode.kResetSafeParameters,
+        SparkBase.PersistMode.kPersistParameters);
+  }
 
-public enum ElevatorPositions {
+  public enum ElevatorPositions {
     HOME(Constants.elevatorMotorHomePosition),
     L2(Constants.elevatorMotorL2Position),
     L3(Constants.elevatorMotorL3Position),
@@ -45,14 +47,16 @@ public enum ElevatorPositions {
     public double getEncoderPosition() {
       return encoderPosition;
     }
-}
+  }
 
-@Override
-public void periodic() {
-  double power;
-  power = elevatorPID.calculate(elevatorMotor1.getEncoder().getPosition(), target.getEncoderPosition()) + feedForward;
-  elevatorMotor1.set(power);
-}
+  @Override
+  public void periodic() {
+    if (!manualControl) {
+      double power;
+      power = elevatorPID.calculate(elevatorMotor1.getEncoder().getPosition(), target.getEncoderPosition()) + feedForward;
+      elevatorMotor1.set(power);
+    }
+  }
 
   /**
    * Moves the elevator to the home position which is the lowest position.
@@ -67,14 +71,14 @@ public void periodic() {
   public Command elevatorL2() {
     return goToPosition(ElevatorPositions.L2);
   }
-  
+
   /**
    * Moves the elevator to the L3 position.
    */
   public Command elevatorL3() {
     return goToPosition(ElevatorPositions.L3);
   }
-  
+
   /**
    * Moves the elevator to the L4 position.
    */
@@ -84,23 +88,46 @@ public void periodic() {
 
   private Command goToPosition(ElevatorPositions targetPosition) {
     return startEnd(
-      () -> {
-        target = targetPosition;
-        elevatorPID.calculate(elevatorMotor1.getEncoder().getPosition(), target.getEncoderPosition());
-        current = ElevatorPositions.NONE;
-      },
-      () -> {
-        if(elevatorPID.atSetpoint()) {
-          current = targetPosition;
-        }
-      }
-      ).until(() -> elevatorPID.atSetpoint());
+        () -> {
+          manualControl = false;
+          target = targetPosition;
+          elevatorPID.calculate(elevatorMotor1.getEncoder().getPosition(), target.getEncoderPosition());
+          current = ElevatorPositions.NONE;
+        },
+        () -> {
+          if (elevatorPID.atSetpoint()) {
+            current = targetPosition;
+          }
+        }).until(() -> elevatorPID.atSetpoint());
   }
 
   public Boolean isElevatorAtL2() {
-    return elevatorMotor1.getEncoder().getPosition() >= Constants.elevatorMotorL2Position - elevatorPID.getErrorTolerance();
+    return elevatorMotor1.getEncoder().getPosition() >= Constants.elevatorMotorL2Position
+        - elevatorPID.getErrorTolerance();
   }
-  
+
+  public Command raiseElevator() {
+    return startEnd(
+      () -> {
+        manualControl = true;
+        elevatorMotor1.set(0.5);
+      }, () -> {
+        elevatorMotor1.set(0.0);
+      }
+    );
+  }
+
+  public Command lowerElevator() {
+    return startEnd(
+      () -> {
+        manualControl = true;
+        elevatorMotor1.set(-0.5);
+      }, () -> {
+        elevatorMotor1.set(0.0);
+      }
+    );
+  }
+
   /**
    * Moves the dealgaer into the dealgae position.
    */
@@ -111,11 +138,10 @@ public void periodic() {
         },
         () -> {
           elevatorMotor1.set(0);
-        }
-        ).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperExtendedPosition));
-        //getEncoder or getPosition?
+        }).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperExtendedPosition));
+    // getEncoder or getPosition?
   }
-  
+
   /**
    * Moves the dealgaer into the stored position.
    */
@@ -126,11 +152,10 @@ public void periodic() {
         },
         () -> {
           elevatorMotor1.set(0);
-        }
-        ).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperRetractedPosition));
-        //getEncoder or getPosition?
+        }).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperRetractedPosition));
+    // getEncoder or getPosition?
   }
-  
+
   /**
    * Activates the dealgaer.
    */
@@ -140,7 +165,7 @@ public void periodic() {
           dealgaeWheels.set(1);
         });
   }
-  
+
   /**
    * Deactivates the dealgaer.
    */

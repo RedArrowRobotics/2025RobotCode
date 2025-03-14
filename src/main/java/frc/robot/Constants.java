@@ -38,6 +38,8 @@ public class Constants {
     public static String RETRACT_ALGAE_REMOVER = "Retract Algae Remover";
     public static String DEALGAE_ON = "Turn on Dealgae Wheels";
     public static String DEALGAE_OFF = "Turn off Dealgae Wheels";
+    public static String MANUAL_ELEVATOR_UP = "Manual Elevator Up";
+    public static String MANUAL_ELEVATOR_DOWN = "Manual Elevator Down";
 
     // April Tag IDs
     public static List<Integer> blueReefATags = List.of(17,18,19,20,21,22);
