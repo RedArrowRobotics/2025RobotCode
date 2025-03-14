@@ -66,9 +66,9 @@ public class Constants {
     public static Angle cageGrabberClosedPosition = Degrees.of(90.0);
     //   Elevator
     public static double elevatorMotorHomePosition = 0;
-    public static double elevatorMotorL2Position = 100;
-    public static double elevatorMotorL3Position = 200;
-    public static double elevatorMotorL4Position = 300;
+    public static double elevatorMotorL2Position = 10;
+    public static double elevatorMotorL3Position = 20;
+    public static double elevatorMotorL4Position = 30;
     public static double dealgaeFlipperExtendedPosition = 1;
     public static double dealgaeFlipperRetractedPosition = 0;
     //   Coral Scorer
