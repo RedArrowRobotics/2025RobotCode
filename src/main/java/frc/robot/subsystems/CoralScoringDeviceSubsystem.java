@@ -25,6 +25,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   PIDController coralArmPID = new PIDController(0.0039, 0.0, 0.0);
   public double feedForward = 0.0;
   public AngleGenericAbsoluteEncoder angleEncoder;
+  boolean manualControl = false;
 
   public CoralScoringDeviceSubsystem() {
     DutyCycleEncoder encoder = new DutyCycleEncoder(3);
@@ -51,14 +52,17 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double power;
-    power = coralArmPID.calculate(angleEncoder.getAngle().in(Degrees), target.getEncoderPosition().in(Degrees)) + feedForward;
-    scorerTilter.set(power * 1.0);
+    if (!manualControl) {
+      double power;
+      power = coralArmPID.calculate(angleEncoder.getAngle().in(Degrees), target.getEncoderPosition().in(Degrees)) + feedForward;
+      scorerTilter.set(power * 1.0);
+    }
   }
 
   private Command goToPosition(CoralArmPosition targetPosition) {
     return startEnd(
       () -> {
+        manualControl = false;
         target = targetPosition;
         current = CoralArmPosition.NONE;
       },
@@ -120,6 +124,28 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
    */
   public Command loadCoralPosition() {
       return goToPosition(CoralArmPosition.HOME);
+  }
+
+  public Command coralArmPositive() {
+    return startEnd(
+      () -> {
+        manualControl = true;
+        scorerTilter.set(0.1);
+      }, () -> {
+        scorerTilter.set(0.0);
+      }
+    );
+  }
+
+  public Command coralArmNegative() {
+    return startEnd(
+      () -> {
+        manualControl = true;
+        scorerTilter.set(0.1);
+      }, () -> {
+        scorerTilter.set(0.0);
+      }
+    );
   }
 
    /**
