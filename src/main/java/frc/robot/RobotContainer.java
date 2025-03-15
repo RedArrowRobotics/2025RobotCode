@@ -118,6 +118,9 @@ public class RobotContainer {
         NamedCommands.registerCommand(Constants.SCORE_L4, elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
         NamedCommands.registerCommand(Constants.DEALGAE_ON, elevator.dealgaeStartSpin());
         NamedCommands.registerCommand(Constants.DEALGAE_OFF, elevator.dealgaeStopSpin());
+        NamedCommands.registerCommand(Constants.MANUAL_ELEVATOR_UP, elevator.raiseElevator());
+        NamedCommands.registerCommand(Constants.MANUAL_ELEVATOR_DOWN, elevator.lowerElevator());
+
 
         controlTriggers.climberDescend.whileTrue(cage.descend());
         controlTriggers.climberAscend.whileTrue(cage.ascend());
@@ -141,6 +144,9 @@ public class RobotContainer {
         controlTriggers.elevatorL2.onTrue(NamedCommands.getCommand(Constants.SCORE_L2));
         controlTriggers.elevatorL3.onTrue(NamedCommands.getCommand(Constants.SCORE_L3));
         controlTriggers.elevatorL4.onTrue(NamedCommands.getCommand(Constants.SCORE_L4));
+
+        controlTriggers.manualElevatorUp.whileTrue(NamedCommands.getCommand(Constants.MANUAL_ELEVATOR_UP));
+        controlTriggers.manualElevatorDown.whileTrue(NamedCommands.getCommand(Constants.MANUAL_ELEVATOR_DOWN));
 
         controlTriggers.deAlgae.whileTrue(NamedCommands.getCommand(Constants.DEALGAE_ON));
         reefTrigger.onTrue(NamedCommands.getCommand(Constants.OUTTAKE_CORAL));
