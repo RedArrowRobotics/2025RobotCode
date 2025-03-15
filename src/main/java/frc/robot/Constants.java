@@ -50,7 +50,7 @@ public class Constants {
     public static int cageClimberMotorId = 15;
     public static int elevatorMotor1Id = 16;
     public static int elevatorMotor2Id = 17;
-    public static int cageGrabberMotorId = 18;
+    public static int cageGrabberMotorId = 21;
     public static int dealgaeFlipperId = 19;
     public static int dealgaeWheelsId = 20;
 

@@ -78,7 +78,9 @@ public class RobotContainer {
                 swerveDriveTrain.getMaximumChassisAngularVelocity(),
                 DegreesPerSecondPerSecond.of(861),
                 Volts.of(12));
-        swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(
+        swerveDriveTrain.setDefaultCommand( 
+                      // swerveDriveTrain.testDrive()
+                swerveDriveTrain.teleopDrive(
                 () -> {
                     var power = controlInputs.getdriveController().toSwerve();
                     if (controlTriggers.slowSpeed.getAsBoolean()) {
@@ -86,7 +88,8 @@ public class RobotContainer {
                     }
                     return power;
                 },
-                DriveOrientation.FIELD_CENTRIC));
+                DriveOrientation.ROBOT_CENTRIC)
+                );
       
 
             

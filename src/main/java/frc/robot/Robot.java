@@ -6,11 +6,19 @@ package frc.robot;
 
 import java.util.Optional;
 
+import com.revrobotics.jni.CANSparkJNI;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import swervelib.encoders.AnalogAbsoluteEncoderSwerve;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to

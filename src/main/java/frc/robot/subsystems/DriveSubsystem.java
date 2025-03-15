@@ -29,6 +29,7 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class DriveSubsystem extends SubsystemBase {
   SwerveDrive swerveDrive;
@@ -106,6 +107,21 @@ public class DriveSubsystem extends SubsystemBase {
     return this.runOnce(() -> {
       manualDrive(new DrivePower(0, 0, 0), DriveOrientation.ROBOT_CENTRIC);
     });
+  }
+
+  public Command testDrive() {
+   return run( () -> {
+   
+    ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+    chassisSpeeds.vxMetersPerSecond = .1 * swerveDrive.getMaximumChassisVelocity();
+    chassisSpeeds.vyMetersPerSecond = 0 * swerveDrive.getMaximumChassisVelocity();
+    chassisSpeeds.omegaRadiansPerSecond = 0 * swerveDrive.getMaximumChassisAngularVelocity();
+    swerveDrive.drive(chassisSpeeds, true, new Translation2d());
+    //switch(orientation) {
+    //  case FIELD_CENTRIC -> swerveDrive.driveFieldOriented(chassisSpeeds);
+    //  case ROBOT_CENTRIC -> swerveDrive.drive(chassisSpeeds);
+    //}   
+   });
   }
 
   /**
