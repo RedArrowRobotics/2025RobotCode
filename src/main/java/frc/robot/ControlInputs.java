@@ -1,8 +1,6 @@
 package frc.robot;
 
 import frc.robot.subsystems.DriveSubsystem.DrivePower;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -45,6 +43,8 @@ public class ControlInputs {
         public final Trigger alignReefRight = new Trigger(() -> componentsBoard.getRawButton(9));
         public final Trigger alignReefLeft = new Trigger(() -> componentsBoard.getRawButton(10));
         public final Trigger cageGrabber = new Trigger(() -> componentsBoard.getRawButton(12));
+        public final Trigger manualCoralArmScore = new Trigger(() -> componentsBoard.getRawAxis(0) < 0.5);
+        public final Trigger manualCoralArmLoad = new Trigger(() -> componentsBoard.getRawAxis(0) > 0.5);
 
         public final Trigger slowSpeed = new Trigger(() -> driveController.getRawButton(1));
     }

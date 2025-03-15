@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
@@ -23,15 +22,11 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.AlignToAprilTag;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -109,6 +104,8 @@ public class RobotContainer {
         NamedCommands.registerCommand(Constants.STOP_CORAL_WHEELS, coralArm.stopScorerSpin());
         NamedCommands.registerCommand(Constants.CORAL_LOADING_POSITION, coralArm.loadCoralPosition());
         NamedCommands.registerCommand(Constants.CORAL_SCORING_POSITION, coralArm.scoreCoralPosition());
+        NamedCommands.registerCommand(Constants.MANUAL_CORAL_LOAD, coralArm.loadCoralPosition());
+        NamedCommands.registerCommand(Constants.MANUAL_CORAL_SCORE, coralArm.scoreCoralPosition().onlyIf(() -> elevator.isElevatorAtL2()));
 
         //Cage Commands
         NamedCommands.registerCommand(Constants.ASCEND_CAGE, cage.ascend());
@@ -133,6 +130,9 @@ public class RobotContainer {
         controlTriggers.alignReefRight.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_RIGHT));
         controlTriggers.alignSource.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
         controlTriggers.alignSource.onTrue(NamedCommands.getCommand(Constants.INTAKE_CORAL));
+
+        controlTriggers.manualCoralArmLoad.onTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_LOAD));
+        controlTriggers.manualCoralArmScore.onTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_SCORE));
 
         controlTriggers.climberAscend.whileTrue(NamedCommands.getCommand(Constants.ASCEND_CAGE));
         controlTriggers.climberDescend.whileTrue(NamedCommands.getCommand(Constants.DESCEND_CAGE));
@@ -160,9 +160,9 @@ public class RobotContainer {
                 constraints,
                 null,
                 new GoalEndState(MetersPerSecond.of(0), currentPose.getRotation()));
-        path.preventFlipping = true;
+            path.preventFlipping = true;
     
-        return AutoBuilder.followPath(path);
+            return AutoBuilder.followPath(path);
         }, Set.of(swerveDriveTrain));
     }
 
@@ -182,5 +182,9 @@ public class RobotContainer {
         // Fetch the selected autonomous command from the dashoard and put it in an
         // Optional
         return Optional.ofNullable(autoChooser.getSelected());
+    }
+    
+    public void resetGyro() {
+        swerveDriveTrain.resetGyro();
     }
 }
