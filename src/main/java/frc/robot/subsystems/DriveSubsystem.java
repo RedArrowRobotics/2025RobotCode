@@ -110,7 +110,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Command brake() {
     return this.runOnce(() -> {
-      manualDrive(new DrivePower(0, 0, 0), DriveOrientation.ROBOT_CENTRIC);
+      manualDrive(new DrivePower(0, 0, 0), DriveOrientation.FIELD_CENTRIC);
     });
   }
 
@@ -142,10 +142,11 @@ public class DriveSubsystem extends SubsystemBase {
     chassisSpeeds.omegaRadiansPerSecond = power.rotation() * swerveDrive.getMaximumChassisAngularVelocity();
     switch(orientation) {
       case FIELD_CENTRIC -> {
-        if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+        //TODO: Figure out whether YAGSL flips yaw based on alliance color
+        /*if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
           chassisSpeeds.vxMetersPerSecond = -chassisSpeeds.vxMetersPerSecond;
           chassisSpeeds.vyMetersPerSecond = -chassisSpeeds.vyMetersPerSecond;
-        }
+        }*/
         swerveDrive.driveFieldOriented(chassisSpeeds);
       }
       case ROBOT_CENTRIC -> swerveDrive.drive(chassisSpeeds);

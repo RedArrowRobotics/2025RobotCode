@@ -80,7 +80,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public Command grabCoral() {
     return startEnd(
       () -> {
-        intakeWheels.set(1);
+        intakeWheels.set(-1);
       },
       () -> {
         intakeWheels.set(0);
@@ -94,7 +94,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public Command dropCoral() {
     return startEnd(
       () -> {
-        intakeWheels.set(-1);
+        intakeWheels.set(1);
       },
       () -> {
         intakeWheels.set(0);
@@ -130,7 +130,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
     return startEnd(
       () -> {
         manualControl = true;
-        scorerTilter.set(0.1);
+        scorerTilter.set(0.5);
       }, () -> {
         scorerTilter.set(0.0);
       }
@@ -141,7 +141,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
     return startEnd(
       () -> {
         manualControl = true;
-        scorerTilter.set(0.1);
+        scorerTilter.set(-0.5);
       }, () -> {
         scorerTilter.set(0.0);
       }

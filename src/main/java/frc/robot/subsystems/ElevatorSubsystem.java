@@ -19,7 +19,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public ElevatorPositions target = ElevatorPositions.HOME;
   public ElevatorPositions current = ElevatorPositions.HOME;
   PIDController elevatorPID = new PIDController(0.1, 0, 0);
-  public double feedForward = 0.0;
+  public double feedForward = 0.025;
   SparkMaxConfig config = new SparkMaxConfig();
   boolean manualControl = false;
 
@@ -110,9 +110,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     return startEnd(
       () -> {
         manualControl = true;
-        elevatorMotor1.set(0.5);
+        elevatorMotor1.set(0.25);
       }, () -> {
-        elevatorMotor1.set(0.0);
+        elevatorMotor1.set(feedForward);
       }
     );
   }
@@ -121,9 +121,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     return startEnd(
       () -> {
         manualControl = true;
-        elevatorMotor1.set(-0.5);
+        elevatorMotor1.set(-0.25);
       }, () -> {
-        elevatorMotor1.set(0.0);
+        elevatorMotor1.set(feedForward);
       }
     );
   }

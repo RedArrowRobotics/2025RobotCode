@@ -20,7 +20,7 @@ public class ControlInputs {
         var y = ( driveController.getY() * Math.abs( driveController.getY()) ) * driveControllerLinearMultiplier;
         var rotation = ( driveController.getZ() * Math.abs( driveController.getZ()) ) * driveControllerRotationMultiplier;
         // Compose the seperate components into a state record
-        return new DrivePower(x, -y, rotation);
+        return new DrivePower(-x, y, rotation);
     }
 
     // For later
@@ -36,8 +36,8 @@ public class ControlInputs {
         public final Trigger elevatorL2 = new Trigger(() -> componentsBoard.getRawButton(2));
         public final Trigger elevatorL3 = new Trigger(() -> componentsBoard.getRawButton(3));
         public final Trigger elevatorL4 = new Trigger(() -> componentsBoard.getRawButton(4));
-        public final Trigger manualElevatorUp = new Trigger(() ->componentsBoard.getRawAxis(1) < -0.5);
-        public final Trigger manualElevatorDown = new Trigger(() -> componentsBoard.getRawAxis(1) > 0.5);
+        public final Trigger manualElevatorUp = new Trigger(() ->componentsBoard.getRawAxis(0) < -0.5);
+        public final Trigger manualElevatorDown = new Trigger(() -> componentsBoard.getRawAxis(0) > 0.5);
         public final Trigger deAlgae = new Trigger(() -> componentsBoard.getRawButton(5));
         public final Trigger climberDescend = new Trigger(() -> componentsBoard.getRawButton(6));
         public final Trigger climberAscend = new Trigger(() -> componentsBoard.getRawButton(7));
@@ -45,8 +45,8 @@ public class ControlInputs {
         public final Trigger alignReefRight = new Trigger(() -> componentsBoard.getRawButton(9));
         public final Trigger alignReefLeft = new Trigger(() -> componentsBoard.getRawButton(10));
         public final Trigger cageGrabber = new Trigger(() -> componentsBoard.getRawButton(12));
-        public final Trigger manualCoralArmScore = new Trigger(() -> componentsBoard.getRawAxis(0) < -0.5);
-        public final Trigger manualCoralArmLoad = new Trigger(() -> componentsBoard.getRawAxis(0) > 0.5);
+        public final Trigger manualCoralArmScore = new Trigger(() -> componentsBoard.getRawAxis(1) < -0.5);
+        public final Trigger manualCoralArmLoad = new Trigger(() -> componentsBoard.getRawAxis(1) > 0.5);
 
         public final Trigger slowSpeed = new Trigger(() -> driveController.getRawButton(1) );
     }

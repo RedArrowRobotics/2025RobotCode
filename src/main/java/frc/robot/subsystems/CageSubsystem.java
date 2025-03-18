@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,18 +22,18 @@ public class CageSubsystem extends SubsystemBase {
   PIDController cageGrabberPID = new PIDController(0.03, 0.0, 0.0);
   public double feedForward = 0.0;
   public AngleSparkRelativeEncoder angleEncoder;
-  public CageGrabberPosition target = CageGrabberPosition.OPEN;
-  public CageGrabberPosition current = CageGrabberPosition.OPEN;
+  public CageGrabberPosition target = CageGrabberPosition.CLOSED;
+  public CageGrabberPosition current = CageGrabberPosition.CLOSED;
 
   public CageSubsystem() {
     cageGrabberPID.setTolerance(Degrees.of(1.0).in(Degrees));
-    angleEncoder = new AngleSparkRelativeEncoder(cageGrabber.getEncoder(),.2);
+    angleEncoder = new AngleSparkRelativeEncoder(cageGrabber.getEncoder(), .2);
     //cageGrabberPID.enableContinuousInput(0, 360);
   }
 
   public enum CageGrabberPosition {
-    OPEN(Constants.scorerTilterLoadingPosition),
-    CLOSED(Constants.scorerTilterScoringPosition),
+    OPEN(Constants.cageGrabberOpenPosition),
+    CLOSED(Constants.cageGrabberClosedPosition),
     NONE(Degrees.of(0.0));
 
     private Angle encoderPosition;
@@ -73,7 +74,7 @@ public class CageSubsystem extends SubsystemBase {
   public Command descend() {
     return startEnd(
         () -> {
-          cageClimber.set(-0.25);
+          cageClimber.set(-0.1);
         },
         () -> {
           cageClimber.set(0);
@@ -128,5 +129,17 @@ public class CageSubsystem extends SubsystemBase {
   public boolean isCageHeld() {
     // Query some boolean state, such as a digital sensor.
     return false;
+  }
+
+  
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    builder.setSmartDashboardType(getName());
+    builder.addBooleanProperty("Cage Closed", () -> cageIsClosed(), null);
+    builder.addStringProperty("Arm Position", () -> current.toString(), null);
+    builder.addStringProperty("Arm Target", () -> target.name(), null);
+    builder.addDoubleProperty("Encoder Value", () -> angleEncoder.getAngle().in(Degrees), null);
+    builder.addDoubleProperty("Encoder Target", () -> target.getEncoderPosition().in(Degrees), null);
   }
 }

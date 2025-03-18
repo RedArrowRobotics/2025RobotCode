@@ -74,7 +74,6 @@ public class RobotContainer {
                 DegreesPerSecondPerSecond.of(861),
                 Volts.of(12));
         swerveDriveTrain.setDefaultCommand( 
-                      // swerveDriveTrain.testDrive()
                 swerveDriveTrain.teleopDrive(
                 () -> {
                     var power = controlInputs.getdriveController().toSwerve();
@@ -134,8 +133,8 @@ public class RobotContainer {
         controlTriggers.alignSource.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_SOURCE));
         controlTriggers.alignSource.onTrue(NamedCommands.getCommand(Constants.INTAKE_CORAL));
 
-        controlTriggers.manualCoralArmLoad.onTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_POSITIVE));
-        controlTriggers.manualCoralArmScore.onTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_NEGATIVE));
+        controlTriggers.manualCoralArmLoad.whileTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_POSITIVE));
+        controlTriggers.manualCoralArmScore.whileTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_NEGATIVE));
 
         controlTriggers.climberAscend.whileTrue(NamedCommands.getCommand(Constants.ASCEND_CAGE));
         controlTriggers.climberDescend.whileTrue(NamedCommands.getCommand(Constants.DESCEND_CAGE));
