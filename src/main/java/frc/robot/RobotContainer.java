@@ -135,6 +135,7 @@ public class RobotContainer {
 
         controlTriggers.manualCoralArmLoad.whileTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_POSITIVE));
         controlTriggers.manualCoralArmScore.whileTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_NEGATIVE));
+        controlTriggers.manualDropCoral.onTrue(NamedCommands.getCommand(Constants.OUTTAKE_CORAL));
 
         controlTriggers.climberAscend.whileTrue(NamedCommands.getCommand(Constants.ASCEND_CAGE));
         controlTriggers.climberDescend.whileTrue(NamedCommands.getCommand(Constants.DESCEND_CAGE));
