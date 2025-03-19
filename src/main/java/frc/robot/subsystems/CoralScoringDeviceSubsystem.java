@@ -163,7 +163,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   }
 
   public boolean armIsInPosition() {
-    return current == CoralArmPosition.SCORE;
+    return current == CoralArmPosition.SCORE || manualControl == true;
   }
 
   @Override
