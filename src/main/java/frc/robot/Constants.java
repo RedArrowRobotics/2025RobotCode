@@ -64,10 +64,8 @@ public class Constants {
 
     // Subsystem Constants
     //   Cage
-    public static double cageGrabberReleasePosition = 0.0;
-    public static double cageGrabberHoldPosition = 0.5;
-    public static Angle cageGrabberOpenPosition = Degrees.of(90.0);
-    public static Angle cageGrabberClosedPosition = Degrees.of(0.0);
+    public static double cageGrabberOpenPosition = -6.762;
+    public static double cageGrabberClosedPosition = 0.0;
     //   Elevator
     public static double elevatorMotorHomePosition = 0;
     public static double elevatorMotorL2Position = 25.3;
