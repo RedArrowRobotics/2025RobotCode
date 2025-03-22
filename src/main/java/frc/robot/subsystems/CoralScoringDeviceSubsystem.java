@@ -9,6 +9,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -32,6 +33,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
     coralArmPID.setTolerance(Degrees.of(5.0).in(Degrees));
     angleEncoder = new AngleGenericAbsoluteEncoder(encoder);
     // coralArmPID.enableContinuousInput(0, 360);
+    SmartDashboard.putData("Coral Arm PID", coralArmPID);
   }
 
   public enum CoralArmPosition {
@@ -172,8 +174,9 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
     builder.setSmartDashboardType(getName());
     builder.addBooleanProperty("Coral Loaded", () -> isCoralLoaded(), null);
     builder.addBooleanProperty("Over Reef", () -> isCoralOverReef(), null);
-    builder.addStringProperty("Arm Position", () -> current.toString(), null);
+    builder.addStringProperty("Coral Arm Position", () -> current.toString(), null);
     builder.addDoubleProperty("Encoder Value", () -> angleEncoder.getAngle().in(Degrees), null);
     builder.addDoubleProperty("Encoder Target", () -> target.getEncoderPosition().in(Degrees), null);
+    builder.addBooleanProperty("Coral Manual Control", () -> manualControl, null);
   }
 }

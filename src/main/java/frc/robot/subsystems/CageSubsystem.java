@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -31,6 +32,7 @@ public class CageSubsystem extends SubsystemBase {
     cageGrabberPID.setTolerance(0.1);
     //angleEncoder = new AngleSparkRelativeEncoder(cageGrabber.getEncoder(), Value.of(42).div(Revolutions.one()), .05);
     //cageGrabberPID.enableContinuousInput(0, 360);
+    SmartDashboard.putData("Cage Grabber PID", cageGrabberPID);
   }
 
   public enum CageGrabberPosition {
@@ -139,7 +141,7 @@ public class CageSubsystem extends SubsystemBase {
     super.initSendable(builder);
     builder.setSmartDashboardType(getName());
     builder.addBooleanProperty("Cage Closed", () -> cageIsClosed(), null);
-    builder.addStringProperty("Arm Position", () -> current.toString(), null);
+    builder.addStringProperty("Cage Grabber Position", () -> current.toString(), null);
     builder.addStringProperty("Arm Target", () -> target.name(), null);
     builder.addDoubleProperty("Encoder Value", () -> cageGrabber.getEncoder().getPosition(), null);
     builder.addDoubleProperty("Encoder Target", () -> target.getEncoderPosition(), null);
