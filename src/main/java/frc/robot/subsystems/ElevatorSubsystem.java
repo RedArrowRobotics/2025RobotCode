@@ -178,7 +178,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean elevatorIsInPosition() {
-    return current == ElevatorPositions.L2 || current == ElevatorPositions.L3 || current == ElevatorPositions.L4;
+    return current == ElevatorPositions.L2 || current == ElevatorPositions.L3 || current == ElevatorPositions.L4 || manualControl == true;
   }
 
   @Override
