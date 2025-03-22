@@ -36,15 +36,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-/**
- * The methods in this class are called automatically corresponding to each
- * mode, as described in
- * the TimedRobot documentation. If you change the name of this class or the
- * package after creating
- * this project, you must also update the Main.java file in the project.
- */
 public class RobotContainer {
-
     private final ControlInputs controlInputs = new ControlInputs();
     private final ControlInputs.Triggers controlTriggers = controlInputs.new Triggers();
     private final DriveSubsystem swerveDriveTrain;
@@ -64,26 +56,25 @@ public class RobotContainer {
      * initialization code.
      */
 
-    public RobotContainer() throws IOException, Exception {
+    public RobotContainer() {
         swerveDriveTrain = new DriveSubsystem();
 
         constraints = new PathConstraints(
-                swerveDriveTrain.getMaximumChassisVelocity(),
-                MetersPerSecondPerSecond.of(10.6),
-                swerveDriveTrain.getMaximumChassisAngularVelocity(),
-                DegreesPerSecondPerSecond.of(861),
-                Volts.of(12));
+            swerveDriveTrain.getMaximumChassisVelocity(),
+            MetersPerSecondPerSecond.of(10.6),
+            swerveDriveTrain.getMaximumChassisAngularVelocity(),
+            DegreesPerSecondPerSecond.of(861),
+            Volts.of(12)
+        );
         swerveDriveTrain.setDefaultCommand( 
-                swerveDriveTrain.teleopDrive(
-                () -> {
-                    var power = controlInputs.getdriveController().toSwerve();
-                    if (controlTriggers.slowSpeed.getAsBoolean()) {
-                        power = power.times(0.5);
-                    }
-                    return power;
-                },
-                DriveOrientation.FIELD_CENTRIC)
-                );
+            swerveDriveTrain.teleopDrive(() -> {
+                var power = controlInputs.getdriveController().toSwerve();
+                if (controlTriggers.slowSpeed.getAsBoolean()) {
+                    power = power.times(0.5);
+                }
+                return power;
+            })
+        );
       
 
             
@@ -189,7 +180,7 @@ public class RobotContainer {
         return Optional.ofNullable(autoChooser.getSelected());
     }
     
-    public void resetGyro() {
-        swerveDriveTrain.resetGyro();
+    public void resetOrientation() {
+        swerveDriveTrain.resetOrientation();
     }
 }
