@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -185,5 +186,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     super.initSendable(builder);
     builder.setSmartDashboardType(getName());
     builder.addDoubleProperty("Elevator Motor Position", () -> elevatorMotor1.getEncoder().getPosition(), null);
+    builder.addStringProperty("Alliance Color", () -> DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue).name(), null);
   }
 }

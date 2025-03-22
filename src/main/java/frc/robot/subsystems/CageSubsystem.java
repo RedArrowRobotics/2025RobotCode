@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Revolutions;
+import static edu.wpi.first.units.Units.Value;
 
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
@@ -21,28 +23,28 @@ public class CageSubsystem extends SubsystemBase {
   SparkMax cageGrabber = new SparkMax(Constants.cageGrabberMotorId, MotorType.kBrushless);
   PIDController cageGrabberPID = new PIDController(0.03, 0.0, 0.0);
   public double feedForward = 0.0;
-  public AngleSparkRelativeEncoder angleEncoder;
+ // public AngleSparkRelativeEncoder angleEncoder;
   public CageGrabberPosition target = CageGrabberPosition.CLOSED;
   public CageGrabberPosition current = CageGrabberPosition.CLOSED;
 
   public CageSubsystem() {
-    cageGrabberPID.setTolerance(Degrees.of(1.0).in(Degrees));
-    angleEncoder = new AngleSparkRelativeEncoder(cageGrabber.getEncoder(), .2);
+    cageGrabberPID.setTolerance(0.1);
+    //angleEncoder = new AngleSparkRelativeEncoder(cageGrabber.getEncoder(), Value.of(42).div(Revolutions.one()), .05);
     //cageGrabberPID.enableContinuousInput(0, 360);
   }
 
   public enum CageGrabberPosition {
     OPEN(Constants.cageGrabberOpenPosition),
     CLOSED(Constants.cageGrabberClosedPosition),
-    NONE(Degrees.of(0.0));
+    NONE(0.0);
 
-    private Angle encoderPosition;
+    private double encoderPosition;
 
-    private CageGrabberPosition(Angle encoderPosition) {
+    private CageGrabberPosition(double encoderPosition) {
       this.encoderPosition = encoderPosition;
     }
 
-    public Angle getEncoderPosition() {
+    public double getEncoderPosition() {
       return encoderPosition;
     }
   }
@@ -50,7 +52,7 @@ public class CageSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     double power;
-    power = cageGrabberPID.calculate(angleEncoder.getAngle().in(Degrees), target.getEncoderPosition().in(Degrees))
+    power = cageGrabberPID.calculate(cageGrabber.getEncoder().getPosition(), target.getEncoderPosition()) * -1.0
         + feedForward;
     cageGrabber.set(power * -1.0);
   }
@@ -139,7 +141,7 @@ public class CageSubsystem extends SubsystemBase {
     builder.addBooleanProperty("Cage Closed", () -> cageIsClosed(), null);
     builder.addStringProperty("Arm Position", () -> current.toString(), null);
     builder.addStringProperty("Arm Target", () -> target.name(), null);
-    builder.addDoubleProperty("Encoder Value", () -> angleEncoder.getAngle().in(Degrees), null);
-    builder.addDoubleProperty("Encoder Target", () -> target.getEncoderPosition().in(Degrees), null);
+    builder.addDoubleProperty("Encoder Value", () -> cageGrabber.getEncoder().getPosition(), null);
+    builder.addDoubleProperty("Encoder Target", () -> target.getEncoderPosition(), null);
   }
 }

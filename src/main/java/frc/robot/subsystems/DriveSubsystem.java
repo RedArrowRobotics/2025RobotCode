@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.parser.SwerveParser;
@@ -143,10 +144,13 @@ public class DriveSubsystem extends SubsystemBase {
     switch(orientation) {
       case FIELD_CENTRIC -> {
         //TODO: Figure out whether YAGSL flips yaw based on alliance color
-        /*if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+        if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+          chassisSpeeds.vxMetersPerSecond = chassisSpeeds.vxMetersPerSecond;
+          chassisSpeeds.vyMetersPerSecond = chassisSpeeds.vyMetersPerSecond;
+        } else if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
           chassisSpeeds.vxMetersPerSecond = -chassisSpeeds.vxMetersPerSecond;
           chassisSpeeds.vyMetersPerSecond = -chassisSpeeds.vyMetersPerSecond;
-        }*/
+        }
         swerveDrive.driveFieldOriented(chassisSpeeds);
       }
       case ROBOT_CENTRIC -> swerveDrive.drive(chassisSpeeds);

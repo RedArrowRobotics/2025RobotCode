@@ -6,6 +6,11 @@
           "open": true
         }
       }
+    },
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
     }
   },
   "NTProvider": {
@@ -22,6 +27,7 @@
       "/SmartDashboard/IMU": "Alerts",
       "/SmartDashboard/JSON": "Alerts",
       "/SmartDashboard/Motors": "Alerts",
+      "/SmartDashboard/PathPlanner": "Alerts",
       "/SmartDashboard/Swerve Drive": "Alerts"
     },
     "windows": {
@@ -36,11 +42,6 @@
         }
       },
       "/SmartDashboard/CoralScoringDeviceSubsystem": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/DriveSubsystem": {
         "window": {
           "visible": true
         }
@@ -89,6 +90,9 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "ElevatorSubsystem": {
+          "open": true
+        },
         "Field": {
           "double[]##v_/SmartDashboard/Field/align": {
             "open": true
@@ -102,8 +106,8 @@
       }
     }
   },
-  "NetworkTables Info": {
-    "visible": true
+  "NetworkTables View": {
+    "visible": false
   },
   "Plot": {
     "Plot <0>": {
