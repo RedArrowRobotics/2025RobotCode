@@ -1,7 +1,6 @@
 package frc.robot.encoder;
 
 import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;

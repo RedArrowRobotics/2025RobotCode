@@ -1,9 +1,9 @@
 {
   "location": {
-    "front": -15.015625,
-    "left": 15
+    "front": -16.28125,
+    "left": 13.3125
   },
-  "absoluteEncoderOffset": 140,
+  "absoluteEncoderOffset": 141,
   "drive": {
     "type": "sparkmax",
     "id": 5,
@@ -23,6 +23,5 @@
     "drive": true,
     "angle": true
   },
-  "absoluteEncoderInverted": false,
-  "useCosineCompensator": false
+  "absoluteEncoderInverted": false
 }
