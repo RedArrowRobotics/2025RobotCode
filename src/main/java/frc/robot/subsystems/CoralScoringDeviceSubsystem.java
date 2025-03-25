@@ -19,8 +19,8 @@ import edu.wpi.first.units.measure.Angle;
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
   SparkMax intakeWheels = new SparkMax(Constants.intakeWheelsMotorID, MotorType.kBrushed);
   public SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterMotorID, MotorType.kBrushed);
-  private DigitalInput coralSensor = new DigitalInput(Constants.coralSensorChannel);
-  private DigitalInput reefSensor = new DigitalInput(Constants.reefSensorChannel);
+  private DigitalInput coralSensor = new DigitalInput(Constants.coralLimitSwitch);
+  private DigitalInput reefSensor = new DigitalInput(Constants.reefPhotoEye);
   public CoralArmPosition target = CoralArmPosition.HOME;
   public CoralArmPosition current = CoralArmPosition.HOME;
   PIDController coralArmPID = new PIDController(0.0039, 0.0, 0.0);
@@ -54,11 +54,11 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (!manualControl) {
-      double power;
-      power = coralArmPID.calculate(angleEncoder.getAngle().in(Degrees), target.getEncoderPosition().in(Degrees)) + feedForward;
-      scorerTilter.set(power * 1.0);
-    }
+    // if (!manualControl) {
+    //   double power;
+    //   power = coralArmPID.calculate(angleEncoder.getAngle().in(Degrees), target.getEncoderPosition().in(Degrees)) + feedForward;
+    //   scorerTilter.set(power * 1.0);
+    // }
   }
 
   private Command goToPosition(CoralArmPosition targetPosition) {
