@@ -4,12 +4,14 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class CageSubsystem extends SubsystemBase {
   SparkFlex cageClimber = new SparkFlex(Constants.cageClimberMotorId, MotorType.kBrushless);
+  private DigitalInput cageSensor = new DigitalInput(Constants.cageSensorChannel);
 
   /**
    *  Pushes down on the cage to raise the robot.
@@ -45,5 +47,9 @@ public class CageSubsystem extends SubsystemBase {
   public boolean isCageHeld() {
     // Query some boolean state, such as a digital sensor.
     return false;
+  }
+
+  public boolean isCageAtLimit() {
+    return cageSensor.get();
   }
 }

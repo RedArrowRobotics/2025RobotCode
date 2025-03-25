@@ -96,7 +96,7 @@ public class RobotContainer {
         controlTriggers.deAlgae.whileTrue(elevator.dealgaeStartSpin());
         reefTrigger.toggleOnTrue(coralArm.dropCoral());
 
-        controlTriggers.climberDescend.toggleOnTrue(cage.descend());
+        controlTriggers.climberDescend.toggleOnTrue(cage.descend().until(cage::isCageAtLimit));
         controlTriggers.climberAscend.toggleOnTrue(cage.ascend());
 
         controlTriggers.alignReefLeft.and(swerveDriveTrain::isPoseTrusted).whileTrue(NamedCommands.getCommand(Constants.ALIGN_REEF_LEFT));

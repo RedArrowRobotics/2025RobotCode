@@ -39,6 +39,7 @@ public class Constants {
     // DIO Ports
     public static int coralSensorChannel = 1;
     public static int reefSensorChannel = 2;
+    public static int cageSensorChannel = 3;
 
     // Subsystem Constants
     //   Cage
