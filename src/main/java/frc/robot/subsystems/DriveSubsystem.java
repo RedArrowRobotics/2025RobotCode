@@ -5,7 +5,6 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
@@ -13,7 +12,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import java.io.File;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -28,19 +26,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.ControlInputs.DrivePower;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.SwerveInputStream;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 
 public class DriveSubsystem extends SubsystemBase {
     private final Optional<SwerveDrive> swerveDrive;
@@ -49,9 +43,9 @@ public class DriveSubsystem extends SubsystemBase {
     boolean isPathRunning = false;
 
     private final SendableChooser<DriveOrientation> driveModeChooser = new SendableChooser<>();
-    final Alert swerveReadError = new Alert("Failed to read swerve drive configuration.", AlertType.kError);
-    final Alert pathPlannerError = new Alert("Failed to read PathPlanner configuration.", AlertType.kError);
-    final Alert poseTrustWarning = new Alert("Current pose is untrusted. On-the-fly path generation will not function.", AlertType.kWarning);
+    final Alert swerveReadError = new Alert("Failed to read swerve drive configuration. Robot will not be able to drive.", AlertType.kError);
+    final Alert pathPlannerError = new Alert("Failed to read PathPlanner configuration. Robot will not be able to pathfind.", AlertType.kError);
+    final Alert poseTrustWarning = new Alert("Current pose is untrusted. Pathfinding will not function until the robot's pose is verified.", AlertType.kWarning);
 
     public DriveSubsystem() {
         if (DriverStation.getMatchType() == MatchType.None) {
@@ -163,36 +157,6 @@ public class DriveSubsystem extends SubsystemBase {
         return swerveDrive;
     }
 
-    /**
-     * Drive the robot using translative values and heading as angular velocity.
-     *
-     * @param power Multipliers on linear and angular velocity.
-     * @param orientation The type of orientation to use.
-     */
-    private void manualDrive(DrivePower power, DriveOrientation orientation) {
-        swerveDrive.ifPresent((swerve) -> {
-            ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-            chassisSpeeds.vxMetersPerSecond = power.x() * swerve.getMaximumChassisVelocity();
-            chassisSpeeds.vyMetersPerSecond = power.y() * swerve.getMaximumChassisVelocity();
-            chassisSpeeds.omegaRadiansPerSecond =
-                    power.rotation() * swerve.getMaximumChassisAngularVelocity();
-            switch (orientation) {
-                case FIELD_CENTRIC -> {
-                    // TODO: Figure out whether YAGSL flips yaw based on alliance color
-                    if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
-                        chassisSpeeds.vxMetersPerSecond = chassisSpeeds.vxMetersPerSecond;
-                        chassisSpeeds.vyMetersPerSecond = chassisSpeeds.vyMetersPerSecond;
-                    } else if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-                        chassisSpeeds.vxMetersPerSecond = -chassisSpeeds.vxMetersPerSecond;
-                        chassisSpeeds.vyMetersPerSecond = -chassisSpeeds.vyMetersPerSecond;
-                    }
-                    swerve.driveFieldOriented(chassisSpeeds);
-                }
-                case ROBOT_CENTRIC -> swerve.drive(chassisSpeeds);
-            }
-        });
-    }
-
     public void setPathRunning(boolean isPathRunning) {
         this.isPathRunning = isPathRunning;
     }
@@ -227,12 +191,12 @@ public class DriveSubsystem extends SubsystemBase {
         return swerveDrive.map((swerve) -> swerve.getPose()).orElse(Pose2d.kZero);
     }
 
-    private void resetPoseTrusted(Pose2d pose) {
+    /*private void resetPoseTrusted(Pose2d pose) {
         swerveDrive.ifPresent((swerve) -> {
             swerve.resetOdometry(pose);
         });
         trustPose = true;
-    }
+    }*/
 
     public void resetPoseUntrusted(Pose2d pose) {
         swerveDrive.ifPresent((swerve) -> {
