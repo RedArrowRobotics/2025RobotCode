@@ -64,7 +64,6 @@ public class Robot extends TimedRobot {
     /** This autonomous runs the autonomous command selected by your {@link container} class. */
     @Override
     public void autonomousInit() {
-        robotContainer.resetOrientation();
         // If we have an autonomous command selected, schedule it to be ran.
         autonomousCommand = robotContainer.getAutonomousCommand();
         autonomousCommand.ifPresent(Command::schedule);

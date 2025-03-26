@@ -4,11 +4,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
+import com.pathplanner.lib.path.PathConstraints;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-
+import static edu.wpi.first.units.Units.Volts;
 import java.io.File;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -23,10 +25,15 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.ControlInputs.DrivePower;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
+import swervelib.SwerveInputStream;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -114,20 +121,6 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Holds unitless multipliers on linear and angular velocity.
-     */
-    public static record DrivePower(double x, double y, double rotation) {
-        public DrivePower toSwerve() {
-            return new DrivePower(-this.y(), -this.x(), -this.rotation());
-        }
-
-        public DrivePower times(double multiplier) {
-            return new DrivePower(this.x() * multiplier, this.y() * multiplier,
-                    this.rotation() * multiplier);
-        }
-    }
-
-    /**
      * Command to drive the robot using translative values and heading as angular velocity. Should
      * be used as a default command.
      *
@@ -135,17 +128,39 @@ public class DriveSubsystem extends SubsystemBase {
      * @param orientation The type of orientation to use.
      * @return Drive command.
      */
-    public Command teleopDrive(Supplier<DrivePower> input_power) {
+    public Command drive(SwerveInputStream inputstream) {
         return this.run(() -> {
-            var power = input_power.get();
-            manualDrive(power, driveModeChooser.getSelected());
-        });
+            swerveDrive.ifPresent((swerve) -> {
+                swerve.driveFieldOriented(inputstream.get());
+            });
+        }).withName(Constants.Commands.DRIVE);
     }
 
-    public Command brake() {
-        return this.runOnce(() -> {
-            manualDrive(new DrivePower(0, 0, 0), DriveOrientation.FIELD_CENTRIC);
-        });
+    /**
+     * Command to drive the robot to a position using PathPlanner.
+     *
+     * @param pose The pose to pathfind to.
+     * @return Drive command.
+     */
+    public Command driveToPose(Pose2d pose) {
+        return swerveDrive.map((swerve) -> {
+            PathConstraints constraints = new PathConstraints(
+                MetersPerSecond.of(swerve.getMaximumChassisVelocity()),
+                MetersPerSecondPerSecond.of(4.0),
+                RadiansPerSecond.of(swerve.getMaximumChassisAngularVelocity()),
+                DegreesPerSecondPerSecond.of(720),
+                Volts.of(12)
+            );
+            return AutoBuilder.pathfindToPose(
+                pose,
+                constraints,
+                MetersPerSecond.of(0) // Goal end velocity
+            );
+        }).orElse(new InstantCommand()).withName(Constants.Commands.DRIVE_TO_POSE);
+    }
+
+    public Optional<SwerveDrive> getSwerve() {
+        return swerveDrive;
     }
 
     /**
@@ -180,6 +195,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void setPathRunning(boolean isPathRunning) {
         this.isPathRunning = isPathRunning;
+    }
+
+    public DriveOrientation driveMode() {
+        return driveModeChooser.getSelected();
     }
 
     @Override
@@ -240,11 +259,12 @@ public class DriveSubsystem extends SubsystemBase {
         return trustPose;
     }
 
-    public void resetOrientation() {
-        var alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+    public void zeroGyro() {
+        swerveDrive.ifPresent((swerve) -> swerve.zeroGyro());
+        /*var alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
         switch (alliance) {
             case Red -> resetPoseUntrusted(new Pose2d(0.0, 0.0, new Rotation2d(Degrees.of(180))));
             case Blue -> resetPoseUntrusted(new Pose2d(0.0, 0.0, new Rotation2d(Degrees.zero())));
-        }
+        }*/
     }
 }

@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,6 +30,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.AlignToAprilTag;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.CageSubsystem;
 import frc.robot.subsystems.CoralScoringDeviceSubsystem;
@@ -66,15 +69,38 @@ public class RobotContainer {
             DegreesPerSecondPerSecond.of(861),
             Volts.of(12)
         );
-        swerveDriveTrain.setDefaultCommand( 
-            swerveDriveTrain.teleopDrive(() -> {
-                var power = controlInputs.getdriveController().toSwerve();
+
+        Optional<InputStreams> inputStreams = swerveDriveTrain.getSwerve().map((swerve) -> new InputStreams(swerve, controlInputs));
+        inputStreams.ifPresent((inputs) -> {
+            swerveDriveTrain.setDefaultCommand(Commands.select(Map.of(
+                0, swerveDriveTrain.drive(inputs.fieldOriented),
+                1, swerveDriveTrain.drive(inputs.robotOriented),
+                2, swerveDriveTrain.drive(inputs.fieldOrientedSlow),
+                3, swerveDriveTrain.drive(inputs.robotOrientedSlow)
+            ), () -> {
+                var selector = 0;
+                switch(swerveDriveTrain.driveMode()) {
+                    case ROBOT_CENTRIC: {
+                        selector += 1;
+                        break;
+                    }
+                    default:
+                }
+                if (controlTriggers.slowSpeed.getAsBoolean()) { selector += 2; }
+                return selector;
+            }).withName(Constants.Commands.DRIVE));
+        });
+        RobotModeTriggers.autonomous().onTrue(Commands.runOnce(swerveDriveTrain::zeroGyro));
+        
+        /*swerveDriveTrain.setDefaultCommand(
+            swerveDriveTrain.drive(() -> {
+                var power = controlInputs.getDrivePower().toSwerve();
                 if (controlTriggers.slowSpeed.getAsBoolean()) {
                     power = power.times(0.5);
                 }
                 return power;
             })
-        );
+        );*/
       
 
             
@@ -178,9 +204,5 @@ public class RobotContainer {
         // Fetch the selected autonomous command from the dashoard and put it in an
         // Optional
         return Optional.ofNullable(autoChooser.getSelected());
-    }
-    
-    public void resetOrientation() {
-        swerveDriveTrain.resetOrientation();
     }
 }
