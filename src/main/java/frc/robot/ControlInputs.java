@@ -42,6 +42,7 @@ public class ControlInputs {
         public final Trigger cageGrabber = new Trigger(() -> componentsBoard.getRawButton(12));
         public final Trigger manualCoralArmScore = new Trigger(() -> componentsBoard.getRawAxis(1) < -0.5);
         public final Trigger manualCoralArmLoad = new Trigger(() -> componentsBoard.getRawAxis(1) > 0.5);
+        public final Trigger manualDropCoral = new Trigger(() -> componentsBoard.getRawButton(11));
 
         public final Trigger slowSpeed = new Trigger(() -> driveController.getRawButton(1) );
     }
