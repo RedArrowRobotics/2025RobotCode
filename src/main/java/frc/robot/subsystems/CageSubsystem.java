@@ -136,7 +136,7 @@ public class CageSubsystem extends SubsystemBase {
   }
 
   public boolean isCageAtLimit() {
-    return cageSensor.get();
+    return !cageSensor.get();
   }
   
   @Override
@@ -148,5 +148,6 @@ public class CageSubsystem extends SubsystemBase {
     builder.addStringProperty("Arm Target", () -> target.name(), null);
     builder.addDoubleProperty("Encoder Value", () -> cageGrabber.getEncoder().getPosition(), null);
     builder.addDoubleProperty("Encoder Target", () -> target.getEncoderPosition(), null);
+    builder.addBooleanProperty("Cage Limit", () -> isCageAtLimit(), null);
   }
 }
