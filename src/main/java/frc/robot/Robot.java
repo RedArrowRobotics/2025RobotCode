@@ -6,7 +6,12 @@ package frc.robot;
 
 import java.util.Optional;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -20,6 +25,7 @@ public class Robot extends TimedRobot {
   private Optional<Command> autonomousCommand = Optional.empty();
 
   private RobotContainer robotContainer;
+  private PowerDistribution powerDistribution;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -34,7 +40,7 @@ public class Robot extends TimedRobot {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    
+    powerDistribution = new PowerDistribution(20,ModuleType.kRev);
   }
 
   /**
@@ -52,6 +58,10 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    {
+      SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+      SmartDashboard.putData(powerDistribution);
+    }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

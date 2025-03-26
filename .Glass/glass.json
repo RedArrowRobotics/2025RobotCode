@@ -23,17 +23,46 @@
       "/SmartDashboard/Motors": "Alerts",
       "/SmartDashboard/PathPlanner": "Alerts",
       "/SmartDashboard/Swerve Drive": "Alerts"
+    },
+    "windows": {
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Field": {
+        "Robot": {
+          "style": "Box/Image"
+        },
+        "bottom": 1638,
+        "builtin": "2025 Reefscape",
+        "height": 8.051901817321777,
+        "left": 534,
+        "right": 3466,
+        "top": 291,
+        "units": "meters",
+        "width": 17.54825210571289,
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables Info": {
     "Connections": {
       "open": true
-    },
-    "visible": true
+    }
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
     "serverTeam": "3234",
     "visible": false
+  },
+  "Plots": {
+    "Plot <0>": {
+      "window": {
+        "visible": false
+      }
+    }
   }
 }

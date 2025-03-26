@@ -25,13 +25,14 @@ public class SensorInputs {
         intakeLimitHome = intakeLimitSwitchHome.get();
         
         //NavX
-        currentPitchDegrees = convertTo360(navxAhrs.getPitch());
+        /*currentPitchDegrees = convertTo360(navxAhrs.getPitch());
         currentYawDegrees = convertTo360(navxAhrs.getYaw());
         currentRollDegrees = convertTo360(navxAhrs.getRoll());
         drivetrainRotation = Rotation2d.fromDegrees(currentYawDegrees);
         SmartDashboard.putNumber("NavX Pitch", currentPitchDegrees);
         SmartDashboard.putNumber("NavX Yaw", currentYawDegrees);
-        SmartDashboard.putNumber("NavX Roll", currentRollDegrees);
+        SmartDashboard.putNumber("NavX Roll", currentRollDegrees);*/
+        SmartDashboard.putData(navxAhrs);
 
     }
 
