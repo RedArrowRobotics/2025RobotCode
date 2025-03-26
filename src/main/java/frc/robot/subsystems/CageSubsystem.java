@@ -137,6 +137,7 @@ public class CageSubsystem extends SubsystemBase {
 
   public boolean isCageAtLimit() {
     return cageSensor.get();
+  }
   
   @Override
   public void initSendable(SendableBuilder builder) {
