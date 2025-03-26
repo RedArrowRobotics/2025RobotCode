@@ -95,7 +95,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public static record DrivePower(double x,double y,double rotation) {
     public DrivePower toSwerve() {
-      return new DrivePower(-this.y(), -this.x(), -this.rotation());
+      return new DrivePower(this.y(), this.x(), -this.rotation());
     }
     public DrivePower times(double multiplier) {
       return new DrivePower(this.x() * multiplier, this.y() * multiplier, this.rotation() * multiplier);
@@ -153,11 +153,11 @@ public class DriveSubsystem extends SubsystemBase {
       case FIELD_CENTRIC -> {
         //TODO: Figure out whether YAGSL flips yaw based on alliance color
         if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
-          chassisSpeeds.vxMetersPerSecond = chassisSpeeds.vxMetersPerSecond;
-          chassisSpeeds.vyMetersPerSecond = chassisSpeeds.vyMetersPerSecond;
-        } else if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
           chassisSpeeds.vxMetersPerSecond = -chassisSpeeds.vxMetersPerSecond;
           chassisSpeeds.vyMetersPerSecond = -chassisSpeeds.vyMetersPerSecond;
+        } else if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
+          chassisSpeeds.vxMetersPerSecond = chassisSpeeds.vxMetersPerSecond;
+          chassisSpeeds.vyMetersPerSecond = chassisSpeeds.vyMetersPerSecond;
         }
         swerveDrive.driveFieldOriented(chassisSpeeds);
       }

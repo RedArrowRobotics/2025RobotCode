@@ -75,7 +75,7 @@ public class Constants {
     public static double dealgaeFlipperRetractedPosition = 0;
     //   Coral Scorer
     public static Time coralDropTimeout = Seconds.of(3.0);
-    public static Angle scorerTilterScoringPosition = Degrees.of(205.0);
-    public static Angle scorerTilterLoadingPosition = Degrees.of(5.0);
+    public static Angle scorerTilterScoringPosition = Degrees.of(215.0);
+    public static Angle scorerTilterLoadingPosition = Degrees.of(14.75);
     
 }
