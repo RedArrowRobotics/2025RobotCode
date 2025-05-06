@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -111,10 +112,15 @@ public class RobotContainer {
         NamedCommands.registerCommand(Constants.DESCEND_CAGE, cage.descend());
 
         //Elevator Commands
-        NamedCommands.registerCommand(Constants.ELEVATOR_HOME, Commands.deadline(coralArm.loadCoralPosition(), elevator.elevatorL2()).andThen(elevator.elevatorHome()));
-        NamedCommands.registerCommand(Constants.SCORE_L2, elevator.elevatorL2().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
-        NamedCommands.registerCommand(Constants.SCORE_L3, elevator.elevatorL3().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
-        NamedCommands.registerCommand(Constants.SCORE_L4, elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
+         NamedCommands.registerCommand(Constants.ELEVATOR_HOME, Commands.deadline(coralArm.loadCoralPosition(), elevator.elevatorL2()).andThen(elevator.elevatorHome()));
+         NamedCommands.registerCommand(Constants.SCORE_L2, elevator.elevatorL2().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
+         NamedCommands.registerCommand(Constants.SCORE_L3, elevator.elevatorL3().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
+         NamedCommands.registerCommand(Constants.SCORE_L4, elevator.elevatorL4().alongWith(Commands.waitUntil(() -> elevator.isElevatorAtL2()).andThen(NamedCommands.getCommand(Constants.CORAL_SCORING_POSITION))));
+        // NamedCommands.registerCommand(Constants.ELEVATOR_HOME, elevator.elevatorHome());
+        // NamedCommands.registerCommand(Constants.SCORE_L2, elevator.elevatorL2());
+        // NamedCommands.registerCommand(Constants.SCORE_L3, elevator.elevatorL3());
+        // NamedCommands.registerCommand(Constants.SCORE_L4, elevator.elevatorL4());
+
         NamedCommands.registerCommand(Constants.DEALGAE_ON, elevator.dealgaeStartSpin());
         NamedCommands.registerCommand(Constants.DEALGAE_OFF, elevator.dealgaeStopSpin());
         NamedCommands.registerCommand(Constants.MANUAL_ELEVATOR_UP, elevator.raiseElevator());
@@ -135,6 +141,7 @@ public class RobotContainer {
 
         controlTriggers.manualCoralArmLoad.whileTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_POSITIVE));
         controlTriggers.manualCoralArmScore.whileTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_NEGATIVE));
+        controlTriggers.manualDropCoral.whileTrue(coralArm.dropCoral());
 
         controlTriggers.climberAscend.whileTrue(NamedCommands.getCommand(Constants.ASCEND_CAGE));
         controlTriggers.climberDescend.whileTrue(NamedCommands.getCommand(Constants.DESCEND_CAGE));
@@ -147,7 +154,7 @@ public class RobotContainer {
         controlTriggers.manualElevatorUp.whileTrue(NamedCommands.getCommand(Constants.MANUAL_ELEVATOR_UP));
         controlTriggers.manualElevatorDown.whileTrue(NamedCommands.getCommand(Constants.MANUAL_ELEVATOR_DOWN));
 
-        controlTriggers.deAlgae.whileTrue(NamedCommands.getCommand(Constants.DEALGAE_ON));
+        controlTriggers.intakeCoral.whileTrue(coralArm.grabCoral());
         reefTrigger.onTrue(NamedCommands.getCommand(Constants.OUTTAKE_CORAL));
 
         autoChooser = AutoBuilder.buildAutoChooser();

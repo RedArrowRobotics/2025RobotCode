@@ -25,8 +25,8 @@ public class CageSubsystem extends SubsystemBase {
   PIDController cageGrabberPID = new PIDController(0.03, 0.0, 0.0);
   public double feedForward = 0.0;
  // public AngleSparkRelativeEncoder angleEncoder;
-  public CageGrabberPosition target = CageGrabberPosition.CLOSED;
-  public CageGrabberPosition current = CageGrabberPosition.CLOSED;
+  public CageGrabberPosition target = CageGrabberPosition.OPEN;
+  public CageGrabberPosition current = CageGrabberPosition.OPEN;
 
   public CageSubsystem() {
     cageGrabberPID.setTolerance(0.1);

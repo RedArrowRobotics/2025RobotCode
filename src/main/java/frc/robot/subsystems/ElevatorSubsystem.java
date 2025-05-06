@@ -20,14 +20,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrushed);
   public ElevatorPositions target = ElevatorPositions.HOME;
   public ElevatorPositions current = ElevatorPositions.HOME;
-  PIDController elevatorPID = new PIDController(0.1, 0, 0);
-  public double feedForward = 0.025;
+  PIDController elevatorPID = new PIDController(0.025, 0, 0.001);
+  public double feedForward = 0.03;
   SparkMaxConfig config = new SparkMaxConfig();
   boolean manualControl = false;
 
   public ElevatorSubsystem() {
     // todo: set motor 2 to follow 1
-    elevatorPID.setTolerance(10.0);
+    elevatorPID.setTolerance(0.1);
     config.follow(elevatorMotor1);
     elevatorMotor2.configure(config, SparkBase.ResetMode.kResetSafeParameters,
         SparkBase.PersistMode.kPersistParameters);
@@ -113,7 +113,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     return startEnd(
       () -> {
         manualControl = true;
-        elevatorMotor1.set(0.25);
+        elevatorMotor1.set(0.1);
       }, () -> {
         elevatorMotor1.set(feedForward);
       }
@@ -124,7 +124,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     return startEnd(
       () -> {
         manualControl = true;
-        elevatorMotor1.set(-0.25);
+        elevatorMotor1.set(-0.1);
       }, () -> {
         elevatorMotor1.set(feedForward);
       }
@@ -191,5 +191,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     builder.addStringProperty("Elevator Position", () -> current.toString(), null);
     builder.addBooleanProperty("Elevator Manual Control", () -> manualControl, null);
     builder.addStringProperty("Alliance Color", () -> DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue).name(), null);
+    builder.addBooleanProperty("Elevator at L2", () -> isElevatorAtL2(), null);
   }
 }

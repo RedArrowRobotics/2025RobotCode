@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -23,16 +24,18 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   private DigitalInput reefSensor = new DigitalInput(Constants.reefPhotoEye);
   public CoralArmPosition target = CoralArmPosition.HOME;
   public CoralArmPosition current = CoralArmPosition.HOME;
-  PIDController coralArmPID = new PIDController(0.0039, 0.0, 0.0);
+  PIDController coralArmPID = new PIDController(0.01, 0.0, 0.0005);
   public double feedForward = 0.0;
   public AngleGenericAbsoluteEncoder angleEncoder;
   boolean manualControl = false;
+  double power;
+  double encoderOffset = 319.0;
 
   public CoralScoringDeviceSubsystem() {
     DutyCycleEncoder encoder = new DutyCycleEncoder(3);
-    coralArmPID.setTolerance(Degrees.of(5.0).in(Degrees));
+    coralArmPID.setTolerance(Degrees.of(2.5).in(Degrees));
     angleEncoder = new AngleGenericAbsoluteEncoder(encoder);
-    // coralArmPID.enableContinuousInput(0, 360);
+    //coralArmPID.enableContinuousInput(0, 360);
     SmartDashboard.putData("Coral Arm PID", coralArmPID);
   }
 
@@ -54,11 +57,14 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // if (!manualControl) {
-    //   double power;
-    //   power = coralArmPID.calculate(angleEncoder.getAngle().in(Degrees), target.getEncoderPosition().in(Degrees)) + feedForward;
-    //   scorerTilter.set(power * 1.0);
-    // }
+      if (!manualControl) {
+        double adjustedAbsEncoder = angleEncoder.getAngle().in(Degrees)-encoderOffset;
+        if(adjustedAbsEncoder < 0) {
+          adjustedAbsEncoder += 360;
+        }
+        power = coralArmPID.calculate(adjustedAbsEncoder, target.getEncoderPosition().in(Degrees)) + feedForward;
+        scorerTilter.set(power * 1.0);
+      }
   }
 
   private Command goToPosition(CoralArmPosition targetPosition) {
@@ -82,12 +88,23 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public Command grabCoral() {
     return startEnd(
       () -> {
-        intakeWheels.set(-1);
+        intakeWheels.set(1);
       },
       () -> {
         intakeWheels.set(0);
       }
-    ).until(() -> isCoralLoaded());
+    ).until(() -> isCoralLoaded()).andThen(grabCoralShort());
+  }
+
+  public Command grabCoralShort() {
+    return startEnd(
+      () -> {
+        intakeWheels.set(1);
+      },
+      () -> {
+        intakeWheels.set(0);
+      }
+    ).withTimeout(Seconds.of(1.0));
   }
   
   /**
@@ -96,7 +113,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public Command dropCoral() {
     return startEnd(
       () -> {
-        intakeWheels.set(1);
+        intakeWheels.set(-1);
       },
       () -> {
         intakeWheels.set(0);
@@ -175,8 +192,11 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
     builder.addBooleanProperty("Coral Loaded", () -> isCoralLoaded(), null);
     builder.addBooleanProperty("Over Reef", () -> isCoralOverReef(), null);
     builder.addStringProperty("Coral Arm Position", () -> current.toString(), null);
+    builder.addStringProperty("Coral Arm Target", () -> target.toString(), null);
     builder.addDoubleProperty("Encoder Value", () -> angleEncoder.getAngle().in(Degrees), null);
+    builder.addDoubleProperty("Adjusted Encoder Value", () -> angleEncoder.getAngle().in(Degrees) - encoderOffset, null);
     builder.addDoubleProperty("Encoder Target", () -> target.getEncoderPosition().in(Degrees), null);
     builder.addBooleanProperty("Coral Manual Control", () -> manualControl, null);
+    builder.addDoubleProperty("Arm Power", () -> power, null);
   }
 }
