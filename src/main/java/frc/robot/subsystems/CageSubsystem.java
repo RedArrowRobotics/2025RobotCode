@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -21,6 +22,7 @@ import frc.robot.subsystems.CoralScoringDeviceSubsystem.CoralArmPosition;
 
 public class CageSubsystem extends SubsystemBase {
   SparkFlex cageClimber = new SparkFlex(Constants.cageClimberMotorId, MotorType.kBrushless);
+  private DigitalInput cageSensor = new DigitalInput(Constants.cageSensorChannel);
   SparkMax cageGrabber = new SparkMax(Constants.cageGrabberMotorId, MotorType.kBrushless);
   PIDController cageGrabberPID = new PIDController(0.03, 0.0, 0.0);
   public double feedForward = 0.0;
@@ -135,6 +137,9 @@ public class CageSubsystem extends SubsystemBase {
     return false;
   }
 
+  public boolean isCageAtLimit() {
+    return !cageSensor.get();
+  }
   
   @Override
   public void initSendable(SendableBuilder builder) {
@@ -145,5 +150,6 @@ public class CageSubsystem extends SubsystemBase {
     builder.addStringProperty("Arm Target", () -> target.name(), null);
     builder.addDoubleProperty("Encoder Value", () -> cageGrabber.getEncoder().getPosition(), null);
     builder.addDoubleProperty("Encoder Target", () -> target.getEncoderPosition(), null);
+    builder.addBooleanProperty("Cage Limit", () -> isCageAtLimit(), null);
   }
 }

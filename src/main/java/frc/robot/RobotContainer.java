@@ -108,7 +108,7 @@ public class RobotContainer {
         NamedCommands.registerCommand(Constants.MANUAL_CORAL_NEGATIVE, coralArm.coralArmNegative().onlyIf(() -> elevator.isElevatorAtL2()));
 
         //Cage Commands
-        NamedCommands.registerCommand(Constants.ASCEND_CAGE, cage.ascend());
+        NamedCommands.registerCommand(Constants.ASCEND_CAGE, cage.ascend().until(cage::isCageAtLimit));
         NamedCommands.registerCommand(Constants.DESCEND_CAGE, cage.descend());
 
         //Elevator Commands
@@ -141,7 +141,7 @@ public class RobotContainer {
 
         controlTriggers.manualCoralArmLoad.whileTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_POSITIVE));
         controlTriggers.manualCoralArmScore.whileTrue(NamedCommands.getCommand(Constants.MANUAL_CORAL_NEGATIVE));
-        controlTriggers.manualDropCoral.whileTrue(coralArm.dropCoral());
+        controlTriggers.manualDropCoral.onTrue(NamedCommands.getCommand(Constants.OUTTAKE_CORAL));
 
         controlTriggers.climberAscend.whileTrue(NamedCommands.getCommand(Constants.ASCEND_CAGE));
         controlTriggers.climberDescend.whileTrue(NamedCommands.getCommand(Constants.DESCEND_CAGE));

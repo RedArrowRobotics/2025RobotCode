@@ -62,6 +62,7 @@ public class Constants {
     public static int coralLimitSwitch = 1;
     public static int reefPhotoEye = 2;
 
+
     // Subsystem Constants
     //   Cage
     public static double cageGrabberOpenPosition = 0.0;
