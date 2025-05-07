@@ -59,24 +59,25 @@ public class Constants {
     public static int dealgaeWheelsId = 20;
 
     // DIO Ports
-    public static int coralSensorChannel = 1;
-    public static int reefSensorChannel = 2;
+    public static int coralLimitSwitch = 1;
+    public static int reefPhotoEye = 2;
     public static int cageSensorChannel = 4;
+
 
     // Subsystem Constants
     //   Cage
-    public static double cageGrabberOpenPosition = -6.762;
-    public static double cageGrabberClosedPosition = 0.0;
+    public static double cageGrabberOpenPosition = 0.0;
+    public static double cageGrabberClosedPosition = 7.38;
     //   Elevator
     public static double elevatorMotorHomePosition = 0;
-    public static double elevatorMotorL2Position = 25.3;
-    public static double elevatorMotorL3Position = 31.9;
+    public static double elevatorMotorL2Position = 14.1;
+    public static double elevatorMotorL3Position = 25.4;
     public static double elevatorMotorL4Position = 40;
     public static double dealgaeFlipperExtendedPosition = 1;
     public static double dealgaeFlipperRetractedPosition = 0;
     //   Coral Scorer
     public static Time coralDropTimeout = Seconds.of(3.0);
-    public static Angle scorerTilterScoringPosition = Degrees.of(205.0);
-    public static Angle scorerTilterLoadingPosition = Degrees.of(5.0);
+    public static Angle scorerTilterScoringPosition = Degrees.of(70.0);
+    public static Angle scorerTilterLoadingPosition = Degrees.of(0.0);
     
 }

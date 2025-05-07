@@ -38,8 +38,8 @@ public class AlignToAprilTag {
     public AlignToAprilTag(DriveSubsystem subsystem) {
         driveSubsystem = subsystem;
         constraints = new PathConstraints(
-            subsystem.getMaximumChassisVelocity().times(0.5),
-            MetersPerSecondPerSecond.of(10.6).times(0.5),
+            subsystem.getMaximumChassisVelocity().times(0.25),
+            MetersPerSecondPerSecond.of(10.6).times(0.25),
             subsystem.getMaximumChassisAngularVelocity(),
             DegreesPerSecondPerSecond.of(861),
             Volts.of(12));
