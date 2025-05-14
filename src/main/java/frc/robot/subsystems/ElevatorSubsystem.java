@@ -5,7 +5,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -26,21 +25,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrushed);
     public ElevatorPositions target = ElevatorPositions.HOME;
     public ElevatorPositions current = ElevatorPositions.HOME;
-    //PIDController elevatorPID = new PIDController(0.025, 0, 0.001);
-    //public double feedForward = 0.03;
     SparkMaxConfig config = new SparkMaxConfig();
     Optional<Double> manualControl = Optional.empty();
     //  Motion Profile
-    ProfiledPIDController elevatorProfile = new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(Constants.maxVelocity, Constants.maxAcceleration));
-    ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(1.1, 1.2, 1.3);
+    ProfiledPIDController pidController = Constants.elevatorProfile.createController();
+    ElevatorFeedforward feedforwardController = Constants.elevatorFeedforward.createController();
 
     public ElevatorSubsystem() {
         // todo: set motor 2 to follow 1
-        elevatorProfile.setTolerance(Constants.elevatorTolerance);
+        pidController.setTolerance(Constants.elevatorTolerance);
         config.follow(elevatorMotor1);
         elevatorMotor2.configure(config, SparkBase.ResetMode.kResetSafeParameters,
             SparkBase.PersistMode.kPersistParameters);
-        SmartDashboard.putData("Elevator PID", elevatorProfile);
+        SmartDashboard.putData("Elevator PID", pidController);
     }
 
     public enum ElevatorPositions {
@@ -64,9 +61,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         manualControl.ifPresentOrElse((power) -> {
-            elevatorMotor1.set(power + elevatorFeedforward.calculate(0));
+            elevatorMotor1.set(power + feedforwardController.calculate(0));
         }, () -> {
-            elevatorMotor1.set(elevatorProfile.calculate(elevatorMotor1.getEncoder().getPosition(), target.getEncoderPosition()) + elevatorFeedforward.calculate(elevatorProfile.getSetpoint().velocity));
+            elevatorMotor1.set(pidController.calculate(elevatorMotor1.getEncoder().getPosition(), target.getEncoderPosition()) + feedforwardController.calculate(pidController.getSetpoint().velocity));
         });
     }
 
@@ -104,14 +101,14 @@ public class ElevatorSubsystem extends SubsystemBase {
                 manualControl = Optional.empty();
                 target = targetPosition;
                 //elevatorProfile.calculate(elevatorMotor1.getEncoder().getPosition(), target.getEncoderPosition());
-                elevatorProfile.setGoal(target.getEncoderPosition());
+                pidController.setGoal(target.getEncoderPosition());
                 current = ElevatorPositions.NONE;
             },
             () -> {
-                if (elevatorProfile.atGoal()) {
+                if (pidController.atGoal()) {
                     current = targetPosition;
                 }
-            }).until(() -> elevatorProfile.atGoal());
+            }).until(() -> pidController.atGoal());
     }
 
     public Boolean isElevatorAtL2() {

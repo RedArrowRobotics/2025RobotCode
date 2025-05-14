@@ -8,6 +8,8 @@ import java.util.List;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.units.measure.Time;
+import frc.robot.pid.ElevatorFeedforwardParameters;
+import frc.robot.pid.ProfiledPIDParameters;
 import edu.wpi.first.units.measure.Angle;
 
 public class Constants {
@@ -77,8 +79,8 @@ public class Constants {
     public static double dealgaeFlipperRetractedPosition = 0.0;
     public static final double elevatorTolerance = 0.1;
     //   Motion Profile
-    public static double maxVelocity = 0.0;
-    public static double maxAcceleration = 0.0;
+    public static final ProfiledPIDParameters elevatorProfile = new ProfiledPIDParameters(0.0, 0.0, 0.0, 0.0, 0.0);
+    public static final ElevatorFeedforwardParameters elevatorFeedforward = new ElevatorFeedforwardParameters(1.1, 1.2, 1.3);
     //   Coral Scorer
     public static Time coralDropTimeout = Seconds.of(3.0);
     public static Angle scorerTilterScoringPosition = Degrees.of(70.0);
