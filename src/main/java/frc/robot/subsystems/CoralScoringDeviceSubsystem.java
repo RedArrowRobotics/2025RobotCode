@@ -19,7 +19,7 @@ import edu.wpi.first.units.measure.Angle;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
   SparkMax intakeWheels = new SparkMax(Constants.intakeWheelsMotorID, MotorType.kBrushed);
-  public SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterMotorID, MotorType.kBrushed);
+  public SparkMax scorerTilter = new SparkMax(Constants.coralScorerTilterMotorID, MotorType.kBrushless);
   private DigitalInput coralSensor = new DigitalInput(Constants.coralLimitSwitch);
   private DigitalInput reefSensor = new DigitalInput(Constants.reefPhotoEye);
   public CoralArmPosition target = CoralArmPosition.HOME;
