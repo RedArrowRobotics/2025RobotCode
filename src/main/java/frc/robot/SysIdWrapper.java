@@ -31,12 +31,12 @@ public class SysIdWrapper {
     private MutDistance linearPosition = Meters.mutable(0);
     private MutLinearVelocity linearVelocity = MetersPerSecond.mutable(0);
 
-    public SysIdWrapper(SysIdWrapperProperties properties) {
+    public SysIdWrapper(Properties properties) {
         sysIdRoutine = new SysIdRoutine(
                 properties.config,
                 new SysIdRoutine.Mechanism(
                         // Tell SysId how to plumb the driving voltage to the motors.
-                        (voltage) -> {for (SysIdSparkMax controller : properties.motorControllers) {controller.motorController.setVoltage(controller.reverse ? voltage.unaryMinus() : voltage);}},
+                        (voltage) -> {for (MotorController controller : properties.motorControllers) {controller.motorController.setVoltage(controller.reverse ? voltage.unaryMinus() : voltage);}},
                         // Tell SysId how to record a frame of data for each
                         // motor on the mechanism being characterized.
                         log -> {
@@ -78,13 +78,13 @@ public class SysIdWrapper {
         return sysIdRoutine.dynamic(direction);
     }
 
-    public static class SysIdWrapperProperties {
+    public static class Properties {
         public String name;
         public SysIdRoutine.Config config;
-        public List<SysIdSparkMax> motorControllers;
+        public List<MotorController> motorControllers;
         public Subsystem subsystem;
         public Optional<Double> metersPerRotation;
     }
-    public static record SysIdSparkMax(SparkMax motorController, boolean reverse) {
+    public static record MotorController(SparkMax motorController, boolean reverse) {
     }
 }
