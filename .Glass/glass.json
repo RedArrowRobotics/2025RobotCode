@@ -15,14 +15,22 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Alerts": "Alerts",
       "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Cage Grabber PID": "PIDController",
+      "/SmartDashboard/Coral Arm PID": "PIDController",
       "/SmartDashboard/DriveSubsystem": "Subsystem",
+      "/SmartDashboard/Elevator PID": "ProfiledPIDController",
       "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/IMU": "Alerts",
       "/SmartDashboard/JSON": "Alerts",
       "/SmartDashboard/Motors": "Alerts",
       "/SmartDashboard/PathPlanner": "Alerts",
-      "/SmartDashboard/Swerve Drive": "Alerts"
+      "/SmartDashboard/Swerve Drive": "Alerts",
+      "/SmartDashboard/navX-Sensor[4]": "Gyro",
+      "/SmartDashboard/sysid-coralscorer-dynamic-forward": "Command",
+      "/SmartDashboard/sysid-coralscorer-dynamic-reverse": "Command",
+      "/SmartDashboard/sysid-coralscorer-quasistatic-forward": "Command",
+      "/SmartDashboard/sysid-coralscorer-quasistatic-reverse": "Command"
     },
     "windows": {
       "/SmartDashboard/Auto Chooser": {

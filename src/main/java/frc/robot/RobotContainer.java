@@ -161,6 +161,8 @@ public class RobotContainer {
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
         PathfindingCommand.warmupCommand().schedule();
+        
+        //coralArm.sysid.sendCommandsToDashboard();
     }
 
     public Command oneMeterPath() {
@@ -184,7 +186,6 @@ public class RobotContainer {
         SmartDashboard.putData(elevator);
         SmartDashboard.putData(cage);
         SmartDashboard.putData(swerveDriveTrain);
-        coralArm.sysid.sendCommandsToDashboard();
     }
 
     public void teleopPeriodic() {

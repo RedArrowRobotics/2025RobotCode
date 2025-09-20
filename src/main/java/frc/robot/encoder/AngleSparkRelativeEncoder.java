@@ -13,11 +13,14 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
 
 public class AngleSparkRelativeEncoder implements AngleEncoder {
     RelativeEncoder encoder;
     Measure<PerUnit<DimensionlessUnit,AngleUnit>> ppm;
     double gearRatio;
+    MutAngle storage_angle = BaseUnits.AngleUnit.mutable(0);
     
     /**
      * Creates a new angle-based encoder from a relative encoder.
@@ -59,10 +62,9 @@ public class AngleSparkRelativeEncoder implements AngleEncoder {
     }
 
     public Angle getAngle() {
-        var position = Value.of(encoder.getPosition());
-        var revolutions = BaseUnits.AngleUnit.of(position.div(ppm).baseUnitMagnitude());
-        var geared = revolutions.times(gearRatio);
-        return geared;
+        storage_angle.mut_replace(encoder.getPosition()/ppm.baseUnitMagnitude(),BaseUnits.AngleUnit);
+        storage_angle.mut_times(gearRatio);
+        return storage_angle;
     }
 
     public AngularVelocity getAngularVelocity() {

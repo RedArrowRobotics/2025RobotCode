@@ -10,12 +10,15 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutDimensionless;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 public class AngleGenericAbsoluteEncoder implements AngleEncoder {
     DutyCycleEncoder encoder;
     Measure<PerUnit<DimensionlessUnit,AngleUnit>> ppm;
     double gearRatio;
+    MutAngle storage_angle = BaseUnits.AngleUnit.mutable(0);
     
     /**
      * Creates a new angle-based encoder from a generic external encoder.
@@ -57,10 +60,9 @@ public class AngleGenericAbsoluteEncoder implements AngleEncoder {
     }
 
     public Angle getAngle() {
-        var position = Value.of(encoder.get());
-        var revolutions = BaseUnits.AngleUnit.of(position.div(ppm).baseUnitMagnitude());
-        var geared = revolutions.times(gearRatio);
-        return geared;
+        storage_angle.mut_replace(encoder.get()/ppm.baseUnitMagnitude(),BaseUnits.AngleUnit);
+        storage_angle.mut_times(gearRatio);
+        return storage_angle;
     }
 
     public AngularVelocity getAngularVelocity() {

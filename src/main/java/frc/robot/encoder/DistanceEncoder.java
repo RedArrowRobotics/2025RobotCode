@@ -1,6 +1,7 @@
 package frc.robot.encoder;
 
 import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
@@ -8,10 +9,13 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutDistance;
 
 public class DistanceEncoder implements AngleEncoder, LinearEncoder {
     AngleEncoder encoder;
     Measure<PerUnit<DistanceUnit,AngleUnit>> travel;
+    MutDistance storage_distance = BaseUnits.DistanceUnit.mutable(0);
 
     /**
      * Creates a new distance-based encoder.
@@ -31,7 +35,8 @@ public class DistanceEncoder implements AngleEncoder, LinearEncoder {
         return encoder.getAngularVelocity();
     }
     public Distance getPosition() {
-        return (Distance) (getAngle().times(travel));
+        storage_distance.mut_replace(getAngle().baseUnitMagnitude()*travel.baseUnitMagnitude(), BaseUnits.DistanceUnit);
+        return storage_distance;
     }
     public LinearVelocity getLinearVelocity() {
         return (LinearVelocity) (getAngularVelocity().times(travel));
