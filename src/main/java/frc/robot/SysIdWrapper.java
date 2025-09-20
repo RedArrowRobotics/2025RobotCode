@@ -43,21 +43,24 @@ public class SysIdWrapper {
                         // Tell SysId how to record a frame of data for each
                         // motor on the mechanism being characterized.
                         log -> {
-                            // Record a frame for the shooter motor.
-                            var motorLog = log.motor(properties.name)
-                                .voltage(voltage.mut_replace(
-                                    properties.motorControllers.get(0).motorController.get() * RobotController.getBatteryVoltage(), Volts));
-                            properties.metersPerRotation.ifPresentOrElse(metersPerRotation -> {
-                                motorLog.linearPosition(linearPosition.mut_replace(
-                                    properties.motorControllers.get(0).motorController.getEncoder().getPosition() * metersPerRotation, Meters))
-                                .linearVelocity(linearVelocity.mut_replace(
-                                    properties.motorControllers.get(0).motorController.getEncoder().getVelocity() * metersPerRotation, Meters.per(Minute)));
-                            }, () -> {
-                                motorLog.angularPosition(angularPosition.mut_replace(
-                                    properties.motorControllers.get(0).motorController.getEncoder().getPosition(), Rotations))
-                                .angularVelocity(angularVelocity.mut_replace(
-                                    properties.motorControllers.get(0).motorController.getEncoder().getVelocity(), RPM));
-                            });
+                            for (int i=0; i<properties.motorControllers.size(); i++) {
+                                final MotorController motor = properties.motorControllers.get(i);
+                                // Record a frame for the shooter motor.
+                                var motorLog = log.motor(properties.name+"-"+i)
+                                    .voltage(voltage.mut_replace(
+                                        motor.motorController.get() * RobotController.getBatteryVoltage(), Volts));
+                                properties.metersPerRotation.ifPresentOrElse(metersPerRotation -> {
+                                    motorLog.linearPosition(linearPosition.mut_replace(
+                                        motor.motorController.getEncoder().getPosition() * metersPerRotation, Meters))
+                                    .linearVelocity(linearVelocity.mut_replace(
+                                        motor.motorController.getEncoder().getVelocity() * metersPerRotation, Meters.per(Minute)));
+                                }, () -> {
+                                    motorLog.angularPosition(angularPosition.mut_replace(
+                                        motor.motorController.getEncoder().getPosition(), Rotations))
+                                    .angularVelocity(angularVelocity.mut_replace(
+                                        motor.motorController.getEncoder().getVelocity(), RPM));
+                                });
+                            }
                         },
                         properties.subsystem));
     }
