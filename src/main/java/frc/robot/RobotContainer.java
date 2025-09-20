@@ -162,7 +162,7 @@ public class RobotContainer {
 
         PathfindingCommand.warmupCommand().schedule();
         
-        //coralArm.sysid.sendCommandsToDashboard();
+        coralArm.sysid.sendCommandsToDashboard();
     }
 
     public Command oneMeterPath() {

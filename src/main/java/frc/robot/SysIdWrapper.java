@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.revrobotics.spark.SparkMax;
 
@@ -63,10 +64,10 @@ public class SysIdWrapper {
     }
 
     public void sendCommandsToDashboard() {
-        SmartDashboard.putData("sysid-"+this.name+ "-quasistatic-forward", sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        SmartDashboard.putData("sysid-"+this.name+ "-quasistatic-reverse", sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        SmartDashboard.putData("sysid-"+this.name+ "-dynamic-forward", sysIdDynamic(SysIdRoutine.Direction.kForward));
-        SmartDashboard.putData("sysid-"+this.name+ "-dynamic-reverse", sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        SmartDashboard.putData("System Identification/"+this.name+"/Quasistatic/Forward", sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("System Identification/"+this.name+"/Quasistatic/Reverse", sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        SmartDashboard.putData("System Identification/"+this.name+"/Dynamic/Forward", sysIdDynamic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("System Identification/"+this.name+"/Dynamic/Reverse", sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
     public static class Properties {
@@ -78,13 +79,13 @@ public class SysIdWrapper {
         public Properties(String name, SysIdRoutine.Config config, AngularMotorList motorControllers, Subsystem subsystem) {
             this.name = name;
             this.config = config;
-            this.system = new AngularSystem(motorControllers);
+            this.system = new AngularSystem(motorControllers.get());
             this.subsystem = subsystem;
         }
         public Properties(String name, SysIdRoutine.Config config, LinearMotorList motorControllers, Subsystem subsystem) {
             this.name = name;
             this.config = config;
-            this.system = new LinearSystem(motorControllers);
+            this.system = new LinearSystem(motorControllers.get());
             this.subsystem = subsystem;
         }
     }
@@ -144,8 +145,8 @@ public class SysIdWrapper {
         }
     }
 
-    public interface AngularMotorList extends List<AngularMotorController> {}
-    public interface LinearMotorList extends List<LinearMotorController> {}
+    public interface AngularMotorList extends Supplier<List<AngularMotorController>> {}
+    public interface LinearMotorList extends Supplier<List<LinearMotorController>> {}
     public static record AngularMotorController(SparkMax motorController, AngleEncoder encoder, Optional<String> name) {}
     public static record LinearMotorController(SparkMax motorController, LinearEncoder encoder, Optional<String> name) {}
 }
