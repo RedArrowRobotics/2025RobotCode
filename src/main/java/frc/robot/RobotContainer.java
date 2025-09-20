@@ -121,8 +121,8 @@ public class RobotContainer {
         // NamedCommands.registerCommand(Constants.SCORE_L3, elevator.elevatorL3());
         // NamedCommands.registerCommand(Constants.SCORE_L4, elevator.elevatorL4());
 
-        NamedCommands.registerCommand(Constants.DEALGAE_ON, elevator.dealgaeStartSpin());
-        NamedCommands.registerCommand(Constants.DEALGAE_OFF, elevator.dealgaeStopSpin());
+        // NamedCommands.registerCommand(Constants.DEALGAE_ON, elevator.dealgaeStartSpin());
+        // NamedCommands.registerCommand(Constants.DEALGAE_OFF, elevator.dealgaeStopSpin());
         NamedCommands.registerCommand(Constants.MANUAL_ELEVATOR_UP, elevator.raiseElevator());
         NamedCommands.registerCommand(Constants.MANUAL_ELEVATOR_DOWN, elevator.lowerElevator());
 
@@ -184,6 +184,7 @@ public class RobotContainer {
         SmartDashboard.putData(elevator);
         SmartDashboard.putData(cage);
         SmartDashboard.putData(swerveDriveTrain);
+        coralArm.sysid.sendCommandsToDashboard();
     }
 
     public void teleopPeriodic() {

@@ -19,11 +19,13 @@ import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class SysIdWrapper {
+    private final String name;
     private final SysIdRoutine sysIdRoutine;
     private MutVoltage voltage = Volts.mutable(0);
     private MutAngle angularPosition = Rotations.mutable(0);
@@ -32,6 +34,7 @@ public class SysIdWrapper {
     private MutLinearVelocity linearVelocity = MetersPerSecond.mutable(0);
 
     public SysIdWrapper(Properties properties) {
+        name = properties.name;
         sysIdRoutine = new SysIdRoutine(
                 properties.config,
                 new SysIdRoutine.Mechanism(
@@ -65,7 +68,7 @@ public class SysIdWrapper {
      *
      * @param direction The direction (forward or reverse) to run the test in
      */
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    private Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.quasistatic(direction);
     }
 
@@ -74,16 +77,38 @@ public class SysIdWrapper {
      *
      * @param direction The direction (forward or reverse) to run the test in
      */
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    private Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
 
+    public void sendCommandsToDashboard() {
+        SmartDashboard.putData("sysid-"+this.name+ "-quasistatic-forward", sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("sysid-"+this.name+ "-quasistatic-reverse", sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        SmartDashboard.putData("sysid-"+this.name+ "-dynamic-forward", sysIdDynamic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("sysid-"+this.name+ "-dynamic-reverse", sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    }
+
     public static class Properties {
-        public String name;
-        public SysIdRoutine.Config config;
-        public List<MotorController> motorControllers;
-        public Subsystem subsystem;
-        public Optional<Double> metersPerRotation;
+        private String name;
+        private SysIdRoutine.Config config;
+        private List<MotorController> motorControllers;
+        private Subsystem subsystem;
+        private Optional<Double> metersPerRotation;
+    
+        public Properties(String name, SysIdRoutine.Config config, List<MotorController> motorControllers, Subsystem subsystem) {
+            this.name = name;
+            this.config = config;
+            this.motorControllers = motorControllers;
+            this.subsystem = subsystem;
+            this.metersPerRotation = Optional.empty();
+        }
+        public Properties(String name, SysIdRoutine.Config config, List<MotorController> motorControllers, Subsystem subsystem, double metersPerRotation) {
+            this.name = name;
+            this.config = config;
+            this.motorControllers = motorControllers;
+            this.subsystem = subsystem;
+            this.metersPerRotation = Optional.of(metersPerRotation);
+        }
     }
     public static record MotorController(SparkMax motorController, boolean reverse) {
     }

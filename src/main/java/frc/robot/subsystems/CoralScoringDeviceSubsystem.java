@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Seconds;
 
+import java.util.List;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -13,7 +15,9 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.SysIdWrapper;
 import frc.robot.encoder.AngleGenericAbsoluteEncoder;
 import edu.wpi.first.units.measure.Angle;
 
@@ -30,6 +34,12 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   boolean manualControl = false;
   double power;
   double encoderOffset = 319.0;
+  public SysIdWrapper sysid = new SysIdWrapper(new SysIdWrapper.Properties(
+    "coralscorer",
+    new SysIdRoutine.Config(),
+    List.of(new SysIdWrapper.MotorController(scorerTilter,false)),
+    this
+  ));
 
   public CoralScoringDeviceSubsystem() {
     DutyCycleEncoder encoder = new DutyCycleEncoder(3);

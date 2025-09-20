@@ -21,8 +21,8 @@ import com.revrobotics.spark.SparkBase;
 public class ElevatorSubsystem extends SubsystemBase {
     SparkMax elevatorMotor1 = new SparkMax(Constants.elevatorMotor1Id, MotorType.kBrushless);
     SparkMax elevatorMotor2 = new SparkMax(Constants.elevatorMotor2Id, MotorType.kBrushless);
-    SparkMax dealgaeFlipper = new SparkMax(Constants.dealgaeFlipperId, MotorType.kBrushed);
-    SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrushed);
+    //SparkMax dealgaeFlipper = new SparkMax(Constants.dealgaeFlipperId, MotorType.kBrushed);
+    //SparkMax dealgaeWheels = new SparkMax(Constants.dealgaeWheelsId, MotorType.kBrushed);
     public ElevatorPositions target = ElevatorPositions.HOME;
     public ElevatorPositions current = ElevatorPositions.HOME;
     SparkMaxConfig config = new SparkMaxConfig();
@@ -136,53 +136,53 @@ public class ElevatorSubsystem extends SubsystemBase {
         );
     }
 
-    /**
-     * Moves the dealgaer into the dealgae position.
-     */
-    public Command dealgaeExtend() {
-        return startEnd(
-            () -> {
-                elevatorMotor1.set(.5);
-            },
-            () -> {
-                elevatorMotor1.set(0);
-            }).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperExtendedPosition));
-        // getEncoder or getPosition?
-    }
+    // /**
+    //  * Moves the dealgaer into the dealgae position.
+    //  */
+    // public Command dealgaeExtend() {
+    //     return startEnd(
+    //         () -> {
+    //             elevatorMotor1.set(.5);
+    //         },
+    //         () -> {
+    //             elevatorMotor1.set(0);
+    //         }).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperExtendedPosition));
+    //     // getEncoder or getPosition?
+    // }
 
-    /**
-     * Moves the dealgaer into the stored position.
-     */
-    public Command dealgaeRetract() {
-        return startEnd(
-            () -> {
-                elevatorMotor1.set(.5);
-            },
-            () -> {
-                elevatorMotor1.set(0);
-            }).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperRetractedPosition));
-        // getEncoder or getPosition?
-    }
+    // /**
+    //  * Moves the dealgaer into the stored position.
+    //  */
+    // public Command dealgaeRetract() {
+    //     return startEnd(
+    //         () -> {
+    //             elevatorMotor1.set(.5);
+    //         },
+    //         () -> {
+    //             elevatorMotor1.set(0);
+    //         }).until(() -> dealgaeFlipper.getEncoder().equals(Constants.dealgaeFlipperRetractedPosition));
+    //     // getEncoder or getPosition?
+    // }
 
-    /**
-     * Activates the dealgaer.
-     */
-    public Command dealgaeStartSpin() {
-        return runOnce(
-            () -> {
-                dealgaeWheels.set(1);
-            });
-    }
+    // /**
+    //  * Activates the dealgaer.
+    //  */
+    // public Command dealgaeStartSpin() {
+    //     return runOnce(
+    //         () -> {
+    //             dealgaeWheels.set(1);
+    //         });
+    // }
 
-    /**
-     * Deactivates the dealgaer.
-     */
-    public Command dealgaeStopSpin() {
-        return runOnce(
-            () -> {
-                dealgaeWheels.set(0);
-            });
-    }
+    // /**
+    //  * Deactivates the dealgaer.
+    //  */
+    // public Command dealgaeStopSpin() {
+    //     return runOnce(
+    //         () -> {
+    //             dealgaeWheels.set(0);
+    //         });
+    // }
 
     public boolean elevatorIsInPosition() {
         return current == ElevatorPositions.L2 || current == ElevatorPositions.L3 || current == ElevatorPositions.L4 || manualControl.isPresent();
@@ -194,7 +194,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.setSmartDashboardType(getName());
         builder.addDoubleProperty("Elevator Motor Position", () -> elevatorMotor1.getEncoder().getPosition(), null);
         builder.addStringProperty("Elevator Position", () -> current.toString(), null);
-        builder.addDoubleProperty("Elevator Manual Control", () -> manualControl.orElse(null), null);
+        builder.addDoubleProperty("Elevator Manual Control", () -> manualControl.orElse(0.0), null);
         builder.addStringProperty("Alliance Color", () -> DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue).name(), null);
         builder.addBooleanProperty("Elevator at L2", () -> isElevatorAtL2(), null);
     }
