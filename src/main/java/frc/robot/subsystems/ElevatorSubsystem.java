@@ -61,9 +61,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         manualControl.ifPresentOrElse((power) -> {
-            elevatorMotor1.set(power + feedforwardController.calculate(0));
+            elevatorMotor1.set(power/* + feedforwardController.calculate(0)*/);
         }, () -> {
-            elevatorMotor1.set(pidController.calculate(elevatorMotor1.getEncoder().getPosition(), target.getEncoderPosition()) + feedforwardController.calculate(pidController.getSetpoint().velocity));
+            elevatorMotor1.set(pidController.calculate(elevatorMotor1.getEncoder().getPosition(), target.getEncoderPosition())/* + feedforwardController.calculate(pidController.getSetpoint().velocity)*/);
         });
     }
 
