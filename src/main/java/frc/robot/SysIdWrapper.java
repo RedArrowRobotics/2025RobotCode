@@ -30,6 +30,11 @@ import frc.robot.encoder.LinearEncoder;
 public class SysIdWrapper {
     private final String name;
     private final SysIdRoutine sysIdRoutine;
+    private static MutVoltage voltage = Volts.mutable(0);
+    private static MutAngle angularPosition = Rotations.mutable(0);
+    private static MutAngularVelocity angularVelocity = RotationsPerSecond.mutable(0);
+    private static MutDistance linearPosition = Meters.mutable(0);
+    private static MutLinearVelocity linearVelocity = MetersPerSecond.mutable(0);
 
     public SysIdWrapper(Properties properties) {
         name = properties.name;
@@ -37,10 +42,18 @@ public class SysIdWrapper {
                 properties.config,
                 new SysIdRoutine.Mechanism(
                         // Tell SysId how to plumb the driving voltage to the motors.
-                        (voltage) -> properties.system.runMotors(voltage),
+                        (voltage) -> {
+                            for (var motor : properties.motorControllers) {
+                                motor.drive(voltage);
+                            }
+                        },
                         // Tell SysId how to record a frame of data for each
                         // motor on the mechanism being characterized.
-                        log -> properties.system.log(log, properties.name),
+                        log -> {
+                            for (var motor : properties.motorControllers) {
+                                motor.log(log, properties.name);
+                            }
+                        },
                         properties.subsystem));
     }
 
@@ -64,89 +77,53 @@ public class SysIdWrapper {
     }
 
     public void sendCommandsToDashboard() {
-        SmartDashboard.putData("System Identification/"+this.name+"/Quasistatic/Forward", sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        SmartDashboard.putData("System Identification/"+this.name+"/Quasistatic/Reverse", sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        SmartDashboard.putData("System Identification/"+this.name+"/Dynamic/Forward", sysIdDynamic(SysIdRoutine.Direction.kForward));
-        SmartDashboard.putData("System Identification/"+this.name+"/Dynamic/Reverse", sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        SmartDashboard.putData("System Identification/"+this.name+"/Quasistatic Forward", sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("System Identification/"+this.name+"/Quasistatic Reverse", sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        SmartDashboard.putData("System Identification/"+this.name+"/Dynamic Forward", sysIdDynamic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("System Identification/"+this.name+"/Dynamic Reverse", sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
     public static class Properties {
         private String name;
         private SysIdRoutine.Config config;
-        private System system;
+        private List<MotorController> motorControllers;
         private Subsystem subsystem;
     
-        public Properties(String name, SysIdRoutine.Config config, AngularMotorList motorControllers, Subsystem subsystem) {
+        public Properties(String name, SysIdRoutine.Config config, List<MotorController> motorControllers, Subsystem subsystem) {
             this.name = name;
             this.config = config;
-            this.system = new AngularSystem(motorControllers.get());
-            this.subsystem = subsystem;
-        }
-        public Properties(String name, SysIdRoutine.Config config, LinearMotorList motorControllers, Subsystem subsystem) {
-            this.name = name;
-            this.config = config;
-            this.system = new LinearSystem(motorControllers.get());
+            this.motorControllers = motorControllers;
             this.subsystem = subsystem;
         }
     }
 
-    private interface System {
-        public void runMotors(Voltage voltage);
+    private interface MotorController {
+        public void drive(Voltage voltage);
         public void log(SysIdRoutineLog log, String name);
     }
-    public static class AngularSystem implements System {
-        private List<AngularMotorController> motorControllers;
-        private MutVoltage voltage = Volts.mutable(0);
-        private MutAngle angularPosition = Rotations.mutable(0);
-        private MutAngularVelocity angularVelocity = RotationsPerSecond.mutable(0);
-
-        public AngularSystem(List<AngularMotorController> motorControllers) {
-            this.motorControllers = motorControllers;
-        }
-        public void runMotors(Voltage voltage) {
-            for (AngularMotorController controller : motorControllers) {
-                controller.motorController.setVoltage(voltage);
-            }
-        }
-        public void log(SysIdRoutineLog log, String name) {
-            for (int i=0; i<motorControllers.size(); i++) {
-                final AngularMotorController motor = motorControllers.get(i);
-                var motorLog = log.motor(name+motor.name.map(subname -> "-"+subname).orElse(""));
-                motorLog.voltage(voltage.mut_replace(
-                    motor.motorController.get() * RobotController.getBatteryVoltage(), Volts))
-                .angularPosition(angularPosition.mut_replace(motor.encoder.getAngle()))
-                .angularVelocity(angularVelocity.mut_replace(motor.encoder.getAngularVelocity()));
-            }
-        }
-    }
-    public static class LinearSystem implements System {
-        private List<LinearMotorController> motorControllers;
-        private MutVoltage voltage = Volts.mutable(0);
-        private MutDistance linearPosition = Meters.mutable(0);
-        private MutLinearVelocity linearVelocity = MetersPerSecond.mutable(0);
+    public static record AngularMotorController(SparkMax motorController, AngleEncoder encoder, Optional<String> name) implements MotorController {
         
-        public LinearSystem(List<LinearMotorController> motorControllers) {
-            this.motorControllers = motorControllers;
-        }
-        public void runMotors(Voltage voltage) {
-            for (LinearMotorController controller : motorControllers) {
-                controller.motorController.setVoltage(voltage);
-            }
+        public void drive(Voltage voltage) {
+            motorController.setVoltage(voltage);
         }
         public void log(SysIdRoutineLog log, String name) {
-            for (int i=0; i<motorControllers.size(); i++) {
-                final LinearMotorController motor = motorControllers.get(i);
-                var motorLog = log.motor(name+motor.name.map(subname -> "-"+subname).orElse(""));
-                motorLog.voltage(voltage.mut_replace(
-                    motor.motorController.get() * RobotController.getBatteryVoltage(), Volts))
-                .linearPosition(linearPosition.mut_replace(motor.encoder.getPosition()))
-                .linearVelocity(linearVelocity.mut_replace(motor.encoder.getLinearVelocity()));
-            }
+            var motorLog = log.motor(name+this.name.map(subname -> "-"+subname).orElse(""));
+            motorLog.voltage(voltage.mut_replace(
+                motorController.get() * RobotController.getBatteryVoltage(), Volts))
+            .angularPosition(angularPosition.mut_replace(encoder.getAngle()))
+            .angularVelocity(angularVelocity.mut_replace(encoder.getAngularVelocity()));
         }
     }
-
-    public interface AngularMotorList extends Supplier<List<AngularMotorController>> {}
-    public interface LinearMotorList extends Supplier<List<LinearMotorController>> {}
-    public static record AngularMotorController(SparkMax motorController, AngleEncoder encoder, Optional<String> name) {}
-    public static record LinearMotorController(SparkMax motorController, LinearEncoder encoder, Optional<String> name) {}
+    public static record LinearMotorController(SparkMax motorController, LinearEncoder encoder, Optional<String> name) implements MotorController {
+        public void drive(Voltage voltage) {
+            motorController.setVoltage(voltage);
+        }
+        public void log(SysIdRoutineLog log, String name) {
+            var motorLog = log.motor(name+this.name.map(subname -> "-"+subname).orElse(""));
+            motorLog.voltage(voltage.mut_replace(
+                motorController.get() * RobotController.getBatteryVoltage(), Volts))
+            .linearPosition(linearPosition.mut_replace(encoder.getPosition()))
+            .linearVelocity(linearVelocity.mut_replace(encoder.getLinearVelocity()));
+        }
+    }
 }
