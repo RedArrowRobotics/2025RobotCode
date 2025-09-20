@@ -40,7 +40,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public SysIdWrapper sysid = new SysIdWrapper(new SysIdWrapper.Properties(
     "coralscorer",
     new SysIdRoutine.Config(),
-    () -> List.of(
+    List.of(
       new SysIdWrapper.AngularMotorController(scorerTilter,new AngleSparkRelativeEncoder(scorerTilter.getEncoder()),Optional.empty())
     ),
     this
