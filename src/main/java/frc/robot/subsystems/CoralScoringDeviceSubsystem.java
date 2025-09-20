@@ -35,12 +35,12 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   boolean manualControl = false;
   double power;
   double encoderOffset = 319.0;
-  /*public SysIdWrapper sysid = new SysIdWrapper(new SysIdWrapper.Properties(
+  public SysIdWrapper sysid = new SysIdWrapper(new SysIdWrapper.Properties(
     "coralscorer",
     new SysIdRoutine.Config(),
     List.of(new SysIdWrapper.MotorController(scorerTilter,false)),
     this
-  ));*/
+  ));
 
   public CoralScoringDeviceSubsystem() {
     //DutyCycleEncoder encoder = new DutyCycleEncoder(3);
