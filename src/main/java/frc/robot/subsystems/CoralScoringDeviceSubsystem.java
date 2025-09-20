@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -20,6 +21,7 @@ import frc.robot.Constants;
 import frc.robot.SysIdWrapper;
 import frc.robot.encoder.AngleGenericAbsoluteEncoder;
 import frc.robot.encoder.AngleSparkAbsoluteEncoder;
+import frc.robot.encoder.AngleSparkRelativeEncoder;
 import edu.wpi.first.units.measure.Angle;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
@@ -38,7 +40,9 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public SysIdWrapper sysid = new SysIdWrapper(new SysIdWrapper.Properties(
     "coralscorer",
     new SysIdRoutine.Config(),
-    List.of(new SysIdWrapper.MotorController(scorerTilter,false)),
+    (SysIdWrapper.AngularMotorList) List.of(
+      new SysIdWrapper.AngularMotorController(scorerTilter,new AngleSparkRelativeEncoder(scorerTilter.getEncoder()),Optional.empty())
+    ),
     this
   ));
 
