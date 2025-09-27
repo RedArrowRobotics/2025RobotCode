@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.SysIdWrapper;
 import frc.robot.encoder.AngleGenericAbsoluteEncoder;
-import frc.robot.encoder.AngleSparkAbsoluteEncoder;
 import frc.robot.encoder.AngleSparkRelativeEncoder;
 import edu.wpi.first.units.measure.Angle;
 
