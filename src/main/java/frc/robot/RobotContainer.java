@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.AlignToAprilTag;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.CageSubsystem;
 import frc.robot.subsystems.CoralScoringDeviceSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -126,6 +127,12 @@ public class RobotContainer {
         NamedCommands.registerCommand(Constants.MANUAL_ELEVATOR_UP, elevator.raiseElevator());
         NamedCommands.registerCommand(Constants.MANUAL_ELEVATOR_DOWN, elevator.lowerElevator());
 
+        //System ID Commands
+        NamedCommands.registerCommand(Constants.SysIDQuasiStaticForward, swerveDriveTrain.sysIdQuasistatic(Direction.kForward));
+        NamedCommands.registerCommand(Constants.SysIDQuasiStaticReverse, swerveDriveTrain.sysIdQuasistatic(Direction.kReverse));
+        NamedCommands.registerCommand(Constants.SysIDDynamicForward, swerveDriveTrain.sysIdDynamic(Direction.kForward));
+        NamedCommands.registerCommand(Constants.SysIDDynamicReverse, swerveDriveTrain.sysIdDynamic(Direction.kReverse));
+
 
         controlTriggers.climberDescend.whileTrue(cage.descend());
         controlTriggers.climberAscend.whileTrue(cage.ascend());
@@ -146,10 +153,14 @@ public class RobotContainer {
         controlTriggers.climberAscend.whileTrue(NamedCommands.getCommand(Constants.ASCEND_CAGE));
         controlTriggers.climberDescend.whileTrue(NamedCommands.getCommand(Constants.DESCEND_CAGE));
 
-        controlTriggers.elevatorHome.onTrue(NamedCommands.getCommand(Constants.ELEVATOR_HOME));
-        controlTriggers.elevatorL2.onTrue(NamedCommands.getCommand(Constants.SCORE_L2));
-        controlTriggers.elevatorL3.onTrue(NamedCommands.getCommand(Constants.SCORE_L3));
-        controlTriggers.elevatorL4.onTrue(NamedCommands.getCommand(Constants.SCORE_L4));
+        // controlTriggers.elevatorHome.onTrue(NamedCommands.getCommand(Constants.ELEVATOR_HOME));
+        // controlTriggers.elevatorL2.onTrue(NamedCommands.getCommand(Constants.SCORE_L2));
+        // controlTriggers.elevatorL3.onTrue(NamedCommands.getCommand(Constants.SCORE_L3));
+        // controlTriggers.elevatorL4.onTrue(NamedCommands.getCommand(Constants.SCORE_L4));
+        controlTriggers.elevatorHome.whileTrue(NamedCommands.getCommand(Constants.SysIDDynamicForward));
+        controlTriggers.elevatorL2.whileTrue(NamedCommands.getCommand(Constants.SysIDDynamicReverse));
+        controlTriggers.elevatorL3.whileTrue(NamedCommands.getCommand(Constants.SysIDQuasiStaticForward));
+        controlTriggers.elevatorL4.whileTrue(NamedCommands.getCommand(Constants.SysIDQuasiStaticReverse));
 
         controlTriggers.manualElevatorUp.whileTrue(NamedCommands.getCommand(Constants.MANUAL_ELEVATOR_UP));
         controlTriggers.manualElevatorDown.whileTrue(NamedCommands.getCommand(Constants.MANUAL_ELEVATOR_DOWN));

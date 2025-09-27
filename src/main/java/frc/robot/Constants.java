@@ -43,6 +43,11 @@ public class Constants {
     public static String MANUAL_ELEVATOR_UP = "Manual Elevator Up";
     public static String MANUAL_ELEVATOR_DOWN = "Manual Elevator Down";
 
+    public static String SysIDQuasiStaticForward = "SysId Quasi Static Forward";
+    public static String SysIDDynamicForward = "SysID Dynamic Forward";
+     public static String SysIDQuasiStaticReverse = "SysId Quasi Static Reverse";
+    public static String SysIDDynamicReverse = "SysID Dynamic Reverse";
+
     // April Tag IDs
     public static List<Integer> blueReefATags = List.of(17,18,19,20,21,22);
     public static List<Integer> redReefATags = List.of(6,7,8,9,10,11);
