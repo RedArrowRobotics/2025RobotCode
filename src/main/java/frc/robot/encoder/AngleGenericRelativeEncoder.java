@@ -1,11 +1,10 @@
 package frc.robot.encoder;
 
 import static edu.wpi.first.units.Units.Revolutions;
-import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 import static edu.wpi.first.units.Units.Value;
 
 import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
@@ -19,7 +18,8 @@ public class AngleGenericRelativeEncoder implements AngleEncoder {
     Encoder encoder;
     Measure<PerUnit<DimensionlessUnit,AngleUnit>> ppm;
     double gearRatio;
-    MutAngle storage_angle = BaseUnits.AngleUnit.mutable(0);
+    MutAngle storage_angle = Revolutions.mutable(0);
+    MutAngularVelocity storage_rate = RevolutionsPerSecond.mutable(0);
     
     /**
      * Creates a new angle-based encoder from a generic external encoder.
@@ -61,15 +61,14 @@ public class AngleGenericRelativeEncoder implements AngleEncoder {
     }
 
     public Angle getAngle() {
-        storage_angle.mut_replace(encoder.getDistance()/ppm.baseUnitMagnitude(),BaseUnits.AngleUnit);
+        storage_angle.mut_replace(encoder.getDistance()/ppm.baseUnitMagnitude(),Revolutions);
         storage_angle.mut_times(gearRatio);
         return storage_angle;
     }
 
     public AngularVelocity getAngularVelocity() {
-        var position = Value.of(encoder.getRate()).div(Seconds.one());
-        var revolutions = BaseUnits.AngleUnit.per(BaseUnits.TimeUnit).of(position.div(ppm).baseUnitMagnitude());
-        var geared = revolutions.times(gearRatio);
-        return geared;
+        storage_rate.mut_replace(encoder.getRate()/ppm.baseUnitMagnitude(),RevolutionsPerSecond);
+        storage_rate.mut_times(gearRatio);
+        return storage_rate;
     }
 }
