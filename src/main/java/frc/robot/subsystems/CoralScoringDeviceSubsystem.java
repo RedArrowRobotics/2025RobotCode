@@ -34,7 +34,7 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   PIDController coralArmPID = new PIDController(0.01, 0.0, 0.0005);
   public double feedForward = 0.0;
   public AngleSparkAbsoluteEncoder angleEncoder;
-  boolean manualControl = false;
+  boolean manualControl = true;
   double power;
   double encoderOffset = 319.0;
   public SysIdWrapper sysid = new SysIdWrapper(new SysIdWrapper.Properties(
