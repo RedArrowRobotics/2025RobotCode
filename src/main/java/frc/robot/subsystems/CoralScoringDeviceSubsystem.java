@@ -33,8 +33,8 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public CoralArmPosition current = CoralArmPosition.HOME;
   PIDController coralArmPID = new PIDController(0.01, 0.0, 0.0005);
   public double feedForward = 0.0;
-  public AngleSparkAbsoluteEncoder angleEncoder;
-  boolean manualControl = true;
+  public AngleGenericAbsoluteEncoder angleEncoder;
+  boolean manualControl = false;
   double power;
   double encoderOffset = 319.0;
   public SysIdWrapper sysid = new SysIdWrapper(new SysIdWrapper.Properties(
@@ -47,9 +47,9 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   ));
 
   public CoralScoringDeviceSubsystem() {
-    //DutyCycleEncoder encoder = new DutyCycleEncoder(3);
+    DutyCycleEncoder encoder = new DutyCycleEncoder(3);
     coralArmPID.setTolerance(Degrees.of(2.5).in(Degrees));
-    angleEncoder = new AngleSparkAbsoluteEncoder(scorerTilter.getAbsoluteEncoder(), 5.0); // 20:1 -> 100:1
+    angleEncoder = new AngleGenericAbsoluteEncoder(encoder, 5.0); // 20:1 -> 100:1
     //coralArmPID.enableContinuousInput(0, 360);
     SmartDashboard.putData("Coral Arm PID", coralArmPID);
   }
