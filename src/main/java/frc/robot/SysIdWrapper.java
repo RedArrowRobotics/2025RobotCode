@@ -2,14 +2,13 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Minute;
-import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.revrobotics.spark.SparkMax;
 
@@ -18,20 +17,24 @@ import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.encoder.AngleEncoder;
+import frc.robot.encoder.LinearEncoder;
 
 public class SysIdWrapper {
     private final String name;
     private final SysIdRoutine sysIdRoutine;
-    private MutVoltage voltage = Volts.mutable(0);
-    private MutAngle angularPosition = Rotations.mutable(0);
-    private MutAngularVelocity angularVelocity = RotationsPerSecond.mutable(0);
-    private MutDistance linearPosition = Meters.mutable(0);
-    private MutLinearVelocity linearVelocity = MetersPerSecond.mutable(0);
+    private static MutVoltage voltage = Volts.mutable(0);
+    private static MutAngle angularPosition = Rotations.mutable(0);
+    private static MutAngularVelocity angularVelocity = RotationsPerSecond.mutable(0);
+    private static MutDistance linearPosition = Meters.mutable(0);
+    private static MutLinearVelocity linearVelocity = MetersPerSecond.mutable(0);
 
     public SysIdWrapper(Properties properties) {
         name = properties.name;
@@ -39,25 +42,17 @@ public class SysIdWrapper {
                 properties.config,
                 new SysIdRoutine.Mechanism(
                         // Tell SysId how to plumb the driving voltage to the motors.
-                        (voltage) -> {for (MotorController controller : properties.motorControllers) {controller.motorController.setVoltage(controller.reverse ? voltage.unaryMinus() : voltage);}},
+                        (voltage) -> {
+                            for (var motor : properties.motorControllers) {
+                                motor.drive(voltage);
+                            }
+                        },
                         // Tell SysId how to record a frame of data for each
                         // motor on the mechanism being characterized.
                         log -> {
-                            // Record a frame for the shooter motor.
-                            var motorLog = log.motor(properties.name)
-                                .voltage(voltage.mut_replace(
-                                    properties.motorControllers.get(0).motorController.get() * RobotController.getBatteryVoltage(), Volts));
-                            properties.metersPerRotation.ifPresentOrElse(metersPerRotation -> {
-                                motorLog.linearPosition(linearPosition.mut_replace(
-                                    properties.motorControllers.get(0).motorController.getEncoder().getPosition() * metersPerRotation, Meters))
-                                .linearVelocity(linearVelocity.mut_replace(
-                                    properties.motorControllers.get(0).motorController.getEncoder().getVelocity() * metersPerRotation, Meters.per(Minute)));
-                            }, () -> {
-                                motorLog.angularPosition(angularPosition.mut_replace(
-                                    properties.motorControllers.get(0).motorController.getEncoder().getPosition(), Rotations))
-                                .angularVelocity(angularVelocity.mut_replace(
-                                    properties.motorControllers.get(0).motorController.getEncoder().getVelocity(), RPM));
-                            });
+                            for (var motor : properties.motorControllers) {
+                                motor.log(log, properties.name);
+                            }
                         },
                         properties.subsystem));
     }
@@ -82,10 +77,10 @@ public class SysIdWrapper {
     }
 
     public void sendCommandsToDashboard() {
-        SmartDashboard.putData("sysid-"+this.name+ "-quasistatic-forward", sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        SmartDashboard.putData("sysid-"+this.name+ "-quasistatic-reverse", sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        SmartDashboard.putData("sysid-"+this.name+ "-dynamic-forward", sysIdDynamic(SysIdRoutine.Direction.kForward));
-        SmartDashboard.putData("sysid-"+this.name+ "-dynamic-reverse", sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        SmartDashboard.putData("System Identification/"+this.name+"/Quasistatic Forward", sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("System Identification/"+this.name+"/Quasistatic Reverse", sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        SmartDashboard.putData("System Identification/"+this.name+"/Dynamic Forward", sysIdDynamic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("System Identification/"+this.name+"/Dynamic Reverse", sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
     public static class Properties {
@@ -93,23 +88,42 @@ public class SysIdWrapper {
         private SysIdRoutine.Config config;
         private List<MotorController> motorControllers;
         private Subsystem subsystem;
-        private Optional<Double> metersPerRotation;
     
         public Properties(String name, SysIdRoutine.Config config, List<MotorController> motorControllers, Subsystem subsystem) {
             this.name = name;
             this.config = config;
             this.motorControllers = motorControllers;
             this.subsystem = subsystem;
-            this.metersPerRotation = Optional.empty();
-        }
-        public Properties(String name, SysIdRoutine.Config config, List<MotorController> motorControllers, Subsystem subsystem, double metersPerRotation) {
-            this.name = name;
-            this.config = config;
-            this.motorControllers = motorControllers;
-            this.subsystem = subsystem;
-            this.metersPerRotation = Optional.of(metersPerRotation);
         }
     }
-    public static record MotorController(SparkMax motorController, boolean reverse) {
+
+    private interface MotorController {
+        public void drive(Voltage voltage);
+        public void log(SysIdRoutineLog log, String name);
+    }
+    public static record AngularMotorController(SparkMax motorController, AngleEncoder encoder, Optional<String> name) implements MotorController {
+        
+        public void drive(Voltage voltage) {
+            motorController.setVoltage(voltage);
+        }
+        public void log(SysIdRoutineLog log, String name) {
+            var motorLog = log.motor(name+this.name.map(subname -> "-"+subname).orElse(""));
+            motorLog.voltage(voltage.mut_replace(
+                motorController.get() * RobotController.getBatteryVoltage(), Volts))
+            .angularPosition(angularPosition.mut_replace(encoder.getAngle()))
+            .angularVelocity(angularVelocity.mut_replace(encoder.getAngularVelocity()));
+        }
+    }
+    public static record LinearMotorController(SparkMax motorController, LinearEncoder encoder, Optional<String> name) implements MotorController {
+        public void drive(Voltage voltage) {
+            motorController.setVoltage(voltage);
+        }
+        public void log(SysIdRoutineLog log, String name) {
+            var motorLog = log.motor(name+this.name.map(subname -> "-"+subname).orElse(""));
+            motorLog.voltage(voltage.mut_replace(
+                motorController.get() * RobotController.getBatteryVoltage(), Volts))
+            .linearPosition(linearPosition.mut_replace(encoder.getPosition()))
+            .linearVelocity(linearVelocity.mut_replace(encoder.getLinearVelocity()));
+        }
     }
 }

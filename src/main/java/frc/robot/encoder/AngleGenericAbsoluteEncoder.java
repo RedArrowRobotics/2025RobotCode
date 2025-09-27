@@ -11,7 +11,6 @@ import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.MutAngle;
-import edu.wpi.first.units.measure.MutDimensionless;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 public class AngleGenericAbsoluteEncoder implements AngleEncoder {
@@ -60,7 +59,7 @@ public class AngleGenericAbsoluteEncoder implements AngleEncoder {
     }
 
     public Angle getAngle() {
-        storage_angle.mut_replace(encoder.get()/ppm.baseUnitMagnitude(),BaseUnits.AngleUnit);
+        storage_angle.mut_replace(encoder.get()/ppm.in(Units.PulsesPerRevolution),Revolutions);
         storage_angle.mut_times(gearRatio);
         return storage_angle;
     }

@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -19,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.SysIdWrapper;
 import frc.robot.encoder.AngleGenericAbsoluteEncoder;
-import frc.robot.encoder.AngleSparkAbsoluteEncoder;
+import frc.robot.encoder.AngleSparkRelativeEncoder;
 import edu.wpi.first.units.measure.Angle;
 
 public class CoralScoringDeviceSubsystem extends SubsystemBase {
@@ -31,21 +32,23 @@ public class CoralScoringDeviceSubsystem extends SubsystemBase {
   public CoralArmPosition current = CoralArmPosition.HOME;
   PIDController coralArmPID = new PIDController(0.01, 0.0, 0.0005);
   public double feedForward = 0.0;
-  public AngleSparkAbsoluteEncoder angleEncoder;
+  public AngleGenericAbsoluteEncoder angleEncoder;
   boolean manualControl = false;
   double power;
   double encoderOffset = 319.0;
   public SysIdWrapper sysid = new SysIdWrapper(new SysIdWrapper.Properties(
     "coralscorer",
     new SysIdRoutine.Config(),
-    List.of(new SysIdWrapper.MotorController(scorerTilter,false)),
+    List.of(
+      new SysIdWrapper.AngularMotorController(scorerTilter,new AngleSparkRelativeEncoder(scorerTilter.getEncoder()),Optional.empty())
+    ),
     this
   ));
 
   public CoralScoringDeviceSubsystem() {
-    //DutyCycleEncoder encoder = new DutyCycleEncoder(3);
+    DutyCycleEncoder encoder = new DutyCycleEncoder(3);
     coralArmPID.setTolerance(Degrees.of(2.5).in(Degrees));
-    angleEncoder = new AngleSparkAbsoluteEncoder(scorerTilter.getAbsoluteEncoder(), 5.0); // 20:1 -> 100:1
+    angleEncoder = new AngleGenericAbsoluteEncoder(encoder, 5.0); // 20:1 -> 100:1
     //coralArmPID.enableContinuousInput(0, 360);
     SmartDashboard.putData("Coral Arm PID", coralArmPID);
   }
