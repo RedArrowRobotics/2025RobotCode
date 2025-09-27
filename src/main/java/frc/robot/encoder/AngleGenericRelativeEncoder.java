@@ -61,13 +61,13 @@ public class AngleGenericRelativeEncoder implements AngleEncoder {
     }
 
     public Angle getAngle() {
-        storage_angle.mut_replace(encoder.getDistance()/ppm.baseUnitMagnitude(),Revolutions);
+        storage_angle.mut_replace(encoder.getDistance()/ppm.in(Units.PulsesPerRevolution),Revolutions);
         storage_angle.mut_times(gearRatio);
         return storage_angle;
     }
 
     public AngularVelocity getAngularVelocity() {
-        storage_rate.mut_replace(encoder.getRate()/ppm.baseUnitMagnitude(),RevolutionsPerSecond);
+        storage_rate.mut_replace(encoder.getRate()/ppm.in(Units.PulsesPerRevolution),RevolutionsPerSecond);
         storage_rate.mut_times(gearRatio);
         return storage_rate;
     }

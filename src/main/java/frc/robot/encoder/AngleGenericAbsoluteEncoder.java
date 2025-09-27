@@ -59,7 +59,7 @@ public class AngleGenericAbsoluteEncoder implements AngleEncoder {
     }
 
     public Angle getAngle() {
-        storage_angle.mut_replace(encoder.get()/ppm.baseUnitMagnitude(),Revolutions);
+        storage_angle.mut_replace(encoder.get()/ppm.in(Units.PulsesPerRevolution),Revolutions);
         storage_angle.mut_times(gearRatio);
         return storage_angle;
     }
